@@ -111,10 +111,18 @@ function Write-RebornMiscBig($Entries,[string]$Destination) {
 }
 
 #-------------------------------------------------------------------------------------------------
+<# Reborn: share one filename-safe release-label policy between build preflight and final publication without normalizing user-entered versions. #>
+#-------------------------------------------------------------------------------------------------
+function Assert-RebornModVersion([string]$Version) {
+    if($Version -cnotmatch '\A[A-Za-z0-9](?:[A-Za-z0-9._-]{0,46}[A-Za-z0-9])?\z'){throw 'Mod Version must be 1-48 characters using letters, digits, dots, underscores or hyphens, and start/end with a letter or digit. Examples: 1.00, 1.0-beta.'}
+}
+
+#-------------------------------------------------------------------------------------------------
 <# Reborn: publish streams, optional nonempty Misc and SKUDef with rollback, preserving other versions and refusing unowned or modified collisions. #>
 #-------------------------------------------------------------------------------------------------
 function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$Streams,[string]$Misc,[string]$ModsRoot,[long]$MiscBigLimit=[uint32]::MaxValue) {
-    if($ModName -cnotmatch '\A[A-Za-z0-9_-]{1,48}\z' -or $Version -cnotmatch '\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z'){throw 'Invalid final mod name or version.'}
+    if($ModName -cnotmatch '\A[A-Za-z0-9_-]{1,48}\z'){throw 'Invalid final mod name.'}
+    Assert-RebornModVersion $Version
     if(-not $ModsRoot){$documents=[Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments);if(-not $documents){throw 'Windows Documents known folder is unavailable.'};$ModsRoot=Join-Path $documents 'Red Alert 3 Uprising/Mods'}
     # Reborn: receipts always contain absolute paths, including isolated developer test destinations.
     $ModsRoot=[IO.Path]::GetFullPath($ModsRoot)

@@ -15,7 +15,7 @@ internal static class WorldBuilderAssetResolver
     internal sealed record Native(ManifestAsset Asset,byte[] Bin,byte[] Relo,byte[] Imp);
     // Reborn: authored chunks can borrow their existing sidecars while retail chunks retain their owned arrays.
     private sealed record NativeView(ManifestAsset Asset,ReadOnlyMemory<byte> Bin,ReadOnlyMemory<byte> Relo,ReadOnlyMemory<byte> Imp);
-    internal sealed record Result(Dictionary<string,byte[]> Streams,Dictionary<string,byte[]> CustomData,string[] Imported,long BytesRead);
+    internal sealed record Result(Dictionary<string,byte[]> Streams,Dictionary<string,byte[]> CustomData,string[] Imported,long BytesRead,string[]? ReferencedWorldBuilder=null);
     private static readonly string[] Extensions={".manifest",".bin",".relo",".imp"};
 
     //-------------------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve native relocation/import tables while copying only the retail assets actually needed. */
     //-------------------------------------------------------------------------------------------------
-    internal static Result Resolve(Dictionary<string,byte[]> streams,string worldBuilder,IEnumerable<ManifestAsset> loaded,IEnumerable<AssetId> weakSeeds,IReadOnlyDictionary<AssetId,string>? runtimeProviders=null,string? mapArt=null)
+    internal static Result Resolve(Dictionary<string,byte[]> streams,string worldBuilder,IEnumerable<ManifestAsset> loaded,IEnumerable<AssetId> weakSeeds,IReadOnlyDictionary<AssetId,string>? runtimeProviders=null,string? mapArt=null,bool referenceWorldBuilder=false)
     {
         var mod = ManifestReader.Read(streams["diagnostic.manifest"]);
         var catalogs = new Dictionary<string,ManifestDocument>(StringComparer.OrdinalIgnoreCase)
@@ -91,8 +91,8 @@ internal static class WorldBuilderAssetResolver
         foreach (var doc in catalogs.Values.Prepend(mod))
         {
             TypeRegistryAudit.ValidateTarget(doc.Header.Version,doc.Header.AllTypesHash);
-            if (!doc.Header.IsLinked || doc.Validate().Count != 0 || doc.ReferencedManifests.Any(r => r.IsPatch))
-                throw new InvalidDataException("Retail asset resolution requires valid linked EP1 streams without patch bases.");
+            if (!doc.Header.IsLinked || doc.Validate().Count != 0 || doc.ReferencedManifests.Any(r => r.IsPatch && !(referenceWorldBuilder && ReferenceEquals(doc,mod) && r.Path.Equals("worldbuilder.manifest",StringComparison.OrdinalIgnoreCase))))
+                throw new InvalidDataException("Retail asset resolution requires valid linked EP1 streams; only the retail WorldBuilder map patch base is admitted.");
         }
         if (mapArt != null)
             catalogs.Add(mapArt,ReadMapArt(mapArt));
@@ -106,15 +106,31 @@ internal static class WorldBuilderAssetResolver
         var visited = new HashSet<AssetId>();
         foreach (var seed in mod.Assets.SelectMany(a => a.References).Concat(weakSeeds))
             Visit(seed);
+        // Reborn: linked patch loaders scan the base forwards; reject an already malformed patch even when no dependencies are added.
+        if (referenceWorldBuilder && mod.ReferencedManifests.Any(r=>r.IsPatch))
+            ValidateMapBaseOrder(mod,catalogs[worldBuilder]);
         if (selected.Count == 0)
             return new(streams,new(),Array.Empty<string>(),0);
 
         var native = new List<Native>();
+        // Reborn: map-only base records retain retail fingerprints/reference tables with no copied native or CDATA bytes.
+        var referencedWorldBuilder = new List<string>();
         var custom = new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
         long bytesRead = 0;
         foreach (var group in selected.GroupBy(item => item.Path,StringComparer.OrdinalIgnoreCase))
         {
             var retail = catalogs[group.Key];
+            // Reborn: match shipped map manifests: zero-sized entries borrow their native records from worldbuilder.manifest.
+            if (referenceWorldBuilder && group.Key.Equals(worldBuilder,StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (var item in group)
+                {
+                    var asset=item.Asset with { InstanceDataSize=0,RelocationDataSize=0,ImportsDataSize=0 };
+                    native.Add(new(asset,Array.Empty<byte>(),Array.Empty<byte>(),Array.Empty<byte>()));
+                    referencedWorldBuilder.Add(asset.Name);
+                }
+                continue;
+            }
             var offsets = new Dictionary<AssetId,long[]>();
             long[] at = {8,8,8};
             foreach (var asset in retail.Assets)
@@ -170,17 +186,85 @@ internal static class WorldBuilderAssetResolver
         }
         // Reborn: imported dependencies precede authored consumers; reorder whole asset chunks without changing their asset-relative offsets or reference indices.
         var candidates=ReadNativeViews(mod,streams).Concat(native.Select(n=>new NativeView(n.Asset,n.Bin,n.Relo,n.Imp))).ToDictionary(n=>Id(n.Asset));var sorted=new List<NativeView>();var ordering=new HashSet<AssetId>();foreach(var id in candidates.Keys)Order(id);var all=sorted.ToArray();
+        // Reborn: dependency DFS can reverse borrowed records; the engine requires those records to follow the retail base order.
+        if (referenceWorldBuilder) all=OrderMapBase(all,catalogs[worldBuilder]);
         // Reborn: imported assets can introduce an AudioFile or other external provider not used by the authored source; add only the newly required runtime names.
-        var runtimeAdditions=native.SelectMany(n=>n.Asset.References).Where(id=>!candidates.ContainsKey(id)&&runtimeProviders?.ContainsKey(id)==true).Select(id=>runtimeProviders![id]).Distinct(StringComparer.OrdinalIgnoreCase);var result=SerializeViews(all,mod,streams["diagnostic.manifest"],runtimeAdditions);
+        var runtimeAdditions=native.SelectMany(n=>n.Asset.References).Where(id=>!candidates.ContainsKey(id)&&runtimeProviders?.ContainsKey(id)==true).Select(id=>runtimeProviders![id]).Distinct(StringComparer.OrdinalIgnoreCase);var result=SerializeViews(all,mod,streams["diagnostic.manifest"],runtimeAdditions,referenceWorldBuilder ? "worldbuilder.manifest" : null,referenceWorldBuilder ? catalogs[worldBuilder] : null);
         var check=ManifestReader.Read(result["diagnostic.manifest"]);if(check.Validate().Count!=0||check.Assets.Count!=all.Length)throw new InvalidDataException("Resolved WorldBuilder manifest readback failed.");
+        // Reborn: structural manifest validation alone does not prove the runtime's forward-only base lookup can find every borrowed record.
+        if (referenceWorldBuilder) ValidateMapBaseOrder(check,catalogs[worldBuilder]);
         // Reborn: exact readback compares sidecar slices without allocating another complete native graph.
         var recovered=ReadNativeViews(check,result);for(int i=0;i<all.Length;i++)if(all[i].Asset.Name!=recovered[i].Asset.Name||!all[i].Asset.References.SequenceEqual(recovered[i].Asset.References)||!all[i].Bin.Span.SequenceEqual(recovered[i].Bin.Span)||!all[i].Relo.Span.SequenceEqual(recovered[i].Relo.Span)||!all[i].Imp.Span.SequenceEqual(recovered[i].Imp.Span))throw new InvalidDataException("Resolved WorldBuilder native readback differs: "+all[i].Asset.Name);
-        return new(result,custom,selected.Select(a=>a.Asset.Name).ToArray(),bytesRead);
+        return new(result,custom,selected.Where(a=>!referenceWorldBuilder || !a.Path.Equals(worldBuilder,StringComparison.OrdinalIgnoreCase)).Select(a=>a.Asset.Name).ToArray(),bytesRead,referencedWorldBuilder.ToArray());
 
         // Reborn: original stock cycles remain intact; all acyclic local/imported edges are emitted dependency-first.
         void Order(AssetId id){if(!candidates.TryGetValue(id,out var item)||!ordering.Add(id))return;foreach(var reference in item.Asset.References)Order(reference);sorted.Add(item);}
         // Reborn: a visited set also permits stock cycles; local or already loaded identities always stop retail traversal.
         void Visit(AssetId id){if(present.Contains(id)||!visited.Add(id))return;if(!byId.TryGetValue(id,out var item))throw new InvalidDataException("Retail dependency has no mod, loaded or extractable provider: "+id);foreach(var reference in item.Asset.References)Visit(reference);selected.Add(item);}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: keep inherited entries in retail order, interleaving authored payloads only where their dependencies require them. */
+    //-------------------------------------------------------------------------------------------------
+    private static NativeView[] OrderMapBase(NativeView[] assets,ManifestDocument world)
+    {
+        var items=assets.ToDictionary(n=>Id(n.Asset));
+        var ranks=assets.Select((n,i)=>(Key:Id(n.Asset),Rank:i)).ToDictionary(n=>n.Key,n=>n.Rank);
+        var borrowed=assets.Where(n=>n.Bin.Length==0 && n.Relo.Length==0 && n.Imp.Length==0).Select(n=>Id(n.Asset)).ToHashSet();
+        var baseOrder=world.Assets.Select(Id).Where(borrowed.Contains).ToArray();
+        if(baseOrder.Length!=borrowed.Count)throw new InvalidDataException("Map patch contains an empty record with no WorldBuilder base provider.");
+        var next=items.Keys.ToDictionary(id=>id,_=>new HashSet<AssetId>());
+        var incoming=items.Keys.ToDictionary(id=>id,_=>0);
+        for(int i=1;i<baseOrder.Length;i++)AddEdge(baseOrder[i-1],baseOrder[i]);
+        foreach(var item in assets)
+        {
+            var owner=Id(item.Asset);
+            foreach(var dependency in item.Asset.References)
+            {
+                if(!items.ContainsKey(dependency) || dependency==owner)continue;
+                if(borrowed.Contains(owner) && borrowed.Contains(dependency))continue;
+                // Reborn: retain the existing DFS cut for authored cycles; mixed base/payload edges still constrain insertion.
+                if(!borrowed.Contains(owner) && !borrowed.Contains(dependency) && ranks[dependency]>=ranks[owner])continue;
+                AddEdge(dependency,owner);
+            }
+        }
+        var ready=new PriorityQueue<AssetId,int>();
+        foreach(var pair in incoming)if(pair.Value==0)ready.Enqueue(pair.Key,ranks[pair.Key]);
+        var ordered=new List<NativeView>(assets.Length);
+        while(ready.TryDequeue(out var id,out _))
+        {
+            ordered.Add(items[id]);
+            foreach(var consumer in next[id])if(--incoming[consumer]==0)ready.Enqueue(consumer,ranks[consumer]);
+        }
+        if(ordered.Count!=assets.Length)
+            throw new InvalidDataException("Map WorldBuilder base order conflicts with authored dependency ordering: "+string.Join(", ",incoming.Where(p=>p.Value!=0).Take(4).Select(p=>items[p.Key].Asset.Name)));
+        return ordered.ToArray();
+
+        // Reborn: one ordering edge counts once even when several reference slots target the same asset.
+        void AddEdge(AssetId dependency,AssetId consumer){if(next[dependency].Add(consumer))incoming[consumer]++;}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: simulate the engine's forward-only base scan and require exact fingerprints before accepting a zero-payload patch record. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void ValidateMapBaseOrder(ManifestDocument map,ManifestDocument world)
+    {
+        var positions=world.Assets.Select((asset,index)=>(Key:Id(asset),Index:index)).ToDictionary(p=>p.Key,p=>p.Index);
+        int previous=-1;
+        foreach(var asset in map.Assets.Where(a=>a.InstanceDataSize==0 && a.RelocationDataSize==0 && a.ImportsDataSize==0))
+        {
+            if(!positions.TryGetValue(Id(asset),out int at) || at<=previous)
+                throw new InvalidDataException("Map WorldBuilder patch base order is invalid at "+asset.Name+"; borrowed entries must follow the retail manifest order.");
+            var original=world.Assets[at];
+            if(asset.TypeHash!=original.TypeHash || asset.InstanceHash!=original.InstanceHash || asset.Tokenized!=original.Tokenized || !asset.References.SequenceEqual(original.References))
+                throw new InvalidDataException("Map WorldBuilder patch fingerprint/reference table differs: "+asset.Name);
+            previous=at;
+        }
+        // Reborn: the runtime reserves logical stream/chunk sizes even though inherited records consume zero bytes in local files.
+        var logical=map.Assets.Select(a=>a.InstanceDataSize==0 && a.RelocationDataSize==0 && a.ImportsDataSize==0 ? world.Assets[positions[Id(a)]] : a).ToArray();
+        if(map.Header.TotalInstanceDataSize!=logical.Sum(a=>(long)a.InstanceDataSize) || map.Header.MaxInstanceChunkSize!=logical.Max(a=>a.InstanceDataSize)
+            || map.Header.MaxRelocationChunkSize!=logical.Max(a=>a.RelocationDataSize) || map.Header.MaxImportsChunkSize!=logical.Max(a=>a.ImportsDataSize))
+            throw new InvalidDataException("Map WorldBuilder patch allocation header omits or misstates inherited native sizes.");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -228,8 +312,10 @@ internal static class WorldBuilderAssetResolver
         // Reborn: package map-local art from the same catalog used during model name resolution.
         string? mapId=mod.Assets.SingleOrDefault(asset=>asset.TypeName=="GameMap")?.Name.Split(':',2)[1];
         string? mapArt=MapArtPath(catalogDirectory,mapId);
-        var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders,mapArt);
-        if(result.Imported.Length==0)return;
+        // Reborn: only authored map streams borrow the retail patch base; static builds keep the existing extraction behavior.
+        var result=Resolve(streams,Path.Combine(catalogDirectory,"worldbuilder.manifest"),loaded,weak,runtimeProviders,mapArt,referenceWorldBuilder:!isTopLevelMod);
+        var referenced=result.ReferencedWorldBuilder??Array.Empty<string>();
+        if(result.Imported.Length==0 && referenced.Length==0)return;
         var files=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
         foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in Extensions)files.Add("data\\mod"+suffix+extension,result.Streams["diagnostic"+extension]);
         // Reborn: each LOD family has its own custom-data lookup directory even when it reuses exactly the same retail payload.
@@ -239,8 +325,17 @@ internal static class WorldBuilderAssetResolver
             files.Add(name,file.Value);
         }
         var repacked=RewritePack(package,files);
-        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=repacked.Entries;receipt["ArchiveSha256"]=repacked.Sha256;File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
-        Console.WriteLine($"Resolving WorldBuilder assets: {result.Imported.Length} added with dependencies; {result.BytesRead:N0} native bytes read; {result.CustomData.Count} custom resources packaged.");foreach(var name in result.Imported)Console.WriteLine("WorldBuilder asset added: "+name);
+        string receiptPath=Path.Combine(Path.GetDirectoryName(package)!,"trial-plan.json");var receipt=JsonNode.Parse(File.ReadAllText(receiptPath))!;receipt["WorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(result.Imported);receipt["WorldBuilderAssetCount"]=result.Imported.Length;receipt["ReferencedWorldBuilderAssets"]=System.Text.Json.JsonSerializer.SerializeToNode(referenced);receipt["ReferencedWorldBuilderAssetCount"]=referenced.Length;receipt["PackagedAssetCount"]=ManifestReader.Read(result.Streams["diagnostic.manifest"]).Assets.Count;receipt["ArchiveEntryCount"]=repacked.Entries;receipt["ArchiveSha256"]=repacked.Sha256;File.WriteAllText(receiptPath,receipt.ToJsonString(new(){WriteIndented=true}));
+        // Reborn: map summaries distinguish shared retail references from the genuinely map-local art that still owns payloads.
+        if (isTopLevelMod)
+        {
+            Console.WriteLine($"Resolving WorldBuilder assets: {result.Imported.Length} added with dependencies; {result.BytesRead:N0} native bytes read; {result.CustomData.Count} custom resources packaged.");
+            foreach(var name in result.Imported)Console.WriteLine("WorldBuilder asset added: "+name);
+        }
+        else
+        {
+            Console.WriteLine($"Map retail dependencies: {referenced.Length} WorldBuilder base references; no WorldBuilder BIN/RELO/IMP/CDATA copied; {result.Imported.Length} map-local art assets retained.");
+        }
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -311,13 +406,20 @@ internal static class WorldBuilderAssetResolver
     //-------------------------------------------------------------------------------------------------
     /** Reborn: serialize each native sidecar into one exact-size allocation instead of growing and cloning a MemoryStream. */
     //-------------------------------------------------------------------------------------------------
-    private static Dictionary<string,byte[]> SerializeViews(NativeView[] assets,ManifestDocument original,byte[] originalMetadata,IEnumerable<string>? runtimeAdditions)
+    private static Dictionary<string,byte[]> SerializeViews(NativeView[] assets,ManifestDocument original,byte[] originalMetadata,IEnumerable<string>? runtimeAdditions,string? patchBase=null,ManifestDocument? patchCatalog=null)
     {
         using var entries=new MemoryStream();using var references=new MemoryStream();using var names=new MemoryStream();using var sources=new MemoryStream();using var rw=new BinaryWriter(references,Encoding.UTF8,true);
         foreach(var n in assets){var a=n.Asset;using var entry=new AssetEntry{TypeId=a.TypeId,InstanceId=a.InstanceId,TypeHash=a.TypeHash,InstanceHash=a.InstanceHash,Tokenized=a.Tokenized==1,NameOffset=(int)names.Length,SourceFileNameOffset=(int)sources.Length,AssetReferenceOffset=(int)references.Length,AssetReferenceCount=a.References.Count,InstanceDataSize=n.Bin.Length,RelocationDataSize=n.Relo.Length,ImportsDataSize=n.Imp.Length};entry.SaveToStream(entries,false);names.Write(Encoding.UTF8.GetBytes(a.Name+'\0'));sources.Write(Encoding.UTF8.GetBytes(a.SourceFile+'\0'));foreach(var id in a.References){rw.Write(id.TypeId);rw.Write(id.InstanceId);}}
-        rw.Flush();var runtimeBuffer=new ReferencedFileBuffer();foreach(var reference in original.ReferencedManifests)runtimeBuffer.AddReference(reference.Path,reference.IsPatch);foreach(string name in runtimeAdditions??Array.Empty<string>())if(!original.ReferencedManifests.Any(r=>r.Path.Equals(name,StringComparison.OrdinalIgnoreCase)))runtimeBuffer.AddReference(name,false);using var runtimeStream=new MemoryStream();runtimeBuffer.SaveToStream(runtimeStream);byte[] runtime=runtimeStream.ToArray();
+        rw.Flush();var runtimeBuffer=new ReferencedFileBuffer();
+        // Reborn: preserve the original map dependency convention, with one explicit retail WorldBuilder patch base.
+        if(patchBase!=null && !original.ReferencedManifests.Any(r=>r.IsPatch && r.Path.Equals(patchBase,StringComparison.OrdinalIgnoreCase)))runtimeBuffer.AddReference(patchBase,true);
+        foreach(var reference in original.ReferencedManifests)runtimeBuffer.AddReference(reference.Path,reference.IsPatch);foreach(string name in runtimeAdditions??Array.Empty<string>())if(!original.ReferencedManifests.Any(r=>r.Path.Equals(name,StringComparison.OrdinalIgnoreCase)))runtimeBuffer.AddReference(name,false);using var runtimeStream=new MemoryStream();runtimeBuffer.SaveToStream(runtimeStream);byte[] runtime=runtimeStream.ToArray();
         using var digest=IncrementalHash.CreateHash(HashAlgorithmName.SHA256);foreach(var n in assets){digest.AppendData(n.Bin.Span);digest.AppendData(n.Relo.Span);digest.AppendData(n.Imp.Span);}digest.AppendData(entries.GetBuffer().AsSpan(0,checked((int)entries.Length)));digest.AppendData(references.GetBuffer().AsSpan(0,checked((int)references.Length)));digest.AppendData(originalMetadata);digest.AppendData(runtime);uint checksum=Word(digest.GetHashAndReset(),0);
-        using var metadata=new MemoryStream();using(var header=new BinaryAssetBuilder.Utility.ManifestHeader{IsLinked=true,AllTypesHash=original.Header.AllTypesHash,StreamChecksum=checksum,AssetCount=(uint)assets.Length,TotalInstanceDataSize=checked((uint)assets.Sum(a=>(long)a.Bin.Length)),MaxInstanceChunkSize=(uint)assets.Max(a=>a.Bin.Length),MaxRelocationChunkSize=(uint)assets.Max(a=>a.Relo.Length),MaxImportsChunkSize=(uint)assets.Max(a=>a.Imp.Length),AssetReferenceBufferSize=(uint)references.Length,ReferenceManifestNameBufferSize=(uint)runtime.Length,AssetNameBufferSize=(uint)names.Length,SourceFileNameBufferSize=(uint)sources.Length})header.SaveToStream(metadata,false);entries.WriteTo(metadata);references.WriteTo(metadata);metadata.Write(runtime);names.WriteTo(metadata);sources.WriteTo(metadata);
+        // Reborn: patch headers describe the effective native allocation, including inherited chunks; sidecars below still contain only local bytes.
+        var baseAssets=patchCatalog?.Assets.ToDictionary(Id);
+        var logical=assets.Select(n=>n.Bin.Length==0 && n.Relo.Length==0 && n.Imp.Length==0 && baseAssets!=null && baseAssets.TryGetValue(Id(n.Asset),out var inherited)
+            ? inherited : n.Asset with { InstanceDataSize=n.Bin.Length,RelocationDataSize=n.Relo.Length,ImportsDataSize=n.Imp.Length }).ToArray();
+        using var metadata=new MemoryStream();using(var header=new BinaryAssetBuilder.Utility.ManifestHeader{IsLinked=true,AllTypesHash=original.Header.AllTypesHash,StreamChecksum=checksum,AssetCount=(uint)assets.Length,TotalInstanceDataSize=checked((uint)logical.Sum(a=>(long)a.InstanceDataSize)),MaxInstanceChunkSize=(uint)logical.Max(a=>a.InstanceDataSize),MaxRelocationChunkSize=(uint)logical.Max(a=>a.RelocationDataSize),MaxImportsChunkSize=(uint)logical.Max(a=>a.ImportsDataSize),AssetReferenceBufferSize=(uint)references.Length,ReferenceManifestNameBufferSize=(uint)runtime.Length,AssetNameBufferSize=(uint)names.Length,SourceFileNameBufferSize=(uint)sources.Length})header.SaveToStream(metadata,false);entries.WriteTo(metadata);references.WriteTo(metadata);metadata.Write(runtime);names.WriteTo(metadata);sources.WriteTo(metadata);
         var output=new Dictionary<string,byte[]>{{"diagnostic.manifest",metadata.ToArray()}};
         for(int i=0;i<3;i++){
             int length=checked((int)(8L+assets.Sum(n=>(long)(i==0?n.Bin.Length:i==1?n.Relo.Length:n.Imp.Length))));

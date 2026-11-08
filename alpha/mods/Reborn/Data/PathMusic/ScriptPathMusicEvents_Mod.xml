@@ -1,6 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
   <!-- Reborn: keep native Uprising script music and register the additional original RA3 script events. -->
+  <!-- Reborn: resolve original Uprising events locally because early AdditionalMaps stock imports were null at runtime. -->
+  <Includes>
+    <Include type="all" source="DATA:PathMusic/UprisingScriptPathMusicEvents.xml" />
+  </Includes>
   <PathMusicEventSet id="ScriptEvents" Category="SCRIPT">
     <Event>S_Tutorial1</Event>
     <Event>S_Tutorial2</Event>

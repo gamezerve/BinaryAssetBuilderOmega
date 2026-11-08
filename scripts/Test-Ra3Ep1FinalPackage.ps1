@@ -19,6 +19,11 @@ $mods=Join-Path $root 'Mods';$checks=[Collections.Generic.List[string]]::new()
 <# Reborn: require malformed or conflicting publication to fail instead of silently replacing user files. #>
 #-------------------------------------------------------------------------------------------------
 function Expect-PackageFailure([scriptblock]$Action,[string]$Name){$failed=$false;try{& $Action | Out-Null}catch{$failed=$true};if(-not $failed){throw ('Expected failure: '+$Name)};$checks.Add($Name)}
+# Reborn: backend preflight and publication share the same literal-label policy, including exact length and edge-character boundaries.
+foreach($version in @('1.00','1.2.3.4','0000.0000','1.0-beta','1.0-alpha.2','Beta_2','v1.0','a',('a'*48))){Assert-RebornModVersion $version}
+foreach($version in @($null,'','.', '..', '.beta','beta.','-alpha','_alpha','1.0 beta',' 1.0','1.0 ',"1.0`n","1.0`r",("1.0"+[char]0),'../beta','..\beta','1.0/beta','1.0\beta','1:beta','1*beta','1?beta','1"beta','1<beta','1>beta','1|beta','1;beta','1&beta',('a'*49))){
+    Expect-PackageFailure {Assert-RebornModVersion $version} ('UnsafeVersion:'+($checks.Count+1))
+}
 $first=Publish-RebornFinalPackage RebornTest 1.00 $streams $misc $mods
 if($first.MiscEntries -ne 3 -or (Split-Path -Leaf $first.StreamsPath) -cne 'RebornTest_1.00_Streams.big'){throw 'Version or Misc count differs.'}
 if((Get-Content -LiteralPath $first.SkuDefPath -Raw) -cne "add-big RebornTest_1.00_Streams.big`r`nadd-big RebornTest_1.00_Misc.big`r`n"){throw 'SKUDef differs.'};$checks.Add('NamesAndSku')
@@ -29,6 +34,18 @@ if((Get-FileHash -LiteralPath $again.MiscPath).Hash -cne $hash){throw 'Misc outp
 $note=Join-Path $first.Directory 'user-note.txt';[IO.File]::WriteAllText($note,'Reborn: retain me.')
 $second=Publish-RebornFinalPackage RebornTest 2.00 $streams (Join-Path $root 'MissingMisc') $mods
 if(-not(Test-Path -LiteralPath $first.SkuDefPath) -or -not(Test-Path -LiteralPath $note) -or $second.MiscPath -or (Test-Path -LiteralPath (Join-Path $second.Directory 'RebornTest_2.00_Misc.big')) -or (Get-Content -LiteralPath $second.SkuDefPath -Raw) -cne "add-big RebornTest_2.00_Streams.big`r`n"){throw 'Other versions/notes or absent Misc differ.'};$checks.Add('OtherVersionsNotesAndMissingMisc')
+# Reborn: release labels survive actual archive/SKUDef/receipt publication and same-version replacement alongside existing numeric versions.
+foreach($version in @('1.0-beta','1.0-alpha.2','Beta_2')){
+    $release=Publish-RebornFinalPackage RebornTest $version $streams $misc $mods
+    $stem='RebornTest_'+$version
+    if((Split-Path -Leaf $release.StreamsPath) -cne ($stem+'_Streams.big') -or (Split-Path -Leaf $release.SkuDefPath) -cne ($stem+'.skudef')){throw 'Release-label filenames changed.'}
+    if((Get-Content -LiteralPath $release.SkuDefPath -Raw) -cne ("add-big "+$stem+"_Streams.big`r`nadd-big "+$stem+"_Misc.big`r`n")){throw 'Release-label SKUDef entries changed.'}
+    $releaseReceipt=Get-Content -LiteralPath (Join-Path $release.Directory ('.'+$stem+'.package.json')) -Raw|ConvertFrom-Json
+    if($releaseReceipt.Version -cne $version -or $release.Version -cne $version){throw 'Release-label receipt spelling changed.'}
+    $rebuilt=Publish-RebornFinalPackage RebornTest $version $streams $misc $mods
+    if((Get-FileHash -LiteralPath $rebuilt.MiscPath).Hash -cne $hash -or -not(Test-Path -LiteralPath $first.SkuDefPath)){throw 'Release-label rebuild damaged numeric output or changed contents.'}
+    $checks.Add('ReleaseLabel:'+ $version)
+}
 # Reborn: remove the previous same-version owned archive when Misc disappears, and allow it to return later.
 $without=Publish-RebornFinalPackage RebornTest 1.00 $streams (Join-Path $root 'MissingMisc') $mods
 if($without.MiscPath -or (Test-Path -LiteralPath $first.MiscPath) -or (Get-Content -LiteralPath $without.SkuDefPath -Raw) -cne "add-big RebornTest_1.00_Streams.big`r`n"){throw 'Stale same-version Misc was not removed.'};$checks.Add('OwnedMiscRemoved')

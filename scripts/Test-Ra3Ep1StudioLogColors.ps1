@@ -10,19 +10,24 @@ using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-class ColorForm:Form { public RichTextBox rtbGUIOutput=new RichTextBox(); public ColorForm(){Controls.Add(rtbGUIOutput);} }
+class ColorForm:Form { public RichTextBox rtbGUIOutput=new RichTextBox();
+    // Reborn: set designer-style flags before creating or formatting the native RichEdit document.
+    public ColorForm(){rtbGUIOutput.ReadOnly=true;rtbGUIOutput.DetectUrls=false;rtbGUIOutput.WordWrap=false;rtbGUIOutput.Size=new Size(1200,180);Controls.Add(rtbGUIOutput);} }
 class RebornColorCheck {
     //-------------------------------------------------------------------------------------------------
     /** Reborn: optional skips follow the configured warning palette; unsupported skips stay red and timings stay green. */
     //-------------------------------------------------------------------------------------------------
     [STAThread] static int Main(string[] args){try{
+        // Reborn: offline fixtures report GUI exceptions as failures instead of opening a modal dialog.
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         var ea=Assembly.LoadFrom(args[1]).GetType("EALABuild.BuildHelper");var field=ea.GetField("warningColor",BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic);Color original=(Color)field.GetValue(null);var helper=Assembly.LoadFrom(args[0]).GetType("Reborn.StudioLifecycle");
-        using(var form=new ColorForm()){helper.GetMethod("Attach",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{form});var box=form.rtbGUIOutput;
+        // Reborn: live Studio already owns its parent handle when the helper attaches; the hidden fixture must use the same order.
+        using(var form=new ColorForm()){var parentHandle=form.Handle;helper.GetMethod("Attach",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{form});var box=form.rtbGUIOutput;
             box.AppendText("Skipped: [Optional] Build Global Data is unchecked.\nSkipped: [No input] Empty source.\nSkipped: Unsupported stage.\nStep time taken: 00:00:01 [12:00:00]\n");
             Check(box,"Skipped: [Optional]",original);Check(box,"Skipped: [No input]",original);Check(box,"Skipped: Unsupported",Color.Red);Check(box,"Step time taken:",Color.Green);
             try{Color custom=Color.FromArgb(150,105,35);field.SetValue(null,custom);box.Clear();box.AppendText("Skipped: [Optional] Custom palette.\n");Check(box,"Skipped: [Optional]",custom);}finally{field.SetValue(null,original);}
             // Reborn: drive real native double-click messages against a hidden control, rather than only testing string splitting.
-            box.ReadOnly=true;box.DetectUrls=false;box.WordWrap=false;box.Size=new Size(1200,180);box.Text="Warning: MISSINGASSET ' GameObject:CAMP_AlliedBomberAircraft_Infantry_2 ' Model.Mesh_02";
+            box.Text="Warning: MISSINGASSET ' GameObject:CAMP_AlliedBomberAircraft_Infantry_2 ' Model.Mesh_02";
             if(box.AutoWordSelection)throw new Exception("Automatic drag expansion was enabled.");
             ClickWord(box,"GameObject","GameObject");ClickWord(box,"CAMP_AlliedBomberAircraft_Infantry_2","CAMP_AlliedBomberAircraft_Infantry_2");ClickWord(box,"Model.Mesh_02","Model.Mesh_02");ClickAt(box,box.Text.IndexOf(":CAMP",StringComparison.Ordinal),"");ClickAt(box,box.Text.IndexOf(" ' ",StringComparison.Ordinal),"");
             // Reborn: both slash styles separate directory components from filenames.

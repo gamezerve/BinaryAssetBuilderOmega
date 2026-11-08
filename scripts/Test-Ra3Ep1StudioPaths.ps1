@@ -28,6 +28,15 @@ try{
     if($developer.Count-ne 0){throw 'Developer build checkbox must not be exposed.'}
     $adapterSource=[IO.File]::ReadAllText((Join-Path $sdk 'studio/defaultscript.cs'))
     if(-not $adapterSource.Contains('request.Arguments += " -DeveloperBuildTests 0";') -or $adapterSource.Contains('gui["developertests"]')){throw 'Studio must ignore stale developer flags and request fast builds.'}
+    # Reborn: the exact EA-loaded adapter admits literal release labels but rejects path, whitespace, argument and filename hazards.
+    $versionMethod=$result.CompiledAssembly.GetType('EALABuild.BuildScript').GetMethod('ValidateModVersion',[Reflection.BindingFlags]'Static,NonPublic')
+    $validateVersion=[Delegate]::CreateDelegate([Action[string]],$versionMethod)
+    foreach($version in @('1.00','1.2.3.4','0000.0000','1.0-beta','1.0-alpha.2','Beta_2','v1.0','a',('a'*48))){$validateVersion.Invoke($version)}
+    foreach($version in @($null,'','.', '..', '.beta','beta.','-alpha','_alpha','1.0 beta',' 1.0','1.0 ',"1.0`n","1.0`r",("1.0"+[char]0),'../beta','..\beta','1.0/beta','1.0\beta','1:beta','1*beta','1?beta','1"beta','1<beta','1>beta','1|beta','1;beta','1&beta',('a'*49))){
+        $rejected=$false
+        try{$validateVersion.Invoke($version)}catch{if($_.Exception.ToString() -notmatch 'InvalidDataException'){throw};$rejected=$true}
+        if(-not $rejected){throw ('Unsafe Studio version accepted: '+$version)}
+    }
     # Reborn: the new persisted map checkbox defaults off and remains distinct from early-global source building.
     $maps=@($options|Where-Object DataKey -CEQ 'buildmaps')
     if($maps.Count-ne 1 -or $maps[0].LabelString-cne 'Build Maps' -or $maps[0].ControlType-ne [EALABuild.GUIElementData]::CheckBoxType){throw 'Studio Build Maps checkbox differs.'}
@@ -65,5 +74,5 @@ try{
         try{$null=$readPaths.Invoke([string]$path)}catch{if($_.Exception.ToString() -notmatch 'InvalidDataException'){throw};$rejected=$true}
         if(-not $rejected){throw ('Invalid configuration accepted: '+$case)}
     }
-    Write-Output 'Reborn: Studio paths: PASS (EA CLR4 CodeDOM; live WorldBuilder setting, legacy keys, unknown/duplicate/missing-key controls; no UI or mod build).'
+    Write-Output 'Reborn: Studio paths: PASS (EA CLR4 CodeDOM; live WorldBuilder setting, legacy keys, unknown/duplicate/missing-key controls; release-label versions and unsafe/length-boundary rejection; no UI or mod build).'
 }finally{$provider.Dispose()}

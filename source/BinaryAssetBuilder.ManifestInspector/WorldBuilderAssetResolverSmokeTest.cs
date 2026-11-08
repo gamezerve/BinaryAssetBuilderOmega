@@ -28,6 +28,8 @@ internal static class WorldBuilderAssetResolverSmokeTest
         string fixture=Path.Combine(output,"fixture");Directory.CreateDirectory(fixture);var a=owner with{TypeId=11,InstanceId=12,Name="Fixture:A",References=new[]{new AssetId(11,13)}};var b=a with{InstanceId=13,Name="Fixture:B",References=new[]{new AssetId(11,12)}};var cyclic=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(a,new byte[4],Array.Empty<byte>(),Array.Empty<byte>()),new WorldBuilderAssetResolver.Native(b,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);foreach(var file in cyclic)File.WriteAllBytes(Path.Combine(fixture,file.Key.Replace("diagnostic","worldbuilder")),file.Value);var seed=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with{References=new[]{new AssetId(11,12)}},new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);Require(WorldBuilderAssetResolver.Resolve(seed,Path.Combine(fixture,"worldbuilder.manifest"),Array.Empty<ManifestAsset>(),Array.Empty<AssetId>()).Imported.Length==2,"Cyclic stock closure failed.");byte[] corrupt=cyclic["diagnostic.bin"].ToArray();corrupt[0]^=1;File.WriteAllBytes(Path.Combine(fixture,"worldbuilder.bin"),corrupt);Refuse(()=>WorldBuilderAssetResolver.Resolve(seed,Path.Combine(fixture,"worldbuilder.manifest"),Array.Empty<ManifestAsset>(),Array.Empty<AssetId>()));
         // Reborn: the final archive check must suppress a successfully copied target and report only the deliberately unresolved use site.
         var pending=targets.Select(a=>new SdkMissingDependencyAudit.Finding("WORLDBUILDERASSET","Info",a.Name,"Fixture:Owner",prepared,7,3,"Model","pending")).Append(new("WORLDBUILDERASSET","Info","W3DContainer:MissingAfterResolve","Fixture:Owner",prepared,9,5,"Model","pending")).ToArray();string pendingReport=Path.Combine(output,"pending-dependencies.json");File.WriteAllText(pendingReport,System.Text.Json.JsonSerializer.Serialize(new SdkMissingDependencyAudit.Report(pending,1,0,3,0,true)));var previous=Console.Out;using var warningText=new StringWriter();try{Console.SetOut(warningText);WorldBuilderAssetResolver.CheckPending(package,pendingReport,catalogs);}finally{Console.SetOut(previous);}string warnings=warningText.ToString();Require(warnings.Split(Environment.NewLine,StringSplitOptions.RemoveEmptyEntries).Length==1&&warnings.StartsWith("Warning: WORLDBUILDERASSET ' W3DContainer:MissingAfterResolve '",StringComparison.Ordinal)&&warnings.Contains(prepared+"(9,5)")&&!warnings.Contains(targets[0].Name)&&!warnings.Contains(targets[1].Name),"Final package warning audit lost source evidence or warned about resolved assets.");
+        MapBaseReferences(output,stock,metadata,owner,targets,loaded,providers);
+        MapPatchOrdering(output,stock,metadata,owner);
         CustomResources(output,stock,metadata,owner);
         PackRegression(output);
         SerializeRegression(stock,metadata,owner);
@@ -37,6 +39,90 @@ internal static class WorldBuilderAssetResolverSmokeTest
         // Reborn: one-past-end storage is valid for an empty final list; the corruption fixture must exceed it.
         WorldBuilderAssetResolver.ValidateNative(owner,new byte[]{4,0,0,0},new byte[]{0,0,0,0,255,255,255,255},Array.Empty<byte>());
         foreach(var file in first.Streams)File.WriteAllBytes(Path.Combine(output,file.Key),file.Value);File.WriteAllText(Path.Combine(output,"resolver-report.json"),System.Text.Json.JsonSerializer.Serialize(new{first.Imported,first.BytesRead,CustomResources=first.CustomData.Keys,GameExecuted=false,Published=false},new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));Console.WriteLine($"Reborn: WorldBuilder resolver: PASS ({first.Imported.Length} retail assets, {first.BytesRead:N0} native bytes; closure, weak seeds, precedence, repeat bytes, all BIG variants, custom resources and corrupt header/pointer/import rejection).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: map streams borrow retail native/CDATA through the shipped patch base while preserving authored overrides. */
+    //-------------------------------------------------------------------------------------------------
+    private static void MapBaseReferences(string output,ManifestDocument stock,byte[] metadata,ManifestAsset owner,ManifestAsset[] targets,ManifestAsset[] loaded,Dictionary<AssetId,string> providers)
+    {
+        string folder=Path.Combine(output,"map-base");Directory.CreateDirectory(folder);
+        string world=Path.Combine(folder,"worldbuilder.manifest");File.WriteAllBytes(world,metadata);
+        var initial=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner,new byte[]{1,2,3,4},Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        // Reborn: this fixture intentionally has no WorldBuilder BIN/RELO/IMP/CDATA files: map references must never read them.
+        var result=WorldBuilderAssetResolver.Resolve(initial,world,loaded,Array.Empty<AssetId>(),providers,referenceWorldBuilder:true);
+        var document=ManifestReader.Read(result.Streams["diagnostic.manifest"]);
+        WorldBuilderAssetResolver.ValidateMapBaseOrder(document,stock);
+        Require(document.Header.TotalInstanceDataSize>result.Streams["diagnostic.bin"].Length-8,"Map patch allocation header omitted inherited native sizes.");
+        Require(document.Validate().Count==0 && document.ReferencedManifests.Count(r=>r.IsPatch)==1 && document.ReferencedManifests.Single(r=>r.IsPatch).Path=="worldbuilder.manifest","Map retail patch base was not emitted exactly once.");
+        Require(result.Imported.Length==0 && result.BytesRead==0 && result.CustomData.Count==0 && result.ReferencedWorldBuilder!.Length>=targets.Length,"Map copied retail WorldBuilder payload instead of borrowing the base.");
+        var chunks=WorldBuilderAssetResolver.ReadNative(document,result.Streams);
+        Require(chunks.Single(n=>n.Asset.Name==owner.Name).Bin.SequenceEqual(new byte[]{1,2,3,4}),"Map base rewrite changed the authored native chunk.");
+        Require(chunks.Where(n=>n.Asset.Name!=owner.Name).All(n=>n.Bin.Length==0 && n.Relo.Length==0 && n.Imp.Length==0),"Borrowed retail entries contain duplicated payload.");
+        var byId=stock.Assets.ToDictionary(WorldBuilderAssetResolver.Id);
+        foreach(var asset in document.Assets.Where(a=>a.Name!=owner.Name))
+        {
+            var original=byId[WorldBuilderAssetResolver.Id(asset)];
+            Require(asset.TypeHash==original.TypeHash && asset.InstanceHash==original.InstanceHash && asset.References.SequenceEqual(original.References),"Borrowed retail fingerprint/reference table changed.");
+        }
+        var again=WorldBuilderAssetResolver.Resolve(result.Streams,world,loaded,Array.Empty<AssetId>(),providers,referenceWorldBuilder:true);
+        Require(result.Streams.All(p=>again.Streams[p.Key].SequenceEqual(p.Value)),"Map base resolution was not idempotent.");
+        // Reborn: an authored asset with the same ID takes precedence over its retail base entry.
+        var local=targets[0] with { InstanceDataSize=4,RelocationDataSize=0,ImportsDataSize=0,References=Array.Empty<AssetId>(),AssetReferenceCount=0 };
+        var overridden=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner,new byte[4],Array.Empty<byte>(),Array.Empty<byte>()),new WorldBuilderAssetResolver.Native(local,new byte[]{9,8,7,6},Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        var resolved=WorldBuilderAssetResolver.Resolve(overridden,world,loaded,Array.Empty<AssetId>(),providers,referenceWorldBuilder:true);
+        var localChunk=WorldBuilderAssetResolver.ReadNative(ManifestReader.Read(resolved.Streams["diagnostic.manifest"]),resolved.Streams).Single(n=>WorldBuilderAssetResolver.Id(n.Asset)==WorldBuilderAssetResolver.Id(local));
+        Require(localChunk.Bin.SequenceEqual(new byte[]{9,8,7,6}),"Map base replaced an authored override.");
+        var missing=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with { References=new[]{new AssetId(0xfedcba98,0x87654321)},AssetReferenceCount=1 },new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        Refuse(()=>WorldBuilderAssetResolver.Resolve(missing,world,loaded,Array.Empty<AssetId>(),providers,referenceWorldBuilder:true));
+        // Reborn: a genuine map-local model overrides the retail base and keeps its own payload in the map stream.
+        var artAsset=targets[0] with { InstanceHash=0x12345678,InstanceDataSize=4,RelocationDataSize=0,ImportsDataSize=0,References=Array.Empty<AssetId>(),AssetReferenceCount=0 };
+        var artStreams=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(artAsset,new byte[]{4,3,2,1},Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        foreach(var pair in artStreams)File.WriteAllBytes(Path.Combine(folder,pair.Key.Replace("diagnostic","map-art")),pair.Value);
+        var withArt=WorldBuilderAssetResolver.Resolve(initial,world,loaded,Array.Empty<AssetId>(),providers,Path.Combine(folder,"map-art.manifest"),referenceWorldBuilder:true);
+        Require(withArt.Imported.SequenceEqual(new[]{artAsset.Name}) && withArt.BytesRead==4,"Map-local art was lost or retail WorldBuilder bytes were copied.");
+        var artChunk=WorldBuilderAssetResolver.ReadNative(ManifestReader.Read(withArt.Streams["diagnostic.manifest"]),withArt.Streams).Single(n=>WorldBuilderAssetResolver.Id(n.Asset)==WorldBuilderAssetResolver.Id(artAsset));
+        Require(artChunk.Bin.SequenceEqual(new byte[]{4,3,2,1}) && artChunk.Asset.InstanceHash==artAsset.InstanceHash,"Map-local payload/fingerprint changed.");
+        File.WriteAllText(Path.Combine(folder,"result.json"),System.Text.Json.JsonSerializer.Serialize(new{Referenced=result.ReferencedWorldBuilder,WorldBuilderBytesCopied=result.BytesRead,AuthoredNativePreserved=true,MissingStrongReferenceRejected=true},new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
+        Console.WriteLine("Reborn: map WorldBuilder base: PASS (no retail payload/CDATA, exact fingerprints, local precedence, idempotence and missing strong-reference rejection).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: catch base-order reversals that structural readback accepts, including cyclic bases and interleaved local overrides. */
+    //-------------------------------------------------------------------------------------------------
+    private static void MapPatchOrdering(string output,ManifestDocument stock,byte[] metadata,ManifestAsset owner)
+    {
+        string folder=Path.Combine(output,"map-order");Directory.CreateDirectory(folder);
+        string world=Path.Combine(folder,"worldbuilder.manifest");
+        var a=owner with { TypeId=11,InstanceId=12,Name="Fixture:BaseA",AssetReferenceCount=1,References=new[]{new AssetId(11,13)} };
+        var b=a with { InstanceId=13,Name="Fixture:BaseB",References=new[]{new AssetId(11,12)} };
+        var baseChunks=new[]{a,b}.Select(asset=>new WorldBuilderAssetResolver.Native(asset,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())).ToArray();
+        var cyclic=WorldBuilderAssetResolver.Serialize(baseChunks,stock,metadata);
+        File.WriteAllBytes(world,cyclic["diagnostic.manifest"]);
+        var initial=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with { AssetReferenceCount=1,References=new[]{new AssetId(11,12)} },new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        var fixedCycle=WorldBuilderAssetResolver.Resolve(initial,world,Array.Empty<ManifestAsset>(),Array.Empty<AssetId>(),referenceWorldBuilder:true);
+        var fixedDocument=ManifestReader.Read(fixedCycle.Streams["diagnostic.manifest"]);
+        Require(fixedDocument.Assets.Take(2).Select(n=>n.Name).SequenceEqual(new[]{a.Name,b.Name}),"Cyclic retail references reversed the forward-only patch base order.");
+        var baseDocument=ManifestReader.Read(cyclic["diagnostic.manifest"]);
+        // Reborn: an otherwise valid ordered patch must fail qualification if its allocation header counts only local payloads.
+        var wrongAllocation=fixedDocument with { Header=fixedDocument.Header with { TotalInstanceDataSize=4 } };
+        Refuse(()=>WorldBuilderAssetResolver.ValidateMapBaseOrder(wrongAllocation,baseDocument));
+        // Reborn: the old B,A order has correct fingerprints and chunks but must now fail the runtime-order qualification.
+        var reversed=WorldBuilderAssetResolver.Serialize(baseChunks.Reverse().Select(n=>n with { Asset=n.Asset with { InstanceDataSize=0,RelocationDataSize=0,ImportsDataSize=0 },Bin=Array.Empty<byte>() }).ToArray(),stock,metadata);
+        Refuse(()=>WorldBuilderAssetResolver.ValidateMapBaseOrder(ManifestReader.Read(reversed["diagnostic.manifest"]),baseDocument));
+        // Reborn: a local dependency belongs between two inherited entries, while the inherited subsequence stays A,B.
+        var local=owner with { TypeId=11,InstanceId=14,Name="Fixture:Local",AssetReferenceCount=1,References=new[]{new AssetId(11,12)} };
+        a=a with { AssetReferenceCount=0,References=Array.Empty<AssetId>() };
+        b=b with { References=new[]{new AssetId(11,14)} };
+        var baseStreams=WorldBuilderAssetResolver.Serialize(new[]{a,b}.Select(asset=>new WorldBuilderAssetResolver.Native(asset,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())).ToArray(),stock,metadata);
+        File.WriteAllBytes(world,baseStreams["diagnostic.manifest"]);
+        var localStreams=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with { AssetReferenceCount=1,References=new[]{new AssetId(11,13)} },new byte[4],Array.Empty<byte>(),Array.Empty<byte>()),new WorldBuilderAssetResolver.Native(local,new byte[]{9,8,7,6},Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
+        var interleaved=WorldBuilderAssetResolver.Resolve(localStreams,world,Array.Empty<ManifestAsset>(),Array.Empty<AssetId>(),referenceWorldBuilder:true);
+        var interleavedDoc=ManifestReader.Read(interleaved.Streams["diagnostic.manifest"]);
+        Require(interleavedDoc.Assets.Select(n=>n.Name).SequenceEqual(new[]{a.Name,local.Name,b.Name,owner.Name}),"Local override dependencies were not interleaved with the ordered base.");
+        Require(interleaved.BytesRead==0 && interleaved.CustomData.Count==0,"Patch ordering copied WorldBuilder payloads.");
+        Require(WorldBuilderAssetResolver.ReadNative(interleavedDoc,interleaved.Streams).Single(n=>n.Asset.Name==local.Name).Bin.SequenceEqual(new byte[]{9,8,7,6}),"Patch ordering changed the local native payload.");
+        Console.WriteLine("Reborn: forward-only map patch order: PASS (cyclic base order, malformed-order/header rejection, interleaved local dependency and no retail payload copies).");
     }
 
     //-------------------------------------------------------------------------------------------------

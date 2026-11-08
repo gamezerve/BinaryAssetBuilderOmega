@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: explicit original Uprising script-event dependencies prevent null imports from the early AdditionalMaps registry. Event values, weak restart identities and cache flags come from the original EP1 global stream. -->
+  <PathMusicEvent id="S_Tutorial1" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Tutorial2" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Tutorial3" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Tutorial4" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Tutorial5" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Tutorial6" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_TutorialMontage" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="Reward1Soviet" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_EndMissionWin" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_EndMissionLose" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A01IgaIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a01igaintro" />
+  <PathMusicEvent id="S_A01IgaBombers" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A01LoyalistsDefeated" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A01ShinzoOnTheRun" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A01ShinzoDefeated" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A02OsakaIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a02osakaintro" />
+  <PathMusicEvent id="S_A02PermaswarmDown" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a02permaswarmdown" />
+  <PathMusicEvent id="S_A02KenjiVillaGone" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a02kenjivillagone" />
+  <PathMusicEvent id="S_A02KenjiDefeated" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_A03MiyakoIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a03miyakointro" />
+  <PathMusicEvent id="S_A03MiyakoTatsu" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_a03miyakotatsu" />
+  <PathMusicEvent id="S_A03TatsuDefeated" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S01RomaniaExplore" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s01romaniaexplore" />
+  <PathMusicEvent id="S_S01RomaniaOutro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S02MurmanskIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s02murmanskintro" />
+  <PathMusicEvent id="S_S02MurmanskAtrocities" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S02MurmanskKirovs" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s02murmanskkirovs" />
+  <PathMusicEvent id="S_S02Reinforcements" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s02reinforcements" />
+  <PathMusicEvent id="S_S03YukatanIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S03Reinforcements" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s03reinforcements" />
+  <PathMusicEvent id="S_S03AwaitConvoy" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S03BaseBuild" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S03BadNews" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S04Intro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s04intro" />
+  <PathMusicEvent id="S_S04HarmonizerOn" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S04HarmonizerOffX" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S04HarmonizerOffX2" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_S04GetHarmonizer" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_s04getharmonizer" />
+  <PathMusicEvent id="S_J01SakhalinIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j01sakhalinintro" />
+  <PathMusicEvent id="S_J01Helicopter" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_J02Intro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j02intro" />
+  <PathMusicEvent id="S_J02UnitsGarrisoned" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_J02SovietsIncoming1" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j02sovietsincoming1" />
+  <PathMusicEvent id="S_J02SovietsIncoming2" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j02sovietsincoming2" />
+  <PathMusicEvent id="S_J03VladivostokIntro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j03vladivostokintro" />
+  <PathMusicEvent id="S_J03GigaFortress" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" RestartAlternateEvent="sr_j03gigafortress" />
+  <PathMusicEvent id="S_Y01Boss" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Y01Recapture" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Y03Intro" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Y03ShimadaBoss" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+  <PathMusicEvent id="S_Y03IzumiMoment" PathfinderEventHeader="AUDIO:Pathfinder/RebornUprisingScriptEvents.h" />
+</AssetDeclaration>

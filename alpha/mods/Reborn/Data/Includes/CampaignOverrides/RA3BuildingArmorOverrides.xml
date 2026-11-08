@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: restore missing original RA3 normal armor only in RA3 campaign map streams. -->
+  <!-- Reborn: include campaign-referenced objects and creation dependencies; exclude unused prototypes and existing special armor. -->
+  <Includes>
+    <Include type="instance" source="DATA:Civilian/Amsterdam_AM/Buildings/AM_AlliedVIPBunkerSubStructure.xml" />
+    <Include type="instance" source="DATA:Civilian/Props/Allied_Props/AP_OilDrum01.xml" />
+    <Include type="instance" source="DATA:Civilian/Props/Allied_Props/AP_SupplyBox01.xml" />
+    <Include type="instance" source="DATA:Civilian/Brighton_Beach_BB/Buildings/BB_BrightonPier.xml" />
+    <Include type="instance" source="DATA:Civilian/Brighton_Beach_BB/Buildings/BB_RoyalPavilion.xml" />
+    <Include type="instance" source="DATA:Civilian/Cannes_CA/Buildings/CA_AlliedConventionCenter.xml" />
+    <Include type="instance" source="DATA:Civilian/Cannes_CA/Buildings/CA_PortStructure.xml" />
+    <Include type="instance" source="DATA:Civilian/Cannes_CA/Buildings/CA_UnderseaPowerPipes.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_EasterIslandHeadDefense.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_EasterIslandHeadDefenseB.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortress.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortress02.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortress03.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortress04.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortressPipe01.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortressPipe02.xml" />
+    <Include type="instance" source="DATA:Civilian/Easter_Island_EI/Buildings/EI_SovietVolcanoFortressPipe03.xml" />
+    <Include type="instance" source="DATA:Civilian/Floating_Island_FI/Props/FI_DeckLightTarmac.xml" />
+    <Include type="instance" source="DATA:Civilian/Floating_Island_FI/Buildings/FI_FloatingFortressPowerCore.xml" />
+    <Include type="instance" source="DATA:Civilian/Geneva_GE/Buildings/GE_AlliedSupplyPortBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/Geneva_GE/Buildings/GE_SovietVIPBunkerSubStructure.xml" />
+    <Include type="instance" source="DATA:Civilian/Gibraltar_GI/Structures/GI_AirportLight.xml" />
+    <Include type="instance" source="DATA:Civilian/Gibraltar_GI/Buildings/GI_Macaque_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Destructible_Props/GV_Ring02.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Buildings/GV_SovietOrbitalRefuseSatelliteLaunchFacility.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Space01.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Space02.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Space03.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Space05.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Tent01.xml" />
+    <Include type="instance" source="DATA:Civilian/Gypsy_Village_GV/Structures/GV_Tent02.xml" />
+    <Include type="instance" source="DATA:Civilian/Heidelberg_HB/Buildings/HB_CastleWall_02.xml" />
+    <Include type="instance" source="DATA:Civilian/Havana_HV/Structures/HV_BBallField01.xml" />
+    <Include type="instance" source="DATA:Civilian/Havana_HV/Structures/HV_BBallField02.xml" />
+    <Include type="instance" source="DATA:Civilian/Havana_HV/Structures/HV_SoccerStadium01.xml" />
+    <Include type="instance" source="DATA:Civilian/Havana_HV/Structures/HV_SwimmingPool.xml" />
+    <Include type="instance" source="DATA:Civilian/Kremlin_KR/Buildings/KR_HeartBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/Kremlin_KR/Buildings/KR_HistoricalMuseum.xml" />
+    <Include type="instance" source="DATA:Civilian/Kremlin_KR/Buildings/KR_IvanBellTower.xml" />
+    <Include type="instance" source="DATA:Civilian/Kremlin_KR/Buildings/KR_Structure_02.xml" />
+    <Include type="instance" source="DATA:Civilian/Kremlin_KR/Buildings/KR_Wall01.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Fuji_MJ/Structures/MJ_PalaceWall01.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Fuji_MJ/Structures/MJ_PalaceWall02.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Fuji_MJ/Structures/MJ_PalaceWall03.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_HelicopterBunker.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Jefferson.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Jefferson_Ready.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Lincoln.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Lincoln_Ready.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Roosevelt.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Roosevelt_Ready.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Washington.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_LaserMtRushmore_Washington_Ready.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_RadioTower.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_RushmoreHeadControlCenter_Jefferson.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_RushmoreHeadControlCenter_Lincoln.xml" />
+    <Include type="instance" source="DATA:Civilian/Mount_Rushmore_MR/Buildings/MR_RushmoreHeadControlCenter_Washington.xml" />
+    <Include type="instance" source="DATA:Civilian/Mykonos_MY/Buildings/MY_AlliedScienceLab.xml" />
+    <Include type="instance" source="DATA:Civilian/Mykonos_MY/Buildings/MY_Boat_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Mykonos_MY/Buildings/MY_Pillar_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Mykonos_MY/Buildings/MY_Wall_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Mykonos_MY/Buildings/MY_Wall_02.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_FortBradley_01.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_FortBradley_02.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_FortBradley_03.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_FortBradley_04.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_Liberty.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_NYStockExchange.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_SkyScraper_01.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_SkyScraper_02.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_SkyScraper_03.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_SkyScraper_04.xml" />
+    <Include type="instance" source="DATA:Civilian/New_York_NY/Buildings/NY_Structure_09.xml" />
+    <Include type="instance" source="DATA:Civilian/Odessa_OD/Buildings/OD_Castle01.xml" />
+    <Include type="instance" source="DATA:Civilian/Odessa_OD/Buildings/OD_Courthouse.xml" />
+    <Include type="instance" source="DATA:Civilian/Odessa_OD/Buildings/OD_PortCrane01.xml" />
+    <Include type="instance" source="DATA:Civilian/Odessa_OD/Optimized_Props/OD_Wall01.xml" />
+    <Include type="instance" source="DATA:Civilian/Odessa_OD/Optimized_Props/OD_Wall02.xml" />
+    <Include type="instance" source="DATA:Civilian/Osaka_OK/Buildings/OK_RedBridge01.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_EALABase.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_FakeBillboardDefensiveTower_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_FakeBillboardDefensiveTower_02.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_Ferris.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_GolfCourse.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_IceCreamMan_Statue.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_LAMediaCenter.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_LAXControlTower.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_Merry.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Buildings/SA_ObservatoryDefensiveGun.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_Pier02.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_PierGame01.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_PierGame02.xml" />
+    <Include type="instance" source="DATA:Civilian/Santa_Monica_SA/Props/SA_RollerCoaster.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/SL_CavalryStatue_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_Arch_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_Artillery_Tanks.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_GrandEmperorStatue.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradFortressWall_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradFortressWall_04.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradFortressWall_05.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradHermitage01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradHermitage02.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradHermitage03.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradMissileBase_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradMissileBase_02.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradMissileBase_03.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradMissileBase_04.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_LeningradMissileBase_05.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_MotorCycleStatue_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_PilotStatue_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_RussianBigMamaStatue.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_RussianFought2DeathStatue.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_ShuttleBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_ShuttleDisguiseBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_Stairs_01.xml" />
+    <Include type="instance" source="DATA:Civilian/StPetersburg_ST/Buildings/ST_SwordStatue_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_AlliedDisruptorStation.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_DeliveryCar_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_EmperorFlagpoleStatue.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_EmperorSonFlagpoleStatue.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_FerrisWheel01.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_harbor_crane01.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_HighwaySign_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_ImperialHarborBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_JapanCommandHQ.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_JapanHarborBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_JapanOldMilitaryDocks.xml" />
+    <Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_tokyo_tower01.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Buildings/VL_ImperialMilitaryAdminBuilding_01.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Buildings/VL_ImperialMilitaryAdminBuilding_02.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Buildings/VL_ImperialMilitaryAdminBuilding_03.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Buildings/VL_RussianPortBuilding.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Optimized_Props/VL_ShippingBoat01.xml" />
+    <Include type="instance" source="DATA:Civilian/Vladivostok_VL/Optimized_Props/VL_ShippingBoat01_Collapse.xml" />
+  </Includes>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="AM_AlliedVIPBunkerSubStructure" inheritFrom="AM_AlliedVIPBunkerSubStructure">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="AP_OilDrum01" inheritFrom="AP_OilDrum01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="AP_SupplyBox01" inheritFrom="AP_SupplyBox01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="BB_BrightonPier" inheritFrom="BB_BrightonPier">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="BB_RoyalPavilion_01" inheritFrom="BB_RoyalPavilion_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="CA_AlliedConventionCenter" inheritFrom="CA_AlliedConventionCenter">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="CA_PortStructure" inheritFrom="CA_PortStructure">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="CA_UnderseaPowerPipes" inheritFrom="CA_UnderseaPowerPipes">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_EasterIslandHeadDefense" inheritFrom="EI_EasterIslandHeadDefense">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_EasterIslandHeadDefenseB" inheritFrom="EI_EasterIslandHeadDefenseB">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_SovietVolcanoFortress" inheritFrom="EI_SovietVolcanoFortress">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_SovietVolcanoFortress02" inheritFrom="EI_SovietVolcanoFortress02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_SovietVolcanoFortress03" inheritFrom="EI_SovietVolcanoFortress03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="EI_SovietVolcanoFortress04" inheritFrom="EI_SovietVolcanoFortress04">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ei_sovietvolcanofortresspipe01" inheritFrom="ei_sovietvolcanofortresspipe01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ei_sovietvolcanofortresspipe02" inheritFrom="ei_sovietvolcanofortresspipe02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ei_sovietvolcanofortresspipe03" inheritFrom="ei_sovietvolcanofortresspipe03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="FI_DeckLightTarmac" inheritFrom="FI_DeckLightTarmac">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="FI_FloatingFortressPowerCore" inheritFrom="FI_FloatingFortressPowerCore">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GE_AlliedSupplyPortBuilding" inheritFrom="GE_AlliedSupplyPortBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GE_SovietVIPBunkerSubStructure" inheritFrom="GE_SovietVIPBunkerSubStructure">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GI_AirportLight" inheritFrom="GI_AirportLight">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GI_Macaque_01" inheritFrom="GI_Macaque_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Ring02" inheritFrom="GV_Ring02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_SovietSatelliteFacility" inheritFrom="GV_SovietSatelliteFacility">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Space01" inheritFrom="GV_Space01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Space02" inheritFrom="GV_Space02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Space03" inheritFrom="GV_Space03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Space05" inheritFrom="GV_Space05">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Tent01" inheritFrom="GV_Tent01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="GV_Tent02" inheritFrom="GV_Tent02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="HB_CastleWall_02" inheritFrom="HB_CastleWall_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="HV_BBallField01" inheritFrom="HV_BBallField01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="HV_BBallField02" inheritFrom="HV_BBallField02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="HV_SoccerStadium01" inheritFrom="HV_SoccerStadium01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="HV_SwimmingPool" inheritFrom="HV_SwimmingPool">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="KR_HeartBuilding" inheritFrom="KR_HeartBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="KR_HistoricalMuseum" inheritFrom="KR_HistoricalMuseum">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="KR_IvanBellTower" inheritFrom="KR_IvanBellTower">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="KR_Structure_02" inheritFrom="KR_Structure_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="KR_Wall01" inheritFrom="KR_Wall01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MJ_PalaceWall01" inheritFrom="MJ_PalaceWall01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MJ_PalaceWall02" inheritFrom="MJ_PalaceWall02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MJ_PalaceWall03" inheritFrom="MJ_PalaceWall03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_HelicopterBunker" inheritFrom="MR_HelicopterBunker">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Jefferson" inheritFrom="MR_LaserMtRushmore_Jefferson">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Jefferson_Ready" inheritFrom="MR_LaserMtRushmore_Jefferson_Ready">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Lincoln" inheritFrom="MR_LaserMtRushmore_Lincoln">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Lincoln_Ready" inheritFrom="MR_LaserMtRushmore_Lincoln_Ready">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Roosevelt" inheritFrom="MR_LaserMtRushmore_Roosevelt">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Roosevelt_Ready" inheritFrom="MR_LaserMtRushmore_Roosevelt_Ready">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Washington" inheritFrom="MR_LaserMtRushmore_Washington">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_LaserMtRushmore_Washington_Ready" inheritFrom="MR_LaserMtRushmore_Washington_Ready">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_RadioTower" inheritFrom="MR_RadioTower">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_RushmoreHeadControlCenter_Jefferson" inheritFrom="MR_RushmoreHeadControlCenter_Jefferson">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_RushmoreHeadControlCenter_Lincoln" inheritFrom="MR_RushmoreHeadControlCenter_Lincoln">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MR_RushmoreHeadControlCenter_Washington" inheritFrom="MR_RushmoreHeadControlCenter_Washington">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MY_AlliedScienceLab" inheritFrom="MY_AlliedScienceLab">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MY_Boat_01" inheritFrom="MY_Boat_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MY_Pillar_01" inheritFrom="MY_Pillar_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MY_Wall_01" inheritFrom="MY_Wall_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="MY_Wall_02" inheritFrom="MY_Wall_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_FortBradley_01" inheritFrom="NY_FortBradley_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_FortBradley_02" inheritFrom="NY_FortBradley_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_FortBradley_03" inheritFrom="NY_FortBradley_03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_FortBradley_04" inheritFrom="NY_FortBradley_04">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_Liberty" inheritFrom="NY_Liberty">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_NYStockExchange" inheritFrom="NY_NYStockExchange">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_SkyScraper_01" inheritFrom="NY_SkyScraper_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_SkyScraper_02" inheritFrom="NY_SkyScraper_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_SkyScraper_03" inheritFrom="NY_SkyScraper_03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_SkyScraper_04" inheritFrom="NY_SkyScraper_04">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="NY_Structure_09" inheritFrom="NY_Structure_09">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OD_Castle01" inheritFrom="OD_Castle01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OD_Courthouse" inheritFrom="OD_Courthouse">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OD_PortCrane01" inheritFrom="OD_PortCrane01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OD_Wall01" inheritFrom="OD_Wall01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OD_Wall02" inheritFrom="OD_Wall02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="OK_RedBridge01" inheritFrom="OK_RedBridge01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_EALABase" inheritFrom="SA_EALABase">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_FakeBillboardDefensiveTower_01" inheritFrom="SA_FakeBillboardDefensiveTower_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_FakeBillboardDefensiveTower_02" inheritFrom="SA_FakeBillboardDefensiveTower_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_Ferris" inheritFrom="SA_Ferris">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_GolfCourse" inheritFrom="SA_GolfCourse">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_IceCreamMan_Statue" inheritFrom="SA_IceCreamMan_Statue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_LAMediaCenter" inheritFrom="SA_LAMediaCenter">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_LAXControlTower" inheritFrom="SA_LAXControlTower">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_Merry" inheritFrom="SA_Merry">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_ObservatoryDefensiveGun" inheritFrom="SA_ObservatoryDefensiveGun">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_Pier02" inheritFrom="SA_Pier02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_PierGame01" inheritFrom="SA_PierGame01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_PierGame02" inheritFrom="SA_PierGame02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SA_RollerCoaster" inheritFrom="SA_RollerCoaster">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="SL_CavalryStatue_01" inheritFrom="SL_CavalryStatue_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_Arch_01" inheritFrom="ST_Arch_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_Artillery_Tanks" inheritFrom="ST_Artillery_Tanks">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_GrandEmperorStatue" inheritFrom="ST_GrandEmperorStatue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradFortressWall_01" inheritFrom="ST_LeningradFortressWall_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradFortressWall_04" inheritFrom="ST_LeningradFortressWall_04">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradFortressWall_05" inheritFrom="ST_LeningradFortressWall_05">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradHermitage01" inheritFrom="ST_LeningradHermitage01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradHermitage02" inheritFrom="ST_LeningradHermitage02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradHermitage03" inheritFrom="ST_LeningradHermitage03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradMissileBase_01" inheritFrom="ST_LeningradMissileBase_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradMissileBase_02" inheritFrom="ST_LeningradMissileBase_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradMissileBase_03" inheritFrom="ST_LeningradMissileBase_03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradMissileBase_04" inheritFrom="ST_LeningradMissileBase_04">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_LeningradMissileBase_05" inheritFrom="ST_LeningradMissileBase_05">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_MotorCycleStatue_01" inheritFrom="ST_MotorCycleStatue_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_PilotStatue_01" inheritFrom="ST_PilotStatue_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_RussianBigMamaStatue" inheritFrom="ST_RussianBigMamaStatue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_RussianFought2DeathStatue" inheritFrom="ST_RussianFought2DeathStatue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_ShuttleBuilding" inheritFrom="ST_ShuttleBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_ShuttleDisguiseBuilding" inheritFrom="ST_ShuttleDisguiseBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_Stairs_01" inheritFrom="ST_Stairs_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="ST_SwordStatue_01" inheritFrom="ST_SwordStatue_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_AlliedDisruptorStation" inheritFrom="TH_AlliedDisruptorStation">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_DeliveryCar_01" inheritFrom="TH_DeliveryCar_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_EmperorFlagpoleStatue" inheritFrom="TH_EmperorFlagpoleStatue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_EmperorSonFlagpoleStatue" inheritFrom="TH_EmperorSonFlagpoleStatue">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_FerrisWheel01" inheritFrom="TH_FerrisWheel01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_harbor_crane01" inheritFrom="TH_harbor_crane01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_HighwaySign_01" inheritFrom="TH_HighwaySign_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_ImperialHarborBuilding" inheritFrom="TH_ImperialHarborBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_JapanCommandHQ" inheritFrom="TH_JapanCommandHQ">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_JapanHarborBuilding" inheritFrom="TH_JapanHarborBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_JapanOldMilitaryDocks" inheritFrom="TH_JapanOldMilitaryDocks">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="TH_tokyo_tower01" inheritFrom="TH_tokyo_tower01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_ImperialMilitaryAdminBuilding_01" inheritFrom="VL_ImperialMilitaryAdminBuilding_01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_ImperialMilitaryAdminBuilding_02" inheritFrom="VL_ImperialMilitaryAdminBuilding_02">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_ImperialMilitaryAdminBuilding_03" inheritFrom="VL_ImperialMilitaryAdminBuilding_03">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_RussianPortBuilding" inheritFrom="VL_RussianPortBuilding">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_ShippingBoat01" inheritFrom="VL_ShippingBoat01">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+  <!-- Reborn: retain inherited behavior and conditional armor; restore the original RA3 normal armor. -->
+  <GameObject id="VL_ShippingBoat01_Collapse" inheritFrom="VL_ShippingBoat01_Collapse">
+    <ArmorSet id="DefaultArmor" Armor="StructureArmor" DamageFX="GenericStructureDamageFX" />
+  </GameObject>
+
+</AssetDeclaration>

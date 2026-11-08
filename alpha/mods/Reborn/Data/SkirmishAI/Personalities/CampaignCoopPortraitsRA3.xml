@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
-  <!-- Reborn: original retail AI records remain registered; only these uniquely named portrait aliases are emitted. -->
+  <!-- Reborn: original retail AI records remain registered; only these uniquely named co-op aliases are emitted. -->
   <Includes>
     <Include type="instance" source="DATA:Maps/Official/CAMP_S01_LeningradCanals_Rao/AIP_S01_Coop.xml" />
     <Include type="instance" source="DATA:SkirmishAI/Personalities/AIP_T06_Coop.xml" />
@@ -13,5 +13,11 @@
   <AIPersonalityDefinition id="AIP_T06_CoopRA3"
       inheritFrom="AIP_T06_Coop"
       PersonalityType="AIP_T06_Coop"
-      CommanderPortrait="RebornCoopOlegPortrait" />
+      CommanderPortrait="RebornCoopOlegPortrait">
+    <!-- Reborn: allow EP1 Soviet units in the sixth tutorial while preventing unlimited production from consuming the Twinblade budget. -->
+    <SpecificUnitCap Unit="SovietHeavyWalkerVehicle" Cap="2" Difficulty="EASY MEDIUM HARD BRUTAL" />
+    <SpecificUnitCap Unit="SovietMortarcycle" Cap="2" Difficulty="EASY MEDIUM HARD BRUTAL" />
+    <SpecificUnitCap Unit="SovietGrinderVehicle" Cap="2" Difficulty="EASY MEDIUM HARD BRUTAL" />
+    <SpecificUnitCap Unit="SovietDesolatorInfantry" Cap="2" Difficulty="EASY MEDIUM HARD BRUTAL" />
+  </AIPersonalityDefinition>
 </AssetDeclaration>

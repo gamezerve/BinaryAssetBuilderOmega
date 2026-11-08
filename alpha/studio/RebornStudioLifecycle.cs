@@ -35,6 +35,14 @@ namespace Reborn
         private static LogSelectionWindow outputSelection;
         private static int colored;
         private static bool recoloring;
+        // Reborn: keep the build action and status visible at the bottom even when the map checklist grows.
+        private static Panel buildFooter;
+        private static Button buildButton;
+        private static Control buildButtonOwner;
+        private static BuildStatusIndicator buildStatus;
+        private static bool buildInProgress;
+        private static bool buildHadError;
+        private static string buildCaption = "Ready";
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: defer main-form attachment until EA has completed its constructor and entered the message loop. */
@@ -68,6 +76,152 @@ namespace Reborn
             studio = form;
             studio.FormClosing += OnClosing;
             AttachOutput(form);
+            AttachBuildStatus(form);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: share a fixed bottom row between EA's original Build Mod button and the live status indicator. */
+        //-------------------------------------------------------------------------------------------------
+        private static void AttachBuildStatus(Form form)
+        {
+            if (buildFooter != null) return;
+            FieldInfo field = form.GetType().GetField("buttonBuildMod", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            Button button = field == null ? null : field.GetValue(form) as Button;
+            buildFooter = new Panel { Name = "rebornBuildFooter", Dock = DockStyle.Bottom, Height = Math.Max(40, button == null ? 40 : button.Height + 10), Padding = new Padding(8, 5, 8, 5) };
+            buildStatus = new BuildStatusIndicator { Name = "rebornBuildStatus", Dock = DockStyle.Fill, TabStop = false, AccessibleName = "Build status", AccessibleRole = AccessibleRole.StatusBar };
+            buildFooter.Controls.Add(buildStatus);
+            if (button != null)
+            {
+                // Reborn: reparent the existing button so its event handler, enabled state and build action remain EA's own.
+                buildButton = button;
+                buildButtonOwner = button.Parent;
+                if (buildButtonOwner != null) buildButtonOwner.EnabledChanged += delegate { UpdateBuildButton(); };
+                button.Dock = DockStyle.Left;
+                buildFooter.Controls.Add(button);
+            }
+            form.Controls.Add(buildFooter);
+            // Reborn: dock the footer before the original Fill content, reserving real space rather than covering the log or options.
+            buildFooter.SendToBack();
+            ShowBuildState();
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: expose immediate start/success/failure callbacks to the exact-reference Studio adapter. */
+        //-------------------------------------------------------------------------------------------------
+        public static void BuildStarting() { SetBuildState(true, false, "Starting build"); }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: a successful worker returns Ready only if no compiler error was reported during that build. */
+        //-------------------------------------------------------------------------------------------------
+        public static void BuildSucceeded() { SetBuildState(false, buildHadError, buildHadError ? "Stopped" : "Ready"); }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: validation exceptions, worker failures and explicit error termination all retain a red Stopped indicator. */
+        //-------------------------------------------------------------------------------------------------
+        public static void BuildFailed() { SetBuildState(false, true, "Stopped"); }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: marshal process callbacks onto the UI thread without queuing work after the window has been disposed. */
+        //-------------------------------------------------------------------------------------------------
+        private static void SetBuildState(bool running, bool failed, string caption)
+        {
+            if (studio != null && studio.IsDisposed) return;
+            if (studio != null && studio.InvokeRequired)
+            {
+                studio.BeginInvoke(new MethodInvoker(delegate { SetBuildState(running, failed, caption); }));
+                return;
+            }
+            buildInProgress = running;
+            buildHadError = failed;
+            buildCaption = caption;
+            UpdateBuildButton();
+            ShowBuildState();
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: the fixed-footer button follows its original options owner's enabled state and cannot dispatch a second active build. */
+        //-------------------------------------------------------------------------------------------------
+        private static void UpdateBuildButton()
+        {
+            if (buildButton != null && !buildButton.IsDisposed)
+                buildButton.Enabled = !buildInProgress && (buildButtonOwner == null || buildButtonOwner.Enabled);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: keep text and color together, including an accessible caption for users who cannot distinguish the lamp colors. */
+        //-------------------------------------------------------------------------------------------------
+        private static void ShowBuildState()
+        {
+            if (buildStatus == null || buildStatus.IsDisposed) return;
+            buildStatus.Text = buildCaption;
+            buildStatus.AccessibleDescription = buildCaption;
+            buildStatus.LampColor = buildInProgress ? Color.Gold : buildHadError ? Color.Firebrick : Color.ForestGreen;
+            buildStatus.Invalidate();
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: follow actual backend phase lines and map source paths; warnings and log clearing never masquerade as build failure. */
+        //-------------------------------------------------------------------------------------------------
+        private static void ReadBuildStatusLine(string text)
+        {
+            string line = Regex.Replace(text.Trim(), @"^\[\d\d:\d\d:\d\d(?:\.\d+)?\]\s*", "");
+            if (line.StartsWith("Building Mod ", StringComparison.OrdinalIgnoreCase)) { BuildStarting(); return; }
+            if (Regex.IsMatch(line, @"^(?:Error|Critical):", RegexOptions.IgnoreCase))
+            {
+                buildHadError = true;
+                if (!buildInProgress || Regex.IsMatch(line, @"\bBuild Failed\b", RegexOptions.IgnoreCase)) BuildFailed();
+                return;
+            }
+            if (line.StartsWith("Alpha build failed;", StringComparison.OrdinalIgnoreCase)) { BuildFailed(); return; }
+            if (line.Equals("Build Completed", StringComparison.OrdinalIgnoreCase) || line.Equals("Build Completed!", StringComparison.OrdinalIgnoreCase))
+            { if (buildInProgress) BuildSucceeded(); return; }
+            if (!buildInProgress) return;
+            Match phase = Regex.Match(line, @"^Step \d+:\s*(.+)$");
+            if (phase.Success)
+            {
+                string caption = phase.Groups[1].Value;
+                switch (caption.ToLowerInvariant())
+                {
+                    case "clearing built mod": caption = "Preparing build workspace"; break;
+                    case "building aptui": caption = "Compiling AptUI"; break;
+                    case "building global data": caption = "Compiling global data"; break;
+                    case "building static data": caption = "Compiling static data"; break;
+                    case "building maps": caption = "Compiling maps"; break;
+                    case "creating big files": caption = "Creating BIG files"; break;
+                    case "creating skudef file": caption = "Creating SKUDef"; break;
+                }
+                SetBuildState(true, buildHadError, caption);
+            }
+            else if (line.StartsWith("Map source: ", StringComparison.Ordinal))
+            {
+                string source = line.Substring("Map source: ".Length).Trim();
+                string map = Path.GetFileName(Path.GetDirectoryName(source));
+                if (!String.IsNullOrEmpty(map)) SetBuildState(true, buildHadError, "Compiling map: " + map);
+            }
+        }
+
+        // Reborn: a painted lamp needs no external image resource and scales with the footer's current font and height.
+        private sealed class BuildStatusIndicator : Control
+        {
+            internal Color LampColor = Color.ForestGreen;
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: double buffering keeps rapid compiler progress updates from flickering. */
+            //-------------------------------------------------------------------------------------------------
+            internal BuildStatusIndicator() { SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true); }
+            //-------------------------------------------------------------------------------------------------
+            /** Reborn: draw the status lamp and an ellipsized caption while retaining the full caption for accessibility. */
+            //-------------------------------------------------------------------------------------------------
+            protected override void OnPaint(PaintEventArgs args)
+            {
+                base.OnPaint(args);
+                int diameter = Math.Max(8, Math.Min(14, Font.Height));
+                Rectangle lamp = new Rectangle(14, (Height - diameter) / 2, diameter, diameter);
+                args.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using (var brush = new SolidBrush(LampColor)) args.Graphics.FillEllipse(brush, lamp);
+                using (var pen = new Pen(ControlPaint.Dark(LampColor))) args.Graphics.DrawEllipse(pen, lamp);
+                TextRenderer.DrawText(args.Graphics, Text, Font, new Rectangle(lamp.Right + 8, 0, Math.Max(0, Width - lamp.Right - 12), Height), ForeColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+            }
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -365,6 +519,7 @@ namespace Reborn
                 {
                     int next = text.IndexOf('\n', at);
                     string line = text.Substring(at, next - at).TrimEnd('\r');
+                    ReadBuildStatusLine(line);
                     if (GreenLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Green; }
                     else if (OptionalSkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = WarningTextColor(); }
                     else if (SkippedLine.IsMatch(line)) { output.Select(at, line.Length); output.SelectionColor = Color.Red; }
@@ -389,6 +544,7 @@ namespace Reborn
             if (current != null && current.Running) throw new InvalidOperationException("This Studio already owns an active build.");
             if (current != null) current.Dispose();
             current = new BuildSession();
+            BuildStarting();
             return current.Token;
         }
 

@@ -52,6 +52,14 @@ Windows user's Documents** directory:
 `Red Alert 3 Uprising/Mods/<mod>/<mod>_<version>_Streams.big`
 
 The optional Misc BIG and SKUDef follow the same directory/version convention.
+
+<!-- Reborn: release labels remain literal package-name components and must be safe for both filenames and unquoted SKUDef entries. -->
+Mod Version accepts 1–48 ASCII letters, digits, dots, underscores and hyphens,
+starting and ending with a letter or digit. Examples: `1.00`, `1.0-beta`,
+`1.0-alpha.2` and `Beta_2`. Spaces, path separators, quotes and other punctuation
+are rejected. The exact spelling is preserved in archive/SKUDef filenames and
+publication receipts; there is no automatic version increment or normalization.
+
 The destination is obtained from Windows' Documents known folder; it is not
 copied from the developer's username or hardcoded drive.
 

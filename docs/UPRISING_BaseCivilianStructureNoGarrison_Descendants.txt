@@ -1,0 +1,1375 @@
+﻿UPRISING - BaseCivilianStructureNoGarrison inheritance inventory
+
+Source: D:\TEMP\BinaryAssetBuilderOmega2-uprising\alpha\SageXML
+XML files scanned: 7113
+Unique descendant GameObject IDs: 224
+Direct descendants: 62
+Indirect descendants: 162
+XML parse errors: 3
+
+Includes all transitive descendants. Repeated map overrides and self-inheritance
+declarations do not count as additional objects. This is an inheritance list,
+not a claim that every descendant lacks its own normal armor.
+
+DIRECT DESCENDANTS
+==================
+
+001. AM_CanalWalls
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Amsterdam_AM\Buildings\AM_CanalWalls.xml
+     Chain: BaseCivilianStructureNoGarrison -> AM_CanalWalls
+
+002. AP_OilDrum01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Props\Allied_Props\AP_OilDrum01.xml
+     Chain: BaseCivilianStructureNoGarrison -> AP_OilDrum01
+
+003. AP_SupplyBox01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Props\Allied_Props\AP_SupplyBox01.xml
+     Chain: BaseCivilianStructureNoGarrison -> AP_SupplyBox01
+
+004. BaseCivilianStructureNoGarrisonDestructible
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: BaseObjects\BaseCivilianStructureNoGarrisonDestructible.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible
+
+005. BaseMountRushmoreHead
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: BaseObjects\BaseMountRushmoreHead.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseMountRushmoreHead
+
+006. CA_SovietOpenTopHarborBuilding
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Cannes_CA\Buildings\CA_SovietOpenTopHarborBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> CA_SovietOpenTopHarborBuilding
+
+007. CA_UnderseaPowerPipes
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Cannes_CA\Buildings\CA_UnderseaPowerPipes.xml
+     Chain: BaseCivilianStructureNoGarrison -> CA_UnderseaPowerPipes
+
+008. FI_DeckLightTarmac
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Floating_Island_FI\Props\FI_DeckLightTarmac.xml
+     Chain: BaseCivilianStructureNoGarrison -> FI_DeckLightTarmac
+
+009. GI_AirportLight
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gibraltar_GI\Structures\GI_AirportLight.xml
+     Chain: BaseCivilianStructureNoGarrison -> GI_AirportLight
+
+010. GI_Bridge_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gibraltar_GI\Buildings\GI_Bridge_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> GI_Bridge_01
+
+011. GI_Bridge_02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gibraltar_GI\Buildings\GI_Bridge_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> GI_Bridge_02
+
+012. GI_Bridge_03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gibraltar_GI\Buildings\GI_Bridge_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> GI_Bridge_03
+
+013. GI_GibraltarRock
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gibraltar_GI\Buildings\GI_GibraltarRock.xml
+     Chain: BaseCivilianStructureNoGarrison -> GI_GibraltarRock
+
+014. GV_Space01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Space01.xml
+     Chain: BaseCivilianStructureNoGarrison -> GV_Space01
+
+015. GV_Space02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Space02.xml
+     Chain: BaseCivilianStructureNoGarrison -> GV_Space02
+
+016. GV_Space03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Space03.xml
+     Chain: BaseCivilianStructureNoGarrison -> GV_Space03
+
+017. GV_Space05
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Space05.xml
+     Chain: BaseCivilianStructureNoGarrison -> GV_Space05
+
+018. HB_Bridge01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Heidelberg_HB\Buildings\HB_Bridge01.xml
+     Chain: BaseCivilianStructureNoGarrison -> HB_Bridge01
+
+019. KR_Structure_02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Kremlin_KR\Buildings\KR_Structure_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> KR_Structure_02
+
+020. KR_Wall01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Kremlin_KR\Buildings\KR_Wall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> KR_Wall01
+
+021. MR_LaserMtRushmore
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore.xml
+     Chain: BaseCivilianStructureNoGarrison -> MR_LaserMtRushmore
+
+022. MY_Boat_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Mykonos_MY\Buildings\MY_Boat_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> MY_Boat_01
+
+023. MY_Pillar_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Mykonos_MY\Buildings\MY_Pillar_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> MY_Pillar_01
+
+024. MY_Wall_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Mykonos_MY\Buildings\MY_Wall_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> MY_Wall_01
+
+025. MY_Wall_02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Mykonos_MY\Buildings\MY_Wall_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> MY_Wall_02
+
+026. NR_FutureTechColliderRing
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechColliderRing.xml
+     Chain: BaseCivilianStructureNoGarrison -> NR_FutureTechColliderRing
+
+027. NR_FutureTechColliderRing2
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechColliderRing2.xml
+     Chain: BaseCivilianStructureNoGarrison -> NR_FutureTechColliderRing2
+
+028. NR_FutureTechColliderRing3_AttackBlocker
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechColliderRing3_AttackBlocker.xml
+     Chain: BaseCivilianStructureNoGarrison -> NR_FutureTechColliderRing3_AttackBlocker
+
+029. NY_Building02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\New_York_NY\Buildings\NY_Building02.xml
+     Chain: BaseCivilianStructureNoGarrison -> NY_Building02
+
+030. NY_SkyScraper_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\New_York_NY\Buildings\NY_SkyScraper_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> NY_SkyScraper_01
+
+031. NY_SkyScraper_02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\New_York_NY\Buildings\NY_SkyScraper_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> NY_SkyScraper_02
+
+032. NY_SkyScraper_03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\New_York_NY\Buildings\NY_SkyScraper_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> NY_SkyScraper_03
+
+033. NY_SkyScraper_04
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\New_York_NY\Buildings\NY_SkyScraper_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> NY_SkyScraper_04
+
+034. OD_Stairway
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Odessa_OD\Buildings\OD_Stairway.xml
+     Chain: BaseCivilianStructureNoGarrison -> OD_Stairway
+
+035. OD_Wall01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Odessa_OD\Optimized_Props\OD_Wall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> OD_Wall01
+
+036. OD_Wall02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Odessa_OD\Optimized_Props\OD_Wall02.xml
+     Chain: BaseCivilianStructureNoGarrison -> OD_Wall02
+
+037. OK_RedBridge01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Osaka_OK\Buildings\OK_RedBridge01.xml
+     Chain: BaseCivilianStructureNoGarrison -> OK_RedBridge01
+
+038. RM_CastleSquare01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Romania_RM\Destructible_Props\RM_CastleSquare01.xml
+     Chain: BaseCivilianStructureNoGarrison -> RM_CastleSquare01
+
+039. RM_CastleTower01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Romania_RM\Destructible_Props\RM_CastleTower01.xml
+     Chain: BaseCivilianStructureNoGarrison -> RM_CastleTower01
+
+040. RM_CastleWall01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Romania_RM\Destructible_Props\RM_CastleWall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> RM_CastleWall01
+
+041. RM_CastleWall02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Romania_RM\Destructible_Props\RM_CastleWall02.xml
+     Chain: BaseCivilianStructureNoGarrison -> RM_CastleWall02
+
+042. RM_CastleWall03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Romania_RM\Destructible_Props\RM_CastleWall03.xml
+     Chain: BaseCivilianStructureNoGarrison -> RM_CastleWall03
+
+043. SA_EALABase
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Buildings\SA_EALABase.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_EALABase
+
+044. SA_FakeBillboardDefensiveTower_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Buildings\SA_FakeBillboardDefensiveTower_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_FakeBillboardDefensiveTower_01
+
+045. SA_FakeBillboardDefensiveTower_02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Buildings\SA_FakeBillboardDefensiveTower_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_FakeBillboardDefensiveTower_02
+
+046. SA_FakeBillboardDefensiveTower_03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Buildings\SA_FakeBillboardDefensiveTower_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_FakeBillboardDefensiveTower_03
+
+047. SA_FakeBillboardDefensiveTower_04
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Buildings\SA_FakeBillboardDefensiveTower_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_FakeBillboardDefensiveTower_04
+
+048. SA_Pier01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Props\SA_Pier01.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_Pier01
+
+049. SA_Pier02
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Props\SA_Pier02.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_Pier02
+
+050. SA_Pier03
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Props\SA_Pier03.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_Pier03
+
+051. SA_Pier04
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Props\SA_Pier04.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_Pier04
+
+052. SA_Pier05
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Santa_Monica_SA\Props\SA_Pier05.xml
+     Chain: BaseCivilianStructureNoGarrison -> SA_Pier05
+
+053. SP_SubDock01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Props\Soviet_Props\SP_SubDock01.xml
+     Chain: BaseCivilianStructureNoGarrison -> SP_SubDock01
+
+054. SV_Bridge01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Solvang_SV\Buildings\SV_Bridge01.xml
+     Chain: BaseCivilianStructureNoGarrison -> SV_Bridge01
+
+055. SV_PCampFenceWire01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Solvang_SV\Buildings\SV_PCampFenceWire01.xml
+     Chain: BaseCivilianStructureNoGarrison -> SV_PCampFenceWire01
+
+056. TH_DeliveryCar_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_DeliveryCar_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_DeliveryCar_01
+
+057. TH_FerrisWheel01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_FerrisWheel01
+
+058. TH_HighwaySign_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_HighwaySign_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_HighwaySign_01
+
+059. TH_monorail_car01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_monorail_car01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_monorail_car01
+
+060. TH_monorail_track01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_monorail_track01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_monorail_track01
+
+061. TH_PolVan_01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_PolVan_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_PolVan_01
+
+062. TH_tokyo_tower01
+     Parent: BaseCivilianStructureNoGarrison
+     Depth: 1
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_tokyo_tower01.xml
+     Chain: BaseCivilianStructureNoGarrison -> TH_tokyo_tower01
+
+INDIRECT DESCENDANTS
+====================
+
+001. AM_AlliedFutureTechHQ
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Amsterdam_AM\Buildings\AM_AlliedFutureTechHQ.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> AM_AlliedFutureTechHQ
+
+002. AM_AlliedVIPBunkerSubStructure
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Amsterdam_AM\Buildings\AM_AlliedVIPBunkerSubStructure.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> AM_AlliedVIPBunkerSubStructure
+
+003. AM_Riverboat
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Amsterdam_AM\Buildings\AM_Riverboat.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> AM_Riverboat
+
+004. BB_BrightonPier
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_BrightonPier.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_BrightonPier
+
+005. BB_RoyalPavilion_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_RoyalPavilion.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_RoyalPavilion_01
+
+006. BB_RuinsEndRnd01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_RuinsEndRnd01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_RuinsEndRnd01
+
+007. BB_RuinsWall01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_RuinsWall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_RuinsWall01
+
+008. BB_RuinsWall02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_RuinsWall02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_RuinsWall02
+
+009. BB_RuinsWallCorner01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Brighton_Beach_BB\Buildings\BB_RuinsWallCorner01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> BB_RuinsWallCorner01
+
+010. CA_AlliedConventionCenter
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Cannes_CA\Buildings\CA_AlliedConventionCenter.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> CA_AlliedConventionCenter
+
+011. CA_PortStructure
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Cannes_CA\Buildings\CA_PortStructure.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> CA_PortStructure
+
+012. EI_EasterIslandHeadDefense
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_EasterIslandHeadDefense.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_EasterIslandHeadDefense
+
+013. EI_EasterIslandHeadDefenseB
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_EasterIslandHeadDefenseB.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_EasterIslandHeadDefenseB
+
+014. EI_SovietVolcanoFortress
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortress.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_SovietVolcanoFortress
+
+015. EI_SovietVolcanoFortress02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortress02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_SovietVolcanoFortress02
+
+016. EI_SovietVolcanoFortress03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortress03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_SovietVolcanoFortress03
+
+017. EI_SovietVolcanoFortress04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortress04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> EI_SovietVolcanoFortress04
+
+018. ei_sovietvolcanofortresspipe01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortressPipe01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ei_sovietvolcanofortresspipe01
+
+019. ei_sovietvolcanofortresspipe02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortressPipe02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ei_sovietvolcanofortresspipe02
+
+020. ei_sovietvolcanofortresspipe03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Easter_Island_EI\Buildings\EI_SovietVolcanoFortressPipe03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ei_sovietvolcanofortresspipe03
+
+021. FI_FloatingFortressPowerCore
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Floating_Island_FI\Buildings\FI_FloatingFortressPowerCore.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> FI_FloatingFortressPowerCore
+
+022. GE_AlliedSupplyPortBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Geneva_GE\Buildings\GE_AlliedSupplyPortBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GE_AlliedSupplyPortBuilding
+
+023. GE_SovietVIPBunkerSubStructure
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Geneva_GE\Buildings\GE_SovietVIPBunkerSubStructure.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GE_SovietVIPBunkerSubStructure
+
+024. GI_Macaque_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Gibraltar_GI\Buildings\GI_Macaque_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GI_Macaque_01
+
+025. GV_Ring02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Gypsy_Village_GV\Destructible_Props\GV_Ring02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GV_Ring02
+
+026. GV_SovietSatelliteFacility
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Gypsy_Village_GV\Buildings\GV_SovietOrbitalRefuseSatelliteLaunchFacility.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GV_SovietSatelliteFacility
+
+027. GV_Tent01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Tent01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GV_Tent01
+
+028. GV_Tent02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Gypsy_Village_GV\Structures\GV_Tent02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> GV_Tent02
+
+029. HB_CastleWall_02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Heidelberg_HB\Buildings\HB_CastleWall_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HB_CastleWall_02
+
+030. HB_Statue01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Heidelberg_HB\Buildings\HB_Statue01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HB_Statue01
+
+031. HV_BBallField01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Havana_HV\Structures\HV_BBallField01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HV_BBallField01
+
+032. HV_BBallField02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Havana_HV\Structures\HV_BBallField02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HV_BBallField02
+
+033. HV_SoccerStadium01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Havana_HV\Structures\HV_SoccerStadium01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HV_SoccerStadium01
+
+034. HV_SwimmingPool
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Havana_HV\Structures\HV_SwimmingPool.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> HV_SwimmingPool
+
+035. KR_HeartBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Kremlin_KR\Buildings\KR_HeartBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> KR_HeartBuilding
+
+036. KR_HistoricalMuseum
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Kremlin_KR\Buildings\KR_HistoricalMuseum.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> KR_HistoricalMuseum
+
+037. KR_IvanBellTower
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Kremlin_KR\Buildings\KR_IvanBellTower.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> KR_IvanBellTower
+
+038. KR_Wall
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Kremlin_KR\Buildings\KR_Wall.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> KR_Wall
+
+039. MJ_KenjiVilla
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Fuji_MJ\Buildings\MJ_KenjiVilla.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MJ_KenjiVilla
+
+040. MJ_PalaceWall01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Fuji_MJ\Structures\MJ_PalaceWall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MJ_PalaceWall01
+
+041. MJ_PalaceWall02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Fuji_MJ\Structures\MJ_PalaceWall02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MJ_PalaceWall02
+
+042. MJ_PalaceWall03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Fuji_MJ\Structures\MJ_PalaceWall03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MJ_PalaceWall03
+
+043. MR_HelicopterBunker
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_HelicopterBunker.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_HelicopterBunker
+
+044. MR_LaserMtRushmore_Jefferson
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Jefferson.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_LaserMtRushmore_Jefferson
+
+045. MR_LaserMtRushmore_Jefferson_Ready
+     Parent: BaseMountRushmoreHead
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Jefferson_Ready.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseMountRushmoreHead -> MR_LaserMtRushmore_Jefferson_Ready
+
+046. MR_LaserMtRushmore_Lincoln
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Lincoln.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_LaserMtRushmore_Lincoln
+
+047. MR_LaserMtRushmore_Lincoln_Ready
+     Parent: BaseMountRushmoreHead
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Lincoln_Ready.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseMountRushmoreHead -> MR_LaserMtRushmore_Lincoln_Ready
+
+048. MR_LaserMtRushmore_Roosevelt
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Roosevelt.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_LaserMtRushmore_Roosevelt
+
+049. MR_LaserMtRushmore_Roosevelt_Ready
+     Parent: BaseMountRushmoreHead
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Roosevelt_Ready.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseMountRushmoreHead -> MR_LaserMtRushmore_Roosevelt_Ready
+
+050. MR_LaserMtRushmore_Washington
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Washington.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_LaserMtRushmore_Washington
+
+051. MR_LaserMtRushmore_Washington_Ready
+     Parent: BaseMountRushmoreHead
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_LaserMtRushmore_Washington_Ready.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseMountRushmoreHead -> MR_LaserMtRushmore_Washington_Ready
+
+052. MR_RadioTower
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RadioTower.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RadioTower
+
+053. MR_RushmoreFiringBase
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RushmoreFiringBase.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RushmoreFiringBase
+
+054. MR_RushmoreHeadControlCenter
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RushmoreHeadControlCenter.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RushmoreHeadControlCenter
+
+055. MY_AlliedScienceLab
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mykonos_MY\Buildings\MY_AlliedScienceLab.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MY_AlliedScienceLab
+
+056. MY_AlliedTechScrambler
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mykonos_MY\Buildings\MY_AlliedTechScrambler.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MY_AlliedTechScrambler
+
+057. MY_LightHouse
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Mykonos_MY\Buildings\MY_LightHouse.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MY_LightHouse
+
+058. NR_FutureTech_MiniTower1
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTech_MiniTower1.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTech_MiniTower1
+
+059. NR_FutureTech_MiniTower2
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTech_MiniTower2.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTech_MiniTower2
+
+060. NR_FutureTech_MiniTower3
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTech_MiniTower3.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTech_MiniTower3
+
+061. NR_FutureTech_MiniTower4
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTech_MiniTower4.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTech_MiniTower4
+
+062. NR_FutureTechScienceBuilding1
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechScienceBuilding1.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTechScienceBuilding1
+
+063. NR_FutureTechScienceBuilding2
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechScienceBuilding2.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTechScienceBuilding2
+
+064. NR_FutureTechScienceBuilding3
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechScienceBuilding3.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTechScienceBuilding3
+
+065. NR_FutureTechScienceBuilding4
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechScienceBuilding4.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTechScienceBuilding4
+
+066. NR_FutureTechWarFactory
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_FutureTechWarFactory.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_FutureTechWarFactory
+
+067. NR_SigmaHarmonizer
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Northern_Russia_NR\Buildings\NR_SigmaHarmonizer.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NR_SigmaHarmonizer
+
+068. NY_ChronoBigBobClockTower
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_ChronoBigBobClockTower.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_ChronoBigBobClockTower
+
+069. NY_ChronoLibertyStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_ChronoLibertyStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_ChronoLibertyStatue
+
+070. NY_ChronoParisTower
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_ChronoParisTower.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_ChronoParisTower
+
+071. NY_FortBradley_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortBradley_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortBradley_01
+
+072. NY_FortBradley_02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortBradley_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortBradley_02
+
+073. NY_FortBradley_03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortBradley_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortBradley_03
+
+074. NY_FortBradley_04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortBradley_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortBradley_04
+
+075. NY_FortCorner
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortCorner.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortCorner
+
+076. NY_FortEndCap
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortEndCap.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortEndCap
+
+077. NY_FortHub
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortHub.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortHub
+
+078. NY_FortMiddle
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortMiddle.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortMiddle
+
+079. NY_FortWall01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortWall01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortWall01
+
+080. NY_FortWall02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_FortWall02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_FortWall02
+
+081. NY_Liberty
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_Liberty.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_Liberty
+
+082. NY_NYStockExchange
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_NYStockExchange.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_NYStockExchange
+
+083. NY_Structure_09
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\New_York_NY\Buildings\NY_Structure_09.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> NY_Structure_09
+
+084. OD_Castle01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_Castle01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_Castle01
+
+085. OD_Courthouse
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_Courthouse.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_Courthouse
+
+086. OD_OperaTheater
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_OperaTheater.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_OperaTheater
+
+087. OD_PortCrane01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_PortCrane01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_PortCrane01
+
+088. OD_SovietDockBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SovietDockBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SovietDockBuilding
+
+089. OD_SovietHeroesStatue_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SovietHeroesStatue_01
+
+090. OD_SovietHeroesStatue_02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SovietHeroesStatue_02
+
+091. OD_SovietHeroesStatue_03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SovietHeroesStatue_03
+
+092. OD_SovietHeroesStatue_04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SovietHeroesStatue_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SovietHeroesStatue_04
+
+093. OD_SwallowsCastle
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Odessa_OD\Buildings\OD_SwallowsCastle.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> OD_SwallowsCastle
+
+094. SA_Ferris
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Props\SA_Ferris.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_Ferris
+
+095. SA_FerrisWheel
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_FerrisWheel.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_FerrisWheel
+
+096. SA_GolfCourse
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_GolfCourse.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_GolfCourse
+
+097. SA_IceCreamMan_Statue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Props\SA_IceCreamMan_Statue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_IceCreamMan_Statue
+
+098. SA_LAMediaCenter
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_LAMediaCenter.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_LAMediaCenter
+
+099. SA_LAXControlTower
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_LAXControlTower.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_LAXControlTower
+
+100. SA_Merry
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_Merry.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_Merry
+
+101. SA_ObservatoryDefensiveGun
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_ObservatoryDefensiveGun.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_ObservatoryDefensiveGun
+
+102. SA_Pier
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Buildings\SA_Pier.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_Pier
+
+103. SA_PierGame01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Props\SA_PierGame01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_PierGame01
+
+104. SA_PierGame02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Props\SA_PierGame02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_PierGame02
+
+105. SA_RollerCoaster
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Santa_Monica_SA\Props\SA_RollerCoaster.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SA_RollerCoaster
+
+106. SL_CavalryStatue_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\SL_CavalryStatue_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SL_CavalryStatue_01
+
+107. SS_SuperDoor
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Shiro_Sanitarium_SS\Destructible_Props\SS_SuperDoor.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> SS_SuperDoor
+
+108. ST_Arch_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_Arch_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_Arch_01
+
+109. ST_Artillery_Tanks
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_Artillery_Tanks.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_Artillery_Tanks
+
+110. ST_FortressOfTheSoviets
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_FortressOfTheSoviets.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_FortressOfTheSoviets
+
+111. ST_GrandEmperorStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_GrandEmperorStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_GrandEmperorStatue
+
+112. ST_LeningradCanalBarrier
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradCanalBarrier.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradCanalBarrier
+
+113. ST_LeningradFortressWall_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradFortressWall_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradFortressWall_01
+
+114. ST_LeningradFortressWall_03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradFortressWall_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradFortressWall_03
+
+115. ST_LeningradFortressWall_04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradFortressWall_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradFortressWall_04
+
+116. ST_LeningradFortressWall_05
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradFortressWall_05.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradFortressWall_05
+
+117. ST_LeningradHermitage01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradHermitage01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradHermitage01
+
+118. ST_LeningradHermitage02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradHermitage02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradHermitage02
+
+119. ST_LeningradHermitage03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradHermitage03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradHermitage03
+
+120. ST_LeningradMissileBase_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradMissileBase_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradMissileBase_01
+
+121. ST_LeningradMissileBase_02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradMissileBase_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradMissileBase_02
+
+122. ST_LeningradMissileBase_03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradMissileBase_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradMissileBase_03
+
+123. ST_LeningradMissileBase_04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradMissileBase_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradMissileBase_04
+
+124. ST_LeningradMissileBase_05
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_LeningradMissileBase_05.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_LeningradMissileBase_05
+
+125. ST_MotorCycleStatue_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_MotorCycleStatue_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_MotorCycleStatue_01
+
+126. ST_PilotStatue_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_PilotStatue_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_PilotStatue_01
+
+127. ST_RussianBigMamaStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_RussianBigMamaStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_RussianBigMamaStatue
+
+128. ST_RussianFought2DeathStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_RussianFought2DeathStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_RussianFought2DeathStatue
+
+129. ST_ShuttleBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_ShuttleBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_ShuttleBuilding
+
+130. ST_ShuttleDisguiseBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_ShuttleDisguiseBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_ShuttleDisguiseBuilding
+
+131. ST_ShuttleLaunchPlatform
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_ShuttleLaunchPlatform.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_ShuttleLaunchPlatform
+
+132. ST_Stairs_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_Stairs_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_Stairs_01
+
+133. ST_SwordStatue_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\StPetersburg_ST\Buildings\ST_SwordStatue_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ST_SwordStatue_01
+
+134. TH_AlliedDisruptorStation
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_AlliedDisruptorStation.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_AlliedDisruptorStation
+
+135. TH_EmperorFlagpoleStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_EmperorFlagpoleStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_EmperorFlagpoleStatue
+
+136. TH_EmperorSonFlagpoleStatue
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_EmperorSonFlagpoleStatue.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_EmperorSonFlagpoleStatue
+
+137. TH_FerrisWheel
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_FerrisWheel.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_FerrisWheel
+
+138. TH_harbor_crane01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_harbor_crane01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_harbor_crane01
+
+139. TH_ImperialHarborBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_ImperialHarborBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_ImperialHarborBuilding
+
+140. TH_ImperialMilitaryAdminBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_ImperialMilitaryAdminBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_ImperialMilitaryAdminBuilding
+
+141. TH_JapanCommandHQ
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanCommandHQ.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanCommandHQ
+
+142. TH_JapanHarborBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanHarborBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanHarborBuilding
+
+143. TH_JapanOldMilitaryDocks
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanOldMilitaryDocks.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanOldMilitaryDocks
+
+144. TH_JapanOldMilitaryTrainingSchool
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanOldMilitaryTrainingSchool.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanOldMilitaryTrainingSchool
+
+145. TH_JapanRoboticsLab
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanRoboticsLab.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanRoboticsLab
+
+146. TH_JapanVIPBunkerSubStructure
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_JapanVIPBunkerSubStructure.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_JapanVIPBunkerSubStructure
+
+147. TH_StatueGuard03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_StatueGuard03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_StatueGuard03
+
+148. TH_TombBuilding02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_TombBuilding02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_TombBuilding02
+
+149. TH_TombStone01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Tokyo_Harbor_TH\Buildings\TH_TombStone01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> TH_TombStone01
+
+150. VL_ImperialMilitaryAdminBuilding_01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ImperialMilitaryAdminBuilding_01
+
+151. VL_ImperialMilitaryAdminBuilding_02
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_02.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ImperialMilitaryAdminBuilding_02
+
+152. VL_ImperialMilitaryAdminBuilding_03
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_03.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ImperialMilitaryAdminBuilding_03
+
+153. VL_ImperialMilitaryAdminBuilding_04
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_04.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ImperialMilitaryAdminBuilding_04
+
+154. VL_ImperialMilitaryAdminBuilding_05
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_ImperialMilitaryAdminBuilding_05.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ImperialMilitaryAdminBuilding_05
+
+155. VL_RussianPortBuilding
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Buildings\VL_RussianPortBuilding.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_RussianPortBuilding
+
+156. VL_ShippingBoat01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Optimized_Props\VL_ShippingBoat01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ShippingBoat01
+
+157. VL_ShippingBoat01_Collapse
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Vladivostok_VL\Optimized_Props\VL_ShippingBoat01_Collapse.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> VL_ShippingBoat01_Collapse
+
+158. YU_Arch01
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Civilian\Yucatan_YU\Buildings\YU_Arch01.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> YU_Arch01
+
+159. ZoneWall
+     Parent: BaseCivilianStructureNoGarrisonDestructible
+     Depth: 2
+     File: Neutral\Structures\ZoneWall.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> ZoneWall
+
+160. MR_RushmoreHeadControlCenter_Jefferson
+     Parent: MR_RushmoreheadControlCenter
+     Depth: 3
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RushmoreHeadControlCenter_Jefferson.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RushmoreHeadControlCenter -> MR_RushmoreHeadControlCenter_Jefferson
+
+161. MR_RushmoreHeadControlCenter_Lincoln
+     Parent: MR_RushmoreheadControlCenter
+     Depth: 3
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RushmoreHeadControlCenter_Lincoln.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RushmoreHeadControlCenter -> MR_RushmoreHeadControlCenter_Lincoln
+
+162. MR_RushmoreHeadControlCenter_Washington
+     Parent: MR_RushmoreheadControlCenter
+     Depth: 3
+     File: Civilian\Mount_Rushmore_MR\Buildings\MR_RushmoreHeadControlCenter_Washington.xml
+     Chain: BaseCivilianStructureNoGarrison -> BaseCivilianStructureNoGarrisonDestructible -> MR_RushmoreHeadControlCenter -> MR_RushmoreHeadControlCenter_Washington
+
+ORIGINAL SOURCE EXCEPTIONS (REVIEWED)
+=====================================
+
+MY_Boat_01b
+  File: Civilian\Mykonos_MY\Buildings\MY_Boat_01b.xml
+  The original file is not valid XML and contains two conflicting definitions.
+  One inherits BaseCrushableObstacle; the other inherits BaseCivilianStructureNoGarrison.
+  Listed as an additional authored candidate, not included in the 224 parseable IDs.
+
+Templates\Structure.xml: malformed authoring template; StructureName has no inheritance.
+Includes\GarrisonableStructureBehaviors.xml: malformed fragment; no GameObject definition.
+Neither contributes another descendant. No original XML was changed.

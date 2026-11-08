@@ -74,56 +74,57 @@ namespace EALABuild
         //-------------------------------------------------------------------------------------------------
         public void buildMod(string modName, Dictionary<string, Object> gui)
         {
-            // Reborn: surface the original initialization error instead of dereferencing a missing lifecycle/runtime later.
-            if (!initialized) initialize();
-            string name = BuildHelper.BuildTarget;
-            // Reborn: the selected mod folder determines the validated source path and final package basename.
-            if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
-                throw new InvalidDataException("Invalid alpha mod name.");
-            // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
-            string input = Path.Combine(Path.Combine(Path.Combine(SdkRoot, "mods"), name), "data\\Static_Mod.xml");
-            // Reborn: map/global/AptUI-only checks use the selected Data directory without requiring Static_Mod.xml.
-            bool buildStatic = !gui.ContainsKey("buildstatic") || Convert.ToBoolean(gui["buildstatic"]);
-            bool createBig = !gui.ContainsKey("createbig") || Convert.ToBoolean(gui["createbig"]);
-            if (buildStatic) CheckPath(input, "selected mod '" + name + "' entry XML");
-            // Reborn: preserve the entered numeric version verbatim in final archive and SKUDef filenames.
-            string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z"))
-                throw new InvalidDataException("Mod Version must be numeric, for example 1.00 or 1.2.3.");
-            // Reborn: only the map stage consumes the checked folders, and All supplies no directory override.
-            bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
-            string[] officialMapDirectories = buildMaps ? (string[])Lifecycle("GetSelectedMapDirectories") : null;
-            BuildHelper.CurrentBuildSteps = 1;
-            // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
-            // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
-            BuildHelper.DisplayLine("Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
-            // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
-            string session = (string)Lifecycle("Begin");
-            RunExecutableArguments request = new RunExecutableArguments(buildHost);
-            // Reborn: bind every Studio build to the configured read-only stock baseline.
-            request.Arguments = "--run " + session + " \"" + runtime + "\" -NoProfile -File \"" + driver + "\" -StudioSession " + session + " -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
-                + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\" -ModVersion \"" + version + "\"";
-			bool buildAptUI = gui.ContainsKey("buildaptui") && Convert.ToBoolean(gui["buildaptui"]);
-			request.Arguments += " -BuildAptUI " + (buildAptUI ? "1" : "0");
-            // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
-            if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
-            // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
-            bool buildGlobal = !gui.ContainsKey("buildglobal") || Convert.ToBoolean(gui["buildglobal"]);
-            request.Arguments += " -BuildGlobalData " + (buildGlobal ? "1" : "0");
-            // Reborn: pass explicit values for both persisted build-stage toggles.
-            request.Arguments += " -BuildStaticData " + (buildStatic ? "1" : "0");
-            request.Arguments += " -CreateBigFiles " + (createBig ? "1" : "0");
-            // Reborn: Studio always uses fast builds; stale persisted developer checkbox values cannot re-enable maintenance regressions.
-            request.Arguments += " -DeveloperBuildTests 0";
-            // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
-            request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
-            // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
-            bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
-            request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
-            request.RedirectOutput = true; request.CreateWindow = false;
-            // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
             try
             {
+                // Reborn: surface the original initialization error instead of dereferencing a missing lifecycle/runtime later.
+                if (!initialized) initialize();
+                // Reborn: mark even preflight/selection validation as active, and let the outer failure path stop the indicator.
+                Lifecycle("BuildStarting");
+                string name = BuildHelper.BuildTarget;
+                // Reborn: the selected mod folder determines the validated source path and final package basename.
+                if (String.IsNullOrEmpty(name) || name.Length > 48 || name.IndexOfAny(new char[] { '\\', '/', '"', ':', ';', '\r', '\n' }) >= 0 || name == "." || name == "..")
+                    throw new InvalidDataException("Invalid alpha mod name.");
+                // Reborn: the static mod entry remains distinct from the stock DATA:static.xml library.
+                string input = Path.Combine(Path.Combine(Path.Combine(SdkRoot, "mods"), name), "data\\Static_Mod.xml");
+                // Reborn: map/global/AptUI-only checks use the selected Data directory without requiring Static_Mod.xml.
+                bool buildStatic = !gui.ContainsKey("buildstatic") || Convert.ToBoolean(gui["buildstatic"]);
+                bool createBig = !gui.ContainsKey("createbig") || Convert.ToBoolean(gui["createbig"]);
+                if (buildStatic) CheckPath(input, "selected mod '" + name + "' entry XML");
+                // Reborn: preserve safe numeric versions and alpha/beta labels verbatim in final archive and SKUDef filenames.
+                string version = gui.ContainsKey("modversion") ? (string)gui["modversion"] : "1.00";
+                ValidateModVersion(version);
+                // Reborn: only the map stage consumes the checked folders, and All supplies no directory override.
+                bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
+                string[] officialMapDirectories = buildMaps ? (string[])Lifecycle("GetSelectedMapDirectories") : null;
+                BuildHelper.CurrentBuildSteps = 1;
+                // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
+                // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
+                BuildHelper.DisplayLine("Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
+                // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
+                string session = (string)Lifecycle("Begin");
+                RunExecutableArguments request = new RunExecutableArguments(buildHost);
+                // Reborn: bind every Studio build to the configured read-only stock baseline.
+                request.Arguments = "--run " + session + " \"" + runtime + "\" -NoProfile -File \"" + driver + "\" -StudioSession " + session + " -ModXml \"" + input + "\" -StaticManifest \"" + staticManifest
+                    + "\" -CompilerDirectory \"" + compilerDirectory + "\" -OutputRoot \"" + outputRoot + "\" -ModVersion \"" + version + "\"";
+    			bool buildAptUI = gui.ContainsKey("buildaptui") && Convert.ToBoolean(gui["buildaptui"]);
+    			request.Arguments += " -BuildAptUI " + (buildAptUI ? "1" : "0");
+                // Reborn: preserve four-key armor workspaces without inferring a weapon dependency path.
+                if (globalManifest != null) request.Arguments += " -GlobalManifest \"" + globalManifest + "\"";
+                // Reborn: EA persists this native checkbox; pass an explicit numeric value so unchecked is never lost in switch binding.
+                bool buildGlobal = !gui.ContainsKey("buildglobal") || Convert.ToBoolean(gui["buildglobal"]);
+                request.Arguments += " -BuildGlobalData " + (buildGlobal ? "1" : "0");
+                // Reborn: pass explicit values for both persisted build-stage toggles.
+                request.Arguments += " -BuildStaticData " + (buildStatic ? "1" : "0");
+                request.Arguments += " -CreateBigFiles " + (createBig ? "1" : "0");
+                // Reborn: Studio always uses fast builds; stale persisted developer checkbox values cannot re-enable maintenance regressions.
+                request.Arguments += " -DeveloperBuildTests 0";
+                // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
+                request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
+                // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
+                bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
+                request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
+                request.RedirectOutput = true; request.CreateWindow = false;
+                // Reborn: retain the SDK's step-counter protocol before RunStep advances it for the callback.
                 // Reborn: the session owns and cleans its map-list file; only its short path travels through the worker command line.
                 if (officialMapDirectories != null)
                 {
@@ -134,18 +135,22 @@ namespace EALABuild
                     throw new InvalidDataException("Unexpected alpha build step state.");
                 BuildHelper.RunStep(StepType.RunExecutable, request);
             }
-            catch { Lifecycle("Complete"); throw; }
+            catch
+            {
+                if (lifecycle != null) { Lifecycle("BuildFailed"); Lifecycle("Complete"); }
+                throw;
+            }
         }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: complete the single backend operation without advancing to unvalidated RA3 postprocessors. */
         //-------------------------------------------------------------------------------------------------
-        public void onStepSuccess(int stepId) { Lifecycle("Complete"); BuildHelper.OnBuildComplete(); }
+        public void onStepSuccess(int stepId) { Lifecycle("BuildSucceeded"); Lifecycle("Complete"); BuildHelper.OnBuildComplete(); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: make an unsuccessful backend visible and retain diagnostic output without automatic retry or cleanup. */
         //-------------------------------------------------------------------------------------------------
-        public void onStepFailure(int stepId) { Lifecycle("Complete"); BuildHelper.DisplayLine("Alpha build failed; no install or launch was attempted. Review the build output."); }
+        public void onStepFailure(int stepId) { Lifecycle("BuildFailed"); Lifecycle("Complete"); BuildHelper.DisplayLine("Alpha build failed; no install or launch was attempted. Review the build output."); }
 
         //-------------------------------------------------------------------------------------------------
         /** Reborn: keep Windows Forms types in the separately compiled helper, preserving EA's exact two-reference CodeDOM contract. */
@@ -183,6 +188,15 @@ namespace EALABuild
             options.Add(new GUIElementData("mv", "Mod Version:", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("modversion", "1.00", GUIElementData.InputBoxType, ScriptIndex.ModScript));
             return options;
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        /** Reborn: allow release labels while excluding whitespace, path separators, argument metacharacters and trailing dots from package names. */
+        //-------------------------------------------------------------------------------------------------
+        private static void ValidateModVersion(string version)
+        {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(version ?? "", @"\A[A-Za-z0-9](?:[A-Za-z0-9._-]{0,46}[A-Za-z0-9])?\z"))
+                throw new InvalidDataException("Mod Version must be 1-48 characters using letters, digits, dots, underscores or hyphens, and start/end with a letter or digit. Examples: 1.00, 1.0-beta.");
         }
 
         //-------------------------------------------------------------------------------------------------

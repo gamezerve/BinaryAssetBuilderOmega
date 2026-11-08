@@ -115,7 +115,7 @@ try{
     Write-SdkBuildLine 'Preparing private build workspace; previous successful output will be retained until publication.'
     if($PSVersionTable.PSVersion.Major-lt 7){throw 'PowerShell 7 is required.'}
     # Reborn: validate before compilation, retain formatting such as 1.00, and reject filename/argument injection.
-    if($ModVersion -cnotmatch '\A[0-9]{1,4}(\.[0-9]{1,4}){1,3}\z'){throw 'Mod Version must be numeric, for example 1.00 or 1.2.3.'}
+    Assert-RebornModVersion $ModVersion
     # Reborn: only a Studio-created session supplies cancellation/publication synchronization; unrelated CLI builds remain independent.
     if($StudioSession){if($StudioSession-cnotmatch '^[a-f0-9]{32}$'){throw 'Invalid Studio session.'};$publishMutex=[Threading.Mutex]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Publish');$cancelEvent=[Threading.EventWaitHandle]::OpenExisting('Local\RebornStudio-'+$StudioSession+'-Cancel');if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before starting.'}}
     # Reborn: use a separate static mod entry without shadowing the original DATA:static.xml.
