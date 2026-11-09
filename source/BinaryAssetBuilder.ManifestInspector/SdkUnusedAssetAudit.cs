@@ -47,16 +47,20 @@ internal static class SdkUnusedAssetAudit
     //-------------------------------------------------------------------------------------------------
     /** Reborn: weak IDs are valid use sites even though they do not become native IMP records; resolve concrete targets using the same schema inheritance as Core. */
     //-------------------------------------------------------------------------------------------------
-    internal static AssetId[] WeakReferences(XmlNode node,XmlDocument fallback,SchemaSet schemas,ManifestAsset[] available)
+    internal static AssetId[] WeakReferences(XmlNode node,XmlDocument fallback,SchemaSet schemas,ManifestAsset[] available)=>
+        WeakReferences(node,fallback,schemas,available.ToLookup(a=>a.InstanceId));
+
+    // Reborn: use the same instance buckets throughout one usage receipt without merging ambiguous candidates.
+    private static AssetId[] WeakReferences(XmlNode node,XmlDocument fallback,SchemaSet schemas,ILookup<uint,ManifestAsset> catalog)
     {
-        if(node.SchemaInfo?.SchemaType==null){var copy=new XmlDocument{XmlResolver=null};copy.LoadXml(fallback.DocumentElement!.OuterXml);copy.Schemas.Add(schemas.Schemas);copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));node=copy.DocumentElement!;}
+        if(node.SchemaInfo?.SchemaType==null){var copy=new XmlDocument{XmlResolver=null};copy.LoadXml(fallback.DocumentElement!.OuterXml);copy.Schemas=schemas.Schemas;copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));node=copy.DocumentElement!;}
         var weak=schemas.Schemas.GlobalTypes[new XmlQualifiedName("WeakReference",Ea)] as XmlSchemaType;if(weak==null)throw new InvalidDataException("WeakReference schema is missing.");
-        var catalog=available.GroupBy(a=>a.InstanceId).ToDictionary(g=>g.Key,g=>g.ToArray());var targets=new HashSet<AssetId>();
+        var targets=new HashSet<AssetId>();
         foreach(XmlNode field in node.SelectNodes("descendant-or-self::*|descendant-or-self::*/@*")!){var info=field.SchemaInfo;var type=info?.SchemaType;if(type==null||!XmlSchemaType.IsDerivedFrom(type,weak,XmlSchemaDerivationMethod.None))continue;
             string? required=Annotation(info?.SchemaAttribute?.UnhandledAttributes)??Annotation(info?.SchemaElement?.UnhandledAttributes);for(var current=type;required==null&&current!=null;){required=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
             if(required==null||schemas.GetXmlType(required) is not XmlSchemaType expected)continue;string raw=(field is XmlAttribute attribute?attribute.Value:field.InnerText).Trim();
             foreach(string value in type.Datatype?.Variety==XmlSchemaDatatypeVariety.List?raw.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries):new[]{raw}){if(value.Length==0||value.StartsWith('='))continue;int colon=value.IndexOf(':');string name=colon<0?value:value[(colon+1)..];var selected=colon<0?expected:schemas.GetXmlType(value[..colon]);if(selected==null)continue;
-                foreach(var asset in catalog.GetValueOrDefault(InstanceHandle.GetInstanceId(name),Array.Empty<ManifestAsset>()))if(schemas.GetXmlType(asset.TypeName) is XmlSchemaType actual&&XmlSchemaType.IsDerivedFrom(actual,expected,XmlSchemaDerivationMethod.None)&&XmlSchemaType.IsDerivedFrom(actual,selected,XmlSchemaDerivationMethod.None))targets.Add(new(asset.TypeId,asset.InstanceId));
+                foreach(var asset in catalog[InstanceHandle.GetInstanceId(name)])if(schemas.GetXmlType(asset.TypeName) is XmlSchemaType actual&&XmlSchemaType.IsDerivedFrom(actual,expected,XmlSchemaDerivationMethod.None)&&XmlSchemaType.IsDerivedFrom(actual,selected,XmlSchemaDerivationMethod.None))targets.Add(new(asset.TypeId,asset.InstanceId));
             }
         }return targets.ToArray();
     }
@@ -66,7 +70,9 @@ internal static class SdkUnusedAssetAudit
     //-------------------------------------------------------------------------------------------------
     internal static void WriteUsage(string output,IEnumerable<(InstanceDeclaration Instance,XmlDocument Source)> built,SchemaSet schemas,ManifestAsset[] available)
     {
-        var uses=built.Select(b=>new WeakUse(new(b.Instance.Handle.TypeId,b.Instance.Handle.InstanceId),WeakReferences(b.Instance.XmlNode,b.Source,schemas,available))).ToArray();Directory.CreateDirectory(output);using var file=new FileStream(Path.Combine(output,"asset-usage.json"),FileMode.CreateNew,FileAccess.Write,FileShare.None);JsonSerializer.Serialize(file,uses);
+        // Reborn: build the catalog index once even when thousands of assets contribute weak uses.
+        var catalog=available.ToLookup(a=>a.InstanceId);
+        var uses=built.Select(b=>new WeakUse(new(b.Instance.Handle.TypeId,b.Instance.Handle.InstanceId),WeakReferences(b.Instance.XmlNode,b.Source,schemas,catalog))).ToArray();Directory.CreateDirectory(output);using var file=new FileStream(Path.Combine(output,"asset-usage.json"),FileMode.CreateNew,FileAccess.Write,FileShare.None);JsonSerializer.Serialize(file,uses);
     }
 
     //-------------------------------------------------------------------------------------------------

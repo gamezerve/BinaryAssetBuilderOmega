@@ -142,21 +142,51 @@ internal static class GameObjectConscriptTrialSmokeTest
         var rootRows=GameObjectStockReview.Tokens(streams["diagnostic.bin"].AsSpan(primaryOffset,primary.InstanceDataSize).ToArray(),0);
         int buildTimeSlot=Ep1GameObjectRootValueTokens.AllFields.Single(f=>f.Name=="BuildTime").Offset;
         if(rootRows[FastHash.GetHashCode("BuildTime")].Offset-buildTimeSlot!=metadataPrefix)throw new InvalidDataException("Package metadata-prefix receipt differs from serialized data.");
-        string[] extensions={".manifest",".bin",".relo",".imp"};byte[][] payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();byte[] archive=ArmorDiagnosticPackage.Serialize(payloads,true,true);const string config="add-big RebornConscriptProbe.big\n";var files=new Dictionary<string,byte[]>{["RebornConscriptProbe.big"]=archive,["reborn_1.0.cfg"]=Encoding.ASCII.GetBytes(config),["reborn_1.0.skudef"]=Encoding.ASCII.GetBytes(config),["trial-source.xml"]=Encoding.UTF8.GetBytes(source.OuterXml),["DO_NOT_LAUNCH_YET.txt"]=Encoding.UTF8.GetBytes("Reborn: unlaunched Conscript candidate only. Mod SKU fragment, not stock SKU replacement. New-ID trial redirects the existing Conscript UNIT_BUILD command; all other Barracks choices/CommandSet remain stock. Separate runtime preflight and game-test authorization required.\n")};
-        // Reborn: every build verifies its actual package; only developer mode mutates files to test corrupt-output and overwrite rejection.
-        ModifierFXStreamSmokeTest.WriteNew(directory,files);Verify();int corruptions=0;if(SdkBuildTests.Enabled){Refuse(()=>ModifierFXStreamSmokeTest.WriteNew(directory,files));foreach(string name in files.Keys){byte[] bad=files[name].ToArray();bad[0]^=1;string path=Path.Combine(directory,name);try{File.WriteAllBytes(path,bad);Refuse(Verify);corruptions++;}finally{File.WriteAllBytes(path,files[name]);}}Verify();}
+        string[] extensions={".manifest",".bin",".relo",".imp"};byte[][] payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();const string archiveName="RebornConscriptProbe.big";string archivePath=Path.Combine(directory,archiveName);const string config="add-big RebornConscriptProbe.big\n";var files=new Dictionary<string,byte[]>{["reborn_1.0.cfg"]=Encoding.ASCII.GetBytes(config),["reborn_1.0.skudef"]=Encoding.ASCII.GetBytes(config),["trial-source.xml"]=Encoding.UTF8.GetBytes(source.OuterXml),["DO_NOT_LAUNCH_YET.txt"]=Encoding.UTF8.GetBytes("Reborn: unlaunched Conscript candidate only. Mod SKU fragment, not stock SKU replacement. New-ID trial redirects the existing Conscript UNIT_BUILD command; all other Barracks choices/CommandSet remain stock. Separate runtime preflight and game-test authorization required.\n")};
+        // Reborn: stream the BIG and preserve the developer overwrite and corruption checks for all five files.
+        ModifierFXStreamSmokeTest.WriteNew(directory,files);
+        ArmorDiagnosticPackage.WriteDefaultPackage(archivePath,payloads);
+        string archiveHash=Verify();
+        int corruptions=0;
+        if(SdkBuildTests.Enabled)
+        {
+            Refuse(()=>ModifierFXStreamSmokeTest.WriteNew(directory,files));
+            foreach(string name in files.Keys.Append(archiveName))
+            {
+                string path=Path.Combine(directory,name);
+                byte original;
+                using(var file=File.Open(path,FileMode.Open,FileAccess.ReadWrite,FileShare.None))
+                {
+                    original=checked((byte)file.ReadByte());
+                    file.Position=0;
+                    file.WriteByte((byte)(original^1));
+                }
+                try{Refuse(()=>Verify());corruptions++;}
+                finally
+                {
+                    using var file=File.Open(path,FileMode.Open,FileAccess.Write,FileShare.None);
+                    file.WriteByte(original);
+                }
+            }
+            archiveHash=Verify();
+        }
         // Reborn: receipts report the independently read emitted reference table, including authored root presence changes.
         // Reborn: variable-graph callers pass their independently qualified metadata extent; existing fixed trial callers retain their default.
         // Reborn: a multi-row movement list has no scalar Speed receipt; preserve every authored row explicitly rather than inventing a representative value.
         // Reborn: resource receipts distinguish absent, present-empty and explicit-zero costs and retain exact uint32 amounts for every row.
         // Reborn: production callers classify identities against their real stock catalog; historical standalone trials retain their known Conscript/new-ID default.
         bool newIdentity=stockOverride.HasValue?!stockOverride.Value:id!="SovietAntiInfantryInfantry";
-        var receipt=new{Asset="GameObject:"+id,BuildTime=ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[0]),EditableValues=ConscriptEditableScalars.ReceiptValues(source),ResourceInfoPresent=GameObjectResourceContract.Owner(source)!=null,BuildCosts=GameObjectResourceContract.Entries(source).Select(e=>new{Account=GameObjectResourceContract.Value(e,"Account"),Amount=GameObjectResourceContract.Value(e,"Amount")}).ToArray(),LocomotorSets=ConscriptLocomotorSetContract.Entries(source).Select(e=>new{Speed=ConscriptModuleScalarContract.RecordLiteral(e,"Speed",typeof(SageBinaryData.Ep1LocomotorSet)),Condition=ConscriptModuleScalarContract.RecordLiteral(e,"Condition",typeof(SageBinaryData.Ep1LocomotorSet)),Locomotor=e.GetAttribute("Locomotor")}).ToArray(),StreamProfile="conscript-explicit-source",AssetCount=metadata.Assets.Count,AutomaticCommandGenerated=false,CommandOverride=metadata.Assets.Skip(1).Select(a=>a.Name).FirstOrDefault(),MetadataPrefix=metadataPrefix,ReferenceOccurrences=primary.References.Count,ArchiveEntryCount=15,ArchiveSha256=Convert.ToHexString(SHA256.HashData(archive)),SourceSha256=Convert.ToHexString(SHA256.HashData(files["trial-source.xml"])),OfflineValidated=true,PackageCorruptionsRejected=corruptions,NewIdentity=newIdentity,StockOverride=!newIdentity,RecruitableNewIdentity=newIdentity && metadata.Assets.Any(a=>a.Name=="LogicCommand:"+ConscriptRecruitmentSmokeTest.CommandId),GameExecuted=false,InstalledFilesModified=false,RuntimeReady=false,InstanceHashPolicy="experimental-normalized-source",ConfigPath=Path.Combine(directory,"reborn_1.0.cfg"),NextGate=newIdentity?"Controlled gameplay validation of the authored new identity and explicit recruitment chain.":"Controlled gameplay validation of the explicitly authored stock GameObject override."};File.WriteAllText(Path.Combine(directory,"trial-plan.json"),JsonSerializer.Serialize(receipt,new JsonSerializerOptions{WriteIndented=true}));
+        var receipt=new{Asset="GameObject:"+id,BuildTime=ConscriptEditableScalars.Read(source,ConscriptEditableScalars.Fields[0]),EditableValues=ConscriptEditableScalars.ReceiptValues(source),ResourceInfoPresent=GameObjectResourceContract.Owner(source)!=null,BuildCosts=GameObjectResourceContract.Entries(source).Select(e=>new{Account=GameObjectResourceContract.Value(e,"Account"),Amount=GameObjectResourceContract.Value(e,"Amount")}).ToArray(),LocomotorSets=ConscriptLocomotorSetContract.Entries(source).Select(e=>new{Speed=ConscriptModuleScalarContract.RecordLiteral(e,"Speed",typeof(SageBinaryData.Ep1LocomotorSet)),Condition=ConscriptModuleScalarContract.RecordLiteral(e,"Condition",typeof(SageBinaryData.Ep1LocomotorSet)),Locomotor=e.GetAttribute("Locomotor")}).ToArray(),StreamProfile="conscript-explicit-source",AssetCount=metadata.Assets.Count,AutomaticCommandGenerated=false,CommandOverride=metadata.Assets.Skip(1).Select(a=>a.Name).FirstOrDefault(),MetadataPrefix=metadataPrefix,ReferenceOccurrences=primary.References.Count,ArchiveEntryCount=15,ArchiveSha256=archiveHash,SourceSha256=Convert.ToHexString(SHA256.HashData(files["trial-source.xml"])),OfflineValidated=true,PackageCorruptionsRejected=corruptions,NewIdentity=newIdentity,StockOverride=!newIdentity,RecruitableNewIdentity=newIdentity && metadata.Assets.Any(a=>a.Name=="LogicCommand:"+ConscriptRecruitmentSmokeTest.CommandId),GameExecuted=false,InstalledFilesModified=false,RuntimeReady=false,InstanceHashPolicy="experimental-normalized-source",ConfigPath=Path.Combine(directory,"reborn_1.0.cfg"),NextGate=newIdentity?"Controlled gameplay validation of the authored new identity and explicit recruitment chain.":"Controlled gameplay validation of the explicitly authored stock GameObject override."};File.WriteAllText(Path.Combine(directory,"trial-plan.json"),JsonSerializer.Serialize(receipt,new JsonSerializerOptions{WriteIndented=true}));
         //-------------------------------------------------------------------------------------------------
         /** Reborn: verify exact prepared config/source/notice bytes, independent BIG header/index geometry and all fifteen recovered variant payloads. */
         //-------------------------------------------------------------------------------------------------
-        // Reborn: readback is bounded by the exact already-verified payload length, not a historical one-object stream quota.
-        void Verify(){foreach(var file in files)if(!File.ReadAllBytes(Path.Combine(directory,file.Key)).SequenceEqual(file.Value))throw new InvalidDataException("Conscript trial prepared file differs.");string path=Path.Combine(directory,"RebornConscriptProbe.big");byte[] stored=File.ReadAllBytes(path);if(Encoding.ASCII.GetString(stored,0,4)!="BIG4" || Word(stored,4)!=stored.Length || BinaryPrimitives.ReadUInt32BigEndian(stored.AsSpan(8,4))!=15)throw new InvalidDataException("Conscript trial BIG header differs.");using var big=BigArchive.Open(path,15,4096);long at=BinaryPrimitives.ReadUInt32BigEndian(stored.AsSpan(12,4));int index=0;foreach(string variant in new[]{"","_l","_m"})foreach(string extension in extensions.Append(".version")){var entry=big.Entries[index++];byte[] expected=extension==".version"?Encoding.ASCII.GetBytes("\r\n"):payloads[Array.IndexOf(extensions,extension)];if(entry.Name!="data\\mod"+variant+extension || entry.Offset!=at || entry.StoredSize!=expected.Length || !big.ReadEntry(entry,expected.Length).SequenceEqual(expected))throw new InvalidDataException("Conscript trial variant differs.");at+=entry.StoredSize;}if(at!=stored.Length)throw new InvalidDataException("Conscript trial unowned archive suffix.");}
+        string Verify()
+        {
+            foreach(var file in files)
+                if(!File.ReadAllBytes(Path.Combine(directory,file.Key)).AsSpan().SequenceEqual(file.Value))
+                    throw new InvalidDataException("Conscript trial prepared file differs.");
+            return ArmorDiagnosticPackage.VerifyDefaultPackage(archivePath,payloads);
+        }
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: explicit refusal controls never count a successful corrupt candidate as rejection. */

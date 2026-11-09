@@ -114,36 +114,66 @@ internal static class Ep1TextureCompiler
     //-------------------------------------------------------------------------------------------------
     private static byte[] EncodeTga(byte[] tga,int width,int height,string path,bool fitRadar,string format,bool generateMipMaps)
     {
-        string encoder=Path.Combine(AppContext.BaseDirectory,"texconv.exe");
-        if(!File.Exists(encoder))throw new FileNotFoundException("The bundled DirectXTex encoder is missing; restore texconv.exe beside the SDK compiler.",encoder);
+        // Reborn: texconv uses zero for a full chain. Opaque BC1 remains distinct from the DXT1A schema format.
+        bool compressed = format == "DXT1";
+        string encoderFormat = compressed ? "BC1_UNORM" : "B8G8R8A8_UNORM";
+        var options = new List<string> { "-f", encoderFormat, "-m", generateMipMaps ? "0" : "1" };
+        if (compressed)
+            options.AddRange(new[] { "-at", "0" });
+        if (fitRadar)
+        {
+            // Reborn: stock Miyako radar stretches the full image across its declared canvas.
+            options.AddRange(new[] { "-w", XmlConvert.ToString(width), "-h", XmlConvert.ToString(height), "-if", "LINEAR" });
+        }
 
-        var job=Directory.CreateTempSubdirectory("reborn-texture-");
-        string input=Path.Combine(job.FullName,"texture.tga");
-        string output=Path.Combine(job.FullName,"texture.dds");
+        int expected = HeaderSize;
+        int mipCount = 0;
+        int mipWidth = width, mipHeight = height;
+        while (true)
+        {
+            expected += compressed ? ((mipWidth + 3) / 4) * ((mipHeight + 3) / 4) * 8 : mipWidth * mipHeight * 4;
+            mipCount++;
+            if (!generateMipMaps || (mipWidth == 1 && mipHeight == 1))
+                break;
+            mipWidth = Math.Max(1, mipWidth / 2);
+            mipHeight = Math.Max(1, mipHeight / 2);
+        }
+
+        byte[] dds = ConvertWithTexconv(tga, ".tga", path, options, expected);
+        var info = Ep1DdsTexture.Inspect(dds, path);
+        if (info.Format != format || info.Kind != "StandardTexture" || info.Width != width || info.Height != height || info.Mips != mipCount)
+            throw new InvalidDataException("DirectXTex returned an unexpected " + format + " DDS header: " + path);
+        return dds;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: run the bundled encoder in a private directory and bound the resulting legacy DDS read. */
+    //-------------------------------------------------------------------------------------------------
+    internal static byte[] ConvertWithTexconv(byte[] source, string extension, string path,
+        IEnumerable<string> options, int maximumBytes)
+    {
+        string encoder = Path.Combine(AppContext.BaseDirectory, "texconv.exe");
+        if (!File.Exists(encoder))
+            throw new FileNotFoundException("The bundled DirectXTex encoder is missing; restore texconv.exe beside the SDK compiler.", encoder);
+
+        var job = Directory.CreateTempSubdirectory("reborn-texture-");
+        string input = Path.Combine(job.FullName, "texture" + extension);
+        string outputDirectory = Path.Combine(job.FullName, "encoded");
+        string output = Path.Combine(outputDirectory, "texture.dds");
         try
         {
-            File.WriteAllBytes(input,tga);
-            var start=new ProcessStartInfo(encoder)
+            Directory.CreateDirectory(outputDirectory);
+            File.WriteAllBytes(input, source);
+            var start = new ProcessStartInfo(encoder)
             {
-                WorkingDirectory=job.FullName,UseShellExecute=false,CreateNoWindow=true,
-                RedirectStandardOutput=true,RedirectStandardError=true
+                WorkingDirectory = job.FullName,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
-            // Reborn: texconv uses zero for a full chain. Opaque BC1 remains distinct from the DXT1A schema format.
-            bool compressed=format=="DXT1";
-            string encoderFormat=compressed?"BC1_UNORM":"B8G8R8A8_UNORM";
-            foreach(string argument in new[]{"-nologo","-dx9","-f",encoderFormat,"-m",generateMipMaps?"0":"1","-o",job.FullName})
+            foreach (string argument in new[] { "-nologo", "-dx9", "-o", outputDirectory }.Concat(options))
                 start.ArgumentList.Add(argument);
-            if(compressed)
-            {
-                start.ArgumentList.Add("-at");
-                start.ArgumentList.Add("0");
-            }
-            if(fitRadar)
-            {
-                // Reborn: stock Miyako radar stretches the full image across its declared canvas.
-                foreach(string argument in new[]{"-w",XmlConvert.ToString(width),"-h",XmlConvert.ToString(height),"-if","LINEAR"})
-                    start.ArgumentList.Add(argument);
-            }
             start.ArgumentList.Add(input);
             using var process=Process.Start(start)??throw new InvalidDataException("DirectXTex did not start: "+path);
             var stdout=process.StandardOutput.ReadToEndAsync();
@@ -152,33 +182,22 @@ internal static class Ep1TextureCompiler
             {
                 if(!process.HasExited)process.Kill();
                 process.WaitForExit(5_000);
-                throw new InvalidDataException("DirectXTex timed out while encoding "+format+": "+path);
+                throw new InvalidDataException("DirectXTex timed out while encoding "+path);
             }
             if(!Task.WaitAll(new Task[]{stdout,stderr},5_000))
                 throw new InvalidDataException("DirectXTex output pipes did not close: "+path);
             if(process.ExitCode!=0)
                 throw new InvalidDataException("DirectXTex could not encode "+path+" (exit "+process.ExitCode+"): "+(stderr.Result+stdout.Result).Trim());
 
-            // Reborn: bound the read by the requested mip payload, including the final 1x1 block or pixel.
-            int expected=HeaderSize, mipCount=0;
-            int mipWidth=width,mipHeight=height;
-            while(true)
-            {
-                expected+=compressed?((mipWidth+3)/4)*((mipHeight+3)/4)*8:mipWidth*mipHeight*4;
-                mipCount++;
-                if(!generateMipMaps||(mipWidth==1&&mipHeight==1))break;
-                mipWidth=Math.Max(1,mipWidth/2);
-                mipHeight=Math.Max(1,mipHeight/2);
-            }
-            byte[] dds=SdkEnvironmentPreflight.Read(output,expected);
-            var info=Ep1DdsTexture.Inspect(dds,path);
-            if(info.Format!=format||info.Kind!="StandardTexture"||info.Width!=width||info.Height!=height||info.Mips!=mipCount)
-                throw new InvalidDataException("DirectXTex returned an unexpected "+format+" DDS header: "+path);
-            return dds;
+            return SdkEnvironmentPreflight.Read(output, maximumBytes);
         }
         finally
         {
-            File.Delete(output);
+            if (Directory.Exists(outputDirectory))
+            {
+                File.Delete(output);
+                Directory.Delete(outputDirectory);
+            }
             File.Delete(input);
             job.Delete();
         }

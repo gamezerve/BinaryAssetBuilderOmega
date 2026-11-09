@@ -307,9 +307,14 @@ internal static class BoundedDiagnosticBuild
             (Name: "diagnostic.relo", Magic: 0xBABE0000u, Parts: chunks.Select(chunk => chunk.RelocationData)),
             (Name: "diagnostic.imp", Magic: 0xBAB10000u, Parts: chunks.Select(chunk => chunk.ImportsData)) })
         {
-            using MemoryStream data = new(); using BinaryWriter writer = new(data, Encoding.UTF8, true);
+            // Reborn: write each linked stream directly into its final-sized buffer instead of growing and cloning a MemoryStream.
+            byte[] bytes = new byte[checked(8 + stream.Parts.Sum(part => part.Length))];
+            using MemoryStream data = new(bytes); using BinaryWriter writer = new(data, Encoding.UTF8, true);
             Invoke(typeof(OutputManager).GetMethod("WriteLinkedStreamHeader", BindingFlags.NonPublic | BindingFlags.Static)!, writer, checksum, stream.Magic);
-            foreach (byte[] part in stream.Parts) writer.Write(part); writer.Flush(); result.Add(stream.Name, data.ToArray());
+            foreach (byte[] part in stream.Parts) writer.Write(part);
+            writer.Flush();
+            if (data.Position != bytes.Length) throw new InvalidDataException("Linked stream length differs.");
+            result.Add(stream.Name, bytes);
         }
         // Reborn: identify newly compiled local sound payloads explicitly while preserving prior notices for graphs without Multisound.
         result.Add("DIAGNOSTIC_ONLY.txt", Encoding.UTF8.GetBytes("Bounded native Include diagnostic only. NOT a playable Uprising mod.\n"
@@ -345,7 +350,14 @@ internal static class BoundedDiagnosticBuild
         // Reborn: metadata and Utility readback must agree on the explicit per-entry tokenized flag, never silently relabel a native payload.
         tokenized ??= new bool[ordered.Length];
         if (tokenized.Length != ordered.Length) throw new InvalidDataException("Diagnostic tokenized verification count differs.");
-        foreach (var file in expected) if (!File.ReadAllBytes(Path.Combine(directory, file.Key)).SequenceEqual(file.Value)) throw new InvalidDataException("Staged diagnostic bytes differ.");
+        // Reborn: independently compare each staged file in bounded blocks without retaining another complete linked stream.
+        byte[] readback = new byte[65536];
+        foreach (var file in expected)
+        {
+            using var stored = File.OpenRead(Path.Combine(directory, file.Key));
+            if (stored.Length != file.Value.Length || !Matches(stored, file.Value))
+                throw new InvalidDataException("Staged diagnostic bytes differ.");
+        }
         string path = Path.Combine(directory, "diagnostic.manifest"); ManifestDocument parsed = ManifestReader.Read(File.ReadAllBytes(path));
         if (parsed.Validate().Count != 0 || parsed.Header.StreamChecksum != checksum || parsed.Assets.Count != ordered.Length
             || parsed.Header.Version != 7 || parsed.Header.ContainerPrefixSize != 4 || !parsed.Header.IsLinked || parsed.Header.AllTypesHash != 0x5454A8E9u
@@ -356,16 +368,13 @@ internal static class BoundedDiagnosticBuild
             || parsed.Header.AssetReferenceBufferSize != ordered.Sum(instance => instance.ValidatedReferencedInstances!.Count) * 8
             || !parsed.ReferencedManifests.SequenceEqual(runtimeNames.Select(name => new ReferencedManifest(name, false))))
             throw new InvalidDataException("Staged manifest validation failed.");
-        // Reborn: independently check stream headers and exact lengths, not just equality with the staged byte snapshot.
-        foreach (var stream in new[] { (Name: "diagnostic.bin", Magic: 0xBABB0000u, Size: chunks.Sum(chunk => chunk.InstanceData.Length)),
-            (Name: "diagnostic.relo", Magic: 0xBABE0000u, Size: chunks.Sum(chunk => chunk.RelocationData.Length)),
-            (Name: "diagnostic.imp", Magic: 0xBAB10000u, Size: chunks.Sum(chunk => chunk.ImportsData.Length)) })
-        {
-            byte[] bytes = File.ReadAllBytes(Path.Combine(directory, stream.Name));
-            if (bytes.Length != 8 + stream.Size || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(0, 4)) != stream.Magic
-                || BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(4, 4)) != checksum)
-                throw new InvalidDataException("Staged stream header/checksum/length validation failed.");
-        }
+        // Reborn: retain independent header and per-asset byte checks on three sequential file handles.
+        using var binStream = File.OpenRead(Path.ChangeExtension(path, ".bin"));
+        using var reloStream = File.OpenRead(Path.ChangeExtension(path, ".relo"));
+        using var impStream = File.OpenRead(Path.ChangeExtension(path, ".imp"));
+        VerifyHeader(binStream, 0xBABB0000u, chunks.Sum(chunk => chunk.InstanceData.Length));
+        VerifyHeader(reloStream, 0xBABE0000u, chunks.Sum(chunk => chunk.RelocationData.Length));
+        VerifyHeader(impStream, 0xBAB10000u, chunks.Sum(chunk => chunk.ImportsData.Length));
         using BinaryAssetBuilder.Utility.Manifest utility = new();
         if (!utility.Load(path, false) || utility.AssetCount != ordered.Length || utility.StreamChecksum != checksum || utility.AllTypesHash != 0x5454A8E9u)
             throw new InvalidDataException("Utility readback failed.");
@@ -381,11 +390,37 @@ internal static class BoundedDiagnosticBuild
                 || other.QualifiedName != asset.Name || other.TypeHash != asset.TypeHash || other.InstanceHash != asset.InstanceHash || other.Tokenized != tokenized[index]
                 || !other.ExternalReferences.Select(handle => new AssetId(handle.TypeId, handle.InstanceId)).SequenceEqual(asset.References)
                 || other.LinkedInstanceOffset != bin || other.LinkedRelocationOffset != relo || other.LinkedImportsOffset != imp
-                || !AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".bin"), null, bin, chunk.InstanceData.Length).SequenceEqual(chunk.InstanceData)
-                || !AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".relo"), null, relo, chunk.RelocationData.Length).SequenceEqual(chunk.RelocationData)
-                || !AssetStreamProbe.ReadRange(Path.ChangeExtension(path, ".imp"), null, imp, chunk.ImportsData.Length).SequenceEqual(chunk.ImportsData))
+                || !Matches(binStream, chunk.InstanceData)
+                || !Matches(reloStream, chunk.RelocationData)
+                || !Matches(impStream, chunk.ImportsData))
                 throw new InvalidDataException("Staged asset/native identity readback failed.");
             bin += chunk.InstanceData.Length; relo += chunk.RelocationData.Length; imp += chunk.ImportsData.Length;
+        }
+
+        // Reborn: compare only the next expected span and advance the stream by that exact number of bytes.
+        bool Matches(FileStream stream, ReadOnlySpan<byte> payload)
+        {
+            while (!payload.IsEmpty)
+            {
+                int size = Math.Min(readback.Length, payload.Length);
+                var actual = readback.AsSpan(0, size);
+                stream.ReadExactly(actual);
+                if (!actual.SequenceEqual(payload[..size])) return false;
+                payload = payload[size..];
+            }
+            return true;
+        }
+
+        // Reborn: leave a verified stream at its first asset byte for the sequential native checks.
+        void VerifyHeader(FileStream stream, uint magic, int size)
+        {
+            Span<byte> header = stackalloc byte[8];
+            if (stream.Length != 8L + size)
+                throw new InvalidDataException("Staged stream header/checksum/length validation failed.");
+            stream.ReadExactly(header);
+            if (BinaryPrimitives.ReadUInt32LittleEndian(header) != magic
+                || BinaryPrimitives.ReadUInt32LittleEndian(header[4..]) != checksum)
+                throw new InvalidDataException("Staged stream header/checksum/length validation failed.");
         }
     }
 

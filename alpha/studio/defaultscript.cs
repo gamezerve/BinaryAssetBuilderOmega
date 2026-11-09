@@ -120,6 +120,9 @@ namespace EALABuild
                 request.Arguments += " -DeveloperBuildTests 0";
                 // Reborn: an unchecked map toggle leaves map sources untouched; selected maps compile before final Misc packaging.
                 request.Arguments += " -BuildMaps " + (buildMaps ? "1" : "0");
+                // Reborn: force a fresh map compile while still updating its last successful generation.
+                bool forceRebuildMaps = gui.ContainsKey("forcerebuildmaps") && Convert.ToBoolean(gui["forcerebuildmaps"]);
+                request.Arguments += " -ForceRebuildMaps " + (forceRebuildMaps ? "1" : "0");
                 // Reborn: Silent Mode skips advisory checks while keeping build failures visible.
                 bool silentMode = gui.ContainsKey("silentmode") && Convert.ToBoolean(gui["silentmode"]);
                 request.Arguments += " -SilentMode " + (silentMode ? "1" : "0");
@@ -181,6 +184,8 @@ namespace EALABuild
             options.Add(new GUIElementData("buildmaps", "Build Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: reserve a row for the helper's multi-select map checklist without changing EA's persisted checkbox format.
             options.Add(new GUIElementData("officialmap", "Official maps to build", GUIElementData.LabelType, ScriptIndex.ModScript));
+            // Reborn: normal map builds reuse verified output; this toggle bypasses the lookup for the selected maps.
+            options.Add(new GUIElementData("forcerebuildmaps", "Force Rebuild Maps", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("createbig", "Create BIG Files", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
             // Reborn: use the same persisted option control as the other build toggles.
             options.Add(new GUIElementData("silentmode", "Silent Mode", GUIElementData.CheckBoxType, ScriptIndex.ModScript));

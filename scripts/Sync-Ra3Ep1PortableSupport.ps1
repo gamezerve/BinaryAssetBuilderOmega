@@ -12,7 +12,7 @@ function Copy-RebornSupportTree([string]$Source,[string]$Destination) {
     }
 }
 $null=New-Item -ItemType Directory -Force -Path (Join-Path $Sdk 'scripts')
-foreach($name in @('Invoke-Ra3Ep1DevAlphaBuild.ps1','Invoke-Ra3Ep1ConscriptAlphaBuild.ps1','Invoke-Ra3Ep1AlphaBuild.ps1','New-Ra3Ep1MissingArtPlaceholders.ps1','Ra3Ep1BuildLog.ps1','Ra3Ep1GlobalData.ps1','Ra3Ep1BuildStages.ps1','Ra3Ep1Maps.ps1','Ra3Ep1FinalPackage.ps1','Ra3Ep1PortablePaths.ps1')){
+foreach($name in @('Invoke-Ra3Ep1DevAlphaBuild.ps1','Invoke-Ra3Ep1ConscriptAlphaBuild.ps1','Invoke-Ra3Ep1AlphaBuild.ps1','New-Ra3Ep1MissingArtPlaceholders.ps1','Ra3Ep1BuildLog.ps1','Ra3Ep1GlobalData.ps1','Ra3Ep1BuildStages.ps1','Ra3Ep1Maps.ps1','Ra3Ep1MapCache.ps1','Ra3Ep1FinalPackage.ps1','Ra3Ep1PortablePaths.ps1')){
     Copy-Item -LiteralPath (Join-Path $Repository ('scripts/'+$name)) -Destination (Join-Path $Sdk ('scripts/'+$name)) -Force
 }
 # Reborn: legacy Windows PowerShell runs synchronization too, so avoid requiring its unavailable Path.GetRelativePath API.

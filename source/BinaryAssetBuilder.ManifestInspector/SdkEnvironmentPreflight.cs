@@ -166,9 +166,18 @@ internal static class SdkEnvironmentPreflight
     //-------------------------------------------------------------------------------------------------
     /** Reborn: inspect existing ancestors before any read/traversal; this does not promise adversarial filesystem isolation. */
     //-------------------------------------------------------------------------------------------------
-    internal static void CheckPath(string path)
+    internal static FileAttributes? CheckPath(string path)
     {
+        // Reborn: one metadata lookup supplies existence, file kind and reparse information per component.
+        FileAttributes? leaf = null;
         for (string? current = path; current != null; current = Path.GetDirectoryName(current))
-            if ((File.Exists(current) || Directory.Exists(current)) && (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("SDK preflight rejects reparse paths.");
+        {
+            var attributes = new FileInfo(current).Attributes;
+            // Reborn: FileSystemInfo returns -1 for an absent entry, but its existing ancestors still need inspection.
+            if ((int)attributes == -1) continue;
+            if ((attributes & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("SDK preflight rejects reparse paths.");
+            if (current == path) leaf = attributes;
+        }
+        return leaf;
     }
 }

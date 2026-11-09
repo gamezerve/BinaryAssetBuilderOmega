@@ -58,14 +58,14 @@ internal static class TerrainAtlasCompiler
         foreach(int at in new[]{12,20}){
             int offset=checked((int)Word(native.InstanceBuffer,at)),length=checked((int)Word(native.InstanceBuffer,at+4));
             var info=Ep1DdsTexture.Inspect(native.InstanceBuffer.AsSpan(offset,length).ToArray(),"synthetic terrain atlas");
-            if(info.Mips!=Mips||info.Kind!="StandardTexture")throw new InvalidDataException("Terrain atlas DDS mip/resource contract differs.");
+            if(info.Mips!=Mips||info.Kind!="StandardTexture"||info.Format!=(at==12?"A8R8G8B8":"X1R5G5B5"))throw new InvalidDataException("Terrain atlas DDS mip/resource contract differs.");
         }
         File.WriteAllBytes(Path.Combine(output,"synthetic-atlas.bin"),native.InstanceBuffer);
         Console.WriteLine($"Terrain atlas geometry/DDS PASS: {count} source tiles; retail rectangles; five mip levels; synthetic pixels only, no authored-texture or game validation.");
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: preserve source tile IDs/order, pack complete tiles with mip-safe borders and encode lossless color plus retail-format normal data. */
+    /** Reborn: preserve source tile IDs/order, pack complete tiles with mip-safe borders and emit lossless A8R8G8B8 color and X1R5G5B5 normals. */
     //-------------------------------------------------------------------------------------------------
     internal static Chunk Compile(XmlElement source,Func<string,Ep1TextureCompiler.Image> load)
     {
@@ -86,7 +86,9 @@ internal static class TerrainAtlasCompiler
             Blit(baseImage,color,size,x,y);Blit(normalImage,normal,size,x,y);
             tiles.Add((id,x+Border,y+Border,width,height));x+=width+2*Border;row=Math.Max(row,height+2*Border);
         }
-        byte[] baseDds=Dds(color,size,false),normalDds=Dds(normal,size,true);
+        // Reborn: write the complete BGRA color mip chain directly for lossless terrain color.
+        byte[] baseDds = Dds(color, size, false);
+        byte[] normalDds = Dds(normal, size, true);
         int normalAt=checked(28+baseDds.Length),tilesAt=checked(normalAt+normalDds.Length);var bytes=new byte[checked(tilesAt+tiles.Count*12)];
         Put(bytes,4,(uint)tiles.Count);Put(bytes,8,tiles.Count==0?0u:(uint)tilesAt);Put(bytes,12,28);Put(bytes,16,(uint)baseDds.Length);Put(bytes,20,(uint)normalAt);Put(bytes,24,(uint)normalDds.Length);
         baseDds.CopyTo(bytes,28);normalDds.CopyTo(bytes,normalAt);
@@ -108,7 +110,7 @@ internal static class TerrainAtlasCompiler
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: emit standard PC DDS mip chains; color stays lossless BGRA and normals use the X1R5G5B5 format witnessed in the EP1 atlas. */
+    /** Reborn: write the lossless BGRA color mip chain and the original X1R5G5B5 normal chain. */
     //-------------------------------------------------------------------------------------------------
     private static byte[] Dds(byte[] image,int size,bool normal)
     {

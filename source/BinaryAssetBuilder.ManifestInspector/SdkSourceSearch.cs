@@ -22,7 +22,14 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
         foreach(var selection in selections)
         {
             string? winner=null;
-            foreach(string path in selection.Candidates){SdkEnvironmentPreflight.CheckPath(path);if(Directory.Exists(path))throw new InvalidDataException("Search candidate became a directory.");if(File.Exists(path)){winner=path;break;}}
+            // Reborn: retain the independent precedence recheck and reuse each leaf's validated metadata.
+            foreach(string path in selection.Candidates)
+            {
+                if(SdkEnvironmentPreflight.CheckPath(path) is not FileAttributes attributes)continue;
+                if((attributes&FileAttributes.Directory)!=0)throw new InvalidDataException("Search candidate became a directory.");
+                winner=path;
+                break;
+            }
             // Reborn: no source may silently appear after an absent ART include was captured and skipped.
             if(selection.ExpectedMissing){if(selection.Layer is not ("missing-art-all" or "missing-art-instance")||!selection.LogicalPath.StartsWith("ART:",StringComparison.OrdinalIgnoreCase)||winner!=null)throw new InvalidDataException("Skipped ART include changed: "+selection.LogicalPath);continue;}
             if(!string.Equals(winner,selection.PhysicalPath,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Alias search precedence changed: "+selection.LogicalPath);
@@ -86,9 +93,10 @@ internal sealed record SdkSourceSearch(string ModData,string ModArt,string ModAu
         {
             foreach(var candidate in paths)
             {
-                SdkEnvironmentPreflight.CheckPath(candidate.Path);
-                if(Directory.Exists(candidate.Path))throw new InvalidDataException("Alias candidate is a directory: "+candidate.Path);
-                if(File.Exists(candidate.Path))return new(document,logical,candidate.Layer,candidate.Path,candidate.Root,paths.Select(p=>p.Path).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
+                // Reborn: selecting a winner needs no second file or directory existence probe.
+                if(SdkEnvironmentPreflight.CheckPath(candidate.Path) is not FileAttributes attributes)continue;
+                if((attributes&FileAttributes.Directory)!=0)throw new InvalidDataException("Alias candidate is a directory: "+candidate.Path);
+                return new(document,logical,candidate.Layer,candidate.Path,candidate.Root,paths.Select(p=>p.Path).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
             }
             throw new MissingFileException(paths.Select(p=>p.Path).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
         }

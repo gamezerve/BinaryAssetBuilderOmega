@@ -114,6 +114,8 @@ internal static class ConscriptMultiAssetBuild
             var worldBuilderRender=WorldBuilderRenderAssets(schemas,stock.Concat(localEntries).ToArray(),mapId);
             // Reborn: validation owns WorldBuilder diagnostics; compilation retains the same catalog-backed native resolution without repeating warnings.
             var available=stock.Where(a=>!locals.ContainsKey(new(a.TypeId,a.InstanceId))).Concat(localEntries).Concat(worldBuilderRender).ToArray();
+            // Reborn: retain the exact candidate multiplicity while sharing lookups across native assets and their verifiers.
+            using var referenceCatalog=new ConscriptBehaviorSurvey.ReferenceCatalog(schemas,available);
             var baseline=Read(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml"));baseline.DocumentElement!.SetAttribute("BuildTime","4");
             // Reborn: each emitted object owns its source admission/template map; never reuse the primary object's modules for another object.
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
@@ -511,7 +513,7 @@ internal static class ConscriptMultiAssetBuild
                 }
 
                 var id =new AssetId(instance.Handle.TypeId,instance.Handle.InstanceId);instance.Handle.TypeHash=fingerprints[id.TypeId].Hash;instance.Handle.InstanceHash=FastHash.GetHashCode(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));instance.ValidatedReferencedInstances=new(instance.ReferencedInstances);
-                foreach(var reference in instance.ReferencedInstances)if(available.Count(a=>a.TypeId==reference.TypeId&&a.InstanceId==reference.InstanceId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
+                foreach(var reference in instance.ReferencedInstances)if(referenceCatalog.Count(reference.InstanceId,reference.TypeId)!=1)throw SdkXmlDiagnostics.At(new InvalidDataException("Missing or ambiguous asset: "+reference.Name),xml.DocumentElement);
                 built.Add(id,new(xml,instance,buffer,fingerprints[id.TypeId].Tokenized));compileLog.End(progress);
             }
             // Reborn: review results are evidence only; even successful leaves never produce a launchable package in this mode.
@@ -585,8 +587,8 @@ internal static class ConscriptMultiAssetBuild
             Ep1AudioFileCompiler.Publish(package,ordered.Select(b=>b.Instance),encodedAudio);
             Console.WriteLine($"Reborn: mixed asset graph compiled: {instances.Length} explicit assets; dependency-sorted local Armor/Weapon/Upgrade/GameObject/LogicCommand/LogicCommandSet edges; no generated commands or game launch.");return true;
 
-            // Reborn: prepare current official references against mod-first identity lookup, then use actual Core occurrence normalization.
-            InstanceDeclaration Normalize(XmlDocument xml){var copy=Xml(xml.DocumentElement!.OuterXml);copy.Schemas.Add(official);copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+            // Reborn: use the compiled schema for each private copy before mod-first reference and Core occurrence normalization.
+            InstanceDeclaration Normalize(XmlDocument xml){var copy=Xml(xml.DocumentElement!.OuterXml);copy.Schemas=official;copy.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
                 // Reborn: preflight warned about missing optional shader bindings; omit them before Core creates native import occurrences.
                 W3DMissingTexturePolicy.OmitMissingBindings(copy,schemas,available);ConscriptBehaviorSurvey.ResolveStrong(copy,schemas,available);return Attach(ReferencePipelineSmokeTest.Normalize(schemas,copy.OuterXml),xml.DocumentElement.GetAttribute("id")+".xml");}
             // Reborn: cycles in strong local dependencies cannot be silently emitted in an arbitrary guessed order.
@@ -623,11 +625,12 @@ internal static class ConscriptMultiAssetBuild
 
     private static void PackageSupport(string output,XmlDocument source,Dictionary<string,byte[]> streams,InstanceDeclaration[] instances,ManifestAsset[] stock)
     {
-        string directory=Path.Combine(output,"support");Directory.CreateDirectory(directory);string[] extensions={".manifest",".bin",".relo",".imp"};var payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();byte[] bytes=ArmorDiagnosticPackage.Serialize(payloads,true,true);string path=Path.Combine(directory,"RebornConscriptProbe.big");File.WriteAllBytes(path,bytes);
-        // Reborn: texture/model support streams can exceed the old command-set fixture quota; readback is bounded by each exact generated payload.
-        using(var archive=BigArchive.Open(path,15,4096)){if(archive.Entries.Count!=15)throw new InvalidDataException("Support package entry count differs.");foreach(string suffix in new[]{"","_l","_m"})foreach(string extension in extensions.Concat(new[]{".version"})){var entry=archive.Entries.Single(e=>e.Name=="data\\mod"+suffix+extension);byte[] expected=extension==".version"?Encoding.ASCII.GetBytes("\r\n"):streams["diagnostic"+extension];if(!archive.ReadEntry(entry,expected.Length).SequenceEqual(expected))throw new InvalidDataException("Support package readback differs.");}}
+        string directory=Path.Combine(output,"support");Directory.CreateDirectory(directory);string[] extensions={".manifest",".bin",".relo",".imp"};var payloads=extensions.Select(e=>streams["diagnostic"+e]).ToArray();string path=Path.Combine(directory,"RebornConscriptProbe.big");
+        // Reborn: support-only streams use the same bounded writer and independent readback as mixed GameObject builds.
+        ArmorDiagnosticPackage.WriteDefaultPackage(path,payloads);
+        string archiveHash=ArmorDiagnosticPackage.VerifyDefaultPackage(path,payloads);
         string name=source.DocumentElement!.LocalName+":"+source.DocumentElement.GetAttribute("id");var primary=instances.Single(i=>i.Handle.Name==name);
-        var receipt=new{Asset=name,AssetCount=instances.Length,Assets=instances.Select(i=>i.Handle.Name),MultiAsset=true,ReferenceOccurrences=primary.ReferencedInstances.Count,AutomaticCommandGenerated=false,ArchiveEntryCount=15,ArchiveSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)),SourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(source.DocumentElement.OuterXml))),OfflineValidated=true,NewIdentity=!stock.Any(a=>a.Name==name),GameExecuted=false,InstalledFilesModified=false,RuntimeReady=false,InstanceHashPolicy="experimental-normalized-source"};
+        var receipt=new{Asset=name,AssetCount=instances.Length,Assets=instances.Select(i=>i.Handle.Name),MultiAsset=true,ReferenceOccurrences=primary.ReferencedInstances.Count,AutomaticCommandGenerated=false,ArchiveEntryCount=15,ArchiveSha256=archiveHash,SourceSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(source.DocumentElement.OuterXml))),OfflineValidated=true,NewIdentity=!stock.Any(a=>a.Name==name),GameExecuted=false,InstalledFilesModified=false,RuntimeReady=false,InstanceHashPolicy="experimental-normalized-source"};
         File.WriteAllText(Path.Combine(directory,"trial-plan.json"),JsonSerializer.Serialize(receipt,new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine("Reborn: support asset graph compiled: "+instances.Length+" explicit asset(s); no placeholder GameObject, generated commands or game launch.");
     }
 

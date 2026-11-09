@@ -4,7 +4,7 @@ param([string]$ModName='RebornTest',[string]$ModXml,[switch]$ValidateOnly,[strin
     # Reborn: All omits the directory override.
     [string]$OfficialMapDirectory,
     # Reborn: Studio sends checked folders in an owned UTF-8 file, avoiding command-line length and array-binding ambiguity.
-    [string]$OfficialMapSelectionFile)
+    [string]$OfficialMapSelectionFile,[ValidateSet(0,1)][int]$ForceRebuildMaps=0)
 
 function Test-AptUIReferences {
     param(
@@ -68,6 +68,7 @@ $sdk=Get-RebornSdkRoot $PSScriptRoot;$lock=$null;$run=$null;$publishMutex=$null;
 . (Join-Path $PSScriptRoot 'Ra3Ep1GlobalData.ps1')
 # Reborn: map compilation and _mod staging share the normal SDK lifetime, cancellation and final-package flow.
 . (Join-Path $PSScriptRoot 'Ra3Ep1Maps.ps1')
+. (Join-Path $PSScriptRoot 'Ra3Ep1MapCache.ps1')
 # Reborn: saved Static, Global and AptUI families survive compile-only builds and feed independent packaging.
 . (Join-Path $PSScriptRoot 'Ra3Ep1BuildStages.ps1')
 # Reborn: every native/global/backend child inherits this build's mode; restore the caller's environment even on cancellation or failure.
@@ -317,7 +318,7 @@ try{
         Stop-SdkBuildPhase
     }
     Start-SdkBuildPhase 9 'Building maps'
-    $mapBuild=@()
+    $mapBuild=@();$cacheRoot=$null;$cacheKey=$null
     if($BuildMaps){
         $mapStaticPackage=$package
         if(!$BuildStaticData){
@@ -335,11 +336,22 @@ try{
                 else{Write-SdkBuildLine 'Map check uses stock and selected global streams. No previous local mod static catalog was found.'}
             }
         }
-        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $officialMapDirectories
-        if($mapBuild.Count -and $publishPackage){
-            Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc')
+        # Reborn: validate fresh and saved maps against the same build-local witnesses before exposing them to packaging.
+        $roots=@($sdk,$settings.SdkDataRoot,$settings.UprisingXmlRoot)
+        $witness=New-RebornMapWitness $roots
+        if(!$ValidateOnly){
+            $cacheRoot=Join-Path $expectedOutput ($ModName+'/Maps')
+            $cacheKey=Get-RebornMapCacheKey $sdk $settings $expectedCompiler $StaticManifest $GlobalManifest $globalBuild.MapContext $mapStaticPackage $run
         }
-        if($mapBuild.Count){Stop-SdkBuildPhase ('Maps compiled: '+$mapBuild.Count)}else{Stop-SdkBuildPhase}
+        Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $officialMapDirectories -CacheRoot $cacheRoot -CacheKey $cacheKey -Witness $witness -ForceRebuild:($ForceRebuildMaps -or $ValidateOnly)
+        if($mapBuild.Count){
+            if($cacheRoot -and (Get-RebornMapCacheKey $sdk $settings $expectedCompiler $StaticManifest $GlobalManifest $globalBuild.MapContext $mapStaticPackage $run)-cne $cacheKey){throw 'Shared map providers changed during the build.'}
+            $finalWitness=New-RebornMapWitness $roots
+            foreach($plan in $mapBuild){Assert-RebornMapWitness $plan $finalWitness}
+            if($publishPackage){Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc') -Witnessed}
+            $rebuilt=@($mapBuild | Where-Object Fresh).Count
+            Stop-SdkBuildPhase ('Maps compiled: '+$rebuilt+'; reused: '+($mapBuild.Count-$rebuilt))
+        }else{Stop-SdkBuildPhase}
     }else{Stop-SdkBuildPhase 'Skipped: [Optional] Build Maps is unchecked.'}
     Start-SdkBuildPhase 10 'Creating big files'
     if(!$publishPackage){
@@ -349,6 +361,7 @@ try{
             if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before saving outputs.'}}
             if($newGlobalBuild){Assert-RebornGlobalSources $newGlobalBuild}
             Save-RebornBuildStages $stages $expectedOutput $ModName
+            if($cacheRoot){Save-RebornMapCache $cacheRoot $cacheKey $mapBuild}
         }
         Write-SdkBuildLine $(if($ValidateOnly){'Validation Completed (no saved outputs or publication).'}else{'Compilation Completed (outputs saved; no BIG publication).'})
         Write-SdkBuildLine ('Build time taken: '+$script:BuildClock.Elapsed.ToString('c'))
@@ -383,6 +396,7 @@ try{
     $final=Publish-RebornFinalPackage $ModName $ModVersion $package (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc') $FinalModsRoot
     try{
         Save-RebornBuildStages $stages $expectedOutput $ModName
+        if($cacheRoot){Save-RebornMapCache $cacheRoot $cacheKey $mapBuild}
         $output=Join-Path $expectedOutput $ModName
         $result=[pscustomobject]@{Format='RebornPersistentBuild1';ModName=$ModName;Source=$ModXml;Backend=$receipt;Core=$core;BigPath=$final.StreamsPath;SkuDefPath=$final.SkuDefPath;CompilerFiles=$toolchain.Files;PackageSha256=$hash;FinalPackage=$final;SelectedStages=$selected;Stages=@($stages.Values | ForEach-Object {[pscustomobject]@{Family=$_.Family;Directory=$_.Directory;CreatedUtc=$_.Receipt.CreatedUtc}});Maps=@($mapBuild | ForEach-Object {[pscustomobject]@{Name=$_.Name;Entry=$_.Entry;Files=$_.Files}});UnusedAssets=$(if(!$SilentMode){Get-Content -LiteralPath (Join-Path $run 'unused-assets.json') -Raw|ConvertFrom-Json}else{$null})}
         $receiptStage=Join-Path $output '.build.json.next';[IO.File]::WriteAllText($receiptStage,($result|ConvertTo-Json -Depth 20));[IO.File]::Move($receiptStage,(Join-Path $output 'build.json'),$true)

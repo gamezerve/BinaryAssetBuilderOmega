@@ -18,7 +18,8 @@ internal static class ConscriptSharedSourceContract
         // Reborn: nonmodule scalar codecs share admission across all routes; structural changes continue through the variable graph path.
         GameObjectNestedValueContract.Validate(source);
         GameObjectResourceContract.Validate(source);
-        var qualified=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));qualified.Schemas.Add(schemas);qualified.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+        // Reborn: validating this private document only needs the already compiled schema set.
+        var qualified=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(source.DocumentElement!.OuterXml));qualified.Schemas=schemas;qualified.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
         // Reborn: PropBody has no MaxHealth; type-specific legacy receipts cannot require ActiveBody storage.
         // Reborn: the historical single Speed receipt is not an admission requirement for source-sized movement lists.
         foreach(var field in ConscriptEditableScalars.Fields)if(ConscriptEditableScalars.Applies(qualified,field)&&field.Attribute!="Amount"&&(field.Attribute!="Speed"||ConscriptLocomotorSetContract.Entries(qualified).Length==1))ConscriptEditableScalars.Read(qualified,field);

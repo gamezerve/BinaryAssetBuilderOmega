@@ -1,13 +1,69 @@
 # Reborn: versioned Documents publication is separate from private compiler staging and never touches a game installation.
 
 # Reborn: OneDrive cloud placeholders are not path redirections; inspect the actual tag instead of rejecting every ReparsePoint attribute.
-if(-not ('Reborn.PackageReparseTag' -as [type])){
+if(-not ('Reborn.PackageFile' -as [type])){
     Add-Type -TypeDefinition @'
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
 namespace Reborn {
+    // Reborn: validate and stream package files without invoking PowerShell for every ancestor or payload block.
+    public static class PackageFile {
+        // Reborn: query each existing ancestor once and continue checking parents of an absent leaf.
+        public static void CheckPath(string path, bool windows) {
+            for (string part=Path.GetFullPath(path); part!=null; part=Path.GetDirectoryName(part)) {
+                FileAttributes attributes;
+                try { attributes=File.GetAttributes(part); }
+                catch (FileNotFoundException) { continue; }
+                catch (DirectoryNotFoundException) { continue; }
+                if ((attributes & FileAttributes.ReparsePoint)!=0 && (!windows || !PackageReparseTag.IsCloud(part)))
+                    throw new InvalidDataException("Redirected package path refused: "+part);
+            }
+        }
+
+        // Reborn: hash source snapshots and published files without invoking a PowerShell command per file.
+        public static string Hash(string path) {
+            using (var input=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read,65536,FileOptions.SequentialScan))
+                return Convert.ToHexString(SHA256.HashData(input));
+        }
+
+        // Reborn: hash exactly the bytes written and reject size or content changes against the pre-copy snapshot.
+        public static void CopyVerified(string path, Stream output, long length, string expected, byte[] buffer) {
+            using (var input=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read,65536,FileOptions.SequentialScan))
+            using (var hash=IncrementalHash.CreateHash(HashAlgorithmName.SHA256)) {
+                if (input.Length!=length) throw new InvalidDataException("Misc changed while packaging: "+path);
+                Transfer(input,output,length,buffer,hash,null);
+                if (input.ReadByte()!=-1 || Convert.ToHexString(hash.GetHashAndReset())!=expected)
+                    throw new InvalidDataException("Misc changed while packaging: "+path);
+            }
+        }
+
+        // Reborn: verify stored bytes independently while accumulating the archive hash used by the package receipt.
+        public static void VerifyPayload(Stream input, long length, string expected, byte[] buffer, IncrementalHash archive) {
+            using (var hash=IncrementalHash.CreateHash(HashAlgorithmName.SHA256)) {
+                Transfer(input,null,length,buffer,hash,archive);
+                if (Convert.ToHexString(hash.GetHashAndReset())!=expected)
+                    throw new InvalidDataException("Misc payload hash mismatch.");
+            }
+        }
+
+        // Reborn: stream bounded data in managed code so large movies avoid per-block PowerShell dispatch.
+        public static void Transfer(Stream input, Stream output, long remaining, byte[] buffer, IncrementalHash hash, IncrementalHash archive) {
+            while (remaining>0) {
+                int read=input.Read(buffer,0,(int)Math.Min(remaining,buffer.Length));
+                if (read==0) throw new EndOfStreamException("Truncated Misc payload.");
+                output?.Write(buffer,0,read);
+                hash.AppendData(buffer,0,read);
+                archive?.AppendData(buffer,0,read);
+                remaining-=read;
+            }
+        }
+
+    }
+
     // Reborn: read only reparse metadata without following a junction, symlink or cloud placeholder.
     public static class PackageReparseTag {
         [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)]
@@ -32,11 +88,7 @@ namespace Reborn {
 <# Reborn: refuse redirected path components before reading Misc or replacing owned published files. #>
 #-------------------------------------------------------------------------------------------------
 function Assert-RebornPackagePath([string]$Path) {
-    for($part=[IO.Path]::GetFullPath($Path);$part;$part=[IO.Path]::GetDirectoryName($part)) {
-        if((Test-Path -LiteralPath $part) -and ((Get-Item -LiteralPath $part -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){
-            if(-not $IsWindows -or -not [Reborn.PackageReparseTag]::IsCloud($part)){throw ('Redirected package path refused: '+$part)}
-        }
-    }
+    [Reborn.PackageFile]::CheckPath($Path,$IsWindows)
 }
 
 #-------------------------------------------------------------------------------------------------
@@ -45,12 +97,12 @@ function Assert-RebornPackagePath([string]$Path) {
 function New-RebornMiscBigs([string]$Source,[string]$Destination,[long]$Limit) {
     if($Limit -lt 16 -or $Limit -gt [uint32]::MaxValue){throw 'Invalid Misc BIG4 size limit.'}
     Assert-RebornPackagePath $Source
-    $files=@();$entries=[Collections.Generic.List[object]]::new();$names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $files=[Collections.Generic.List[IO.FileInfo]]::new();$entries=[Collections.Generic.List[object]]::new();$names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     if(Test-Path -LiteralPath $Source){
         if(-not(Test-Path -LiteralPath $Source -PathType Container)){throw 'Misc must be a directory.'}
         # Reborn: inspect every directory before recursion so junctions are never traversed.
         $pending=[Collections.Generic.Queue[string]]::new();$pending.Enqueue($Source)
-        while($pending.Count){foreach($item in Get-ChildItem -LiteralPath $pending.Dequeue() -Force){Assert-RebornPackagePath $item.FullName;if($item.PSIsContainer){$pending.Enqueue($item.FullName)}elseif($item.Extension -ine '.asset'){$files+= $item}}}
+        while($pending.Count){foreach($item in Get-ChildItem -LiteralPath $pending.Dequeue() -Force){Assert-RebornPackagePath $item.FullName;if($item.PSIsContainer){$pending.Enqueue($item.FullName)}elseif($item.Extension -ine '.asset'){$files.Add($item)}}}
     }
     # Reborn: absent, directory-only and excluded-only Misc inputs produce no archive at all.
     [long]$header=16;[long]$size=0
@@ -66,13 +118,13 @@ function New-RebornMiscBigs([string]$Source,[string]$Destination,[long]$Limit) {
             $entries=[Collections.Generic.List[object]]::new();$header=16;$size=0
         }
         $header+=$directorySize;$size+=$file.Length
-        $entries.Add([pscustomobject]@{Name=$name;Bytes=$encoded;File=$file.FullName;Length=$file.Length;Hash=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash})
+        $entries.Add([pscustomobject]@{Name=$name;Bytes=$encoded;File=$file.FullName;Length=$file.Length;Hash=[Reborn.PackageFile]::Hash($file.FullName)})
     }
     if($entries.Count){$archives.Add($entries)}
     for($i=0;$i -lt $archives.Count;$i++){
         $path=if($i -eq 0){$Destination}else{Join-Path ([IO.Path]::GetDirectoryName($Destination)) ([IO.Path]::GetFileNameWithoutExtension($Destination)+'_'+($i+1)+'.big')}
-        Write-RebornMiscBig $archives[$i] $path
-        [pscustomobject]@{Name=[IO.Path]::GetFileName($path);Entries=$archives[$i].Count}
+        $sha256=Write-RebornMiscBig $archives[$i] $path
+        [pscustomobject]@{Name=[IO.Path]::GetFileName($path);Entries=$archives[$i].Count;Sha256=$sha256}
     }
 }
 
@@ -93,20 +145,26 @@ function Write-RebornMiscBig($Entries,[string]$Destination) {
         [long]$offset=$header
         foreach($entry in $entries){foreach($word in @($offset,$entry.Length)){$bytes=[BitConverter]::GetBytes([uint32]$word);[Array]::Reverse($bytes);$writer.Write($bytes)};$writer.Write([byte[]]$entry.Bytes);$offset+=$entry.Length}
         while($stream.Position -lt $header){$writer.Write([byte]0)}
-        foreach($entry in $entries){$input=[IO.File]::OpenRead($entry.File);try{$input.CopyTo($stream)}finally{$input.Dispose()};if((Get-FileHash -LiteralPath $entry.File).Hash -cne $entry.Hash){throw ('Misc changed while packaging: '+$entry.File)}}
+        $buffer=[byte[]]::new(262144)
+        foreach($entry in $Entries){[Reborn.PackageFile]::CopyVerified($entry.File,$stream,$entry.Length,$entry.Hash,$buffer)}
         $writer.Flush();if($stream.Length -ne $total){throw 'Misc BIG size changed during packaging.'}
-        # Reborn: parse the stored directory independently and hash each stored payload without loading the archive into memory.
+        # Reborn: read the stored directory once, then verify payloads sequentially and hash the whole stored archive in the same pass.
         $stream.Position=0;$reader=[IO.BinaryReader]::new($stream,[Text.Encoding]::ASCII,$true)
         if([Text.Encoding]::ASCII.GetString($reader.ReadBytes(4)) -cne 'BIG4' -or $reader.ReadUInt32() -ne $total){throw 'Misc BIG header mismatch.'}
-        foreach($expected in @($entries.Count,$header)){$bytes=$reader.ReadBytes(4);[Array]::Reverse($bytes);if([BitConverter]::ToUInt32($bytes,0) -ne $expected){throw 'Misc BIG directory header mismatch.'}}
-        $buffer=[byte[]]::new(65536);$expectedOffset=$header
-        foreach($entry in $entries){
+        foreach($expected in @($Entries.Count,$header)){$bytes=$reader.ReadBytes(4);[Array]::Reverse($bytes);if([BitConverter]::ToUInt32($bytes,0) -ne $expected){throw 'Misc BIG directory header mismatch.'}}
+        $expectedOffset=$header
+        foreach($entry in $Entries){
             foreach($expected in @($expectedOffset,$entry.Length)){$bytes=$reader.ReadBytes(4);[Array]::Reverse($bytes);if([BitConverter]::ToUInt32($bytes,0) -ne $expected){throw 'Misc BIG entry bounds mismatch.'}}
             if([Convert]::ToHexString($reader.ReadBytes($entry.Bytes.Length)) -cne [Convert]::ToHexString($entry.Bytes)){throw 'Misc BIG entry name mismatch.'}
-            $directoryPosition=$stream.Position;$stream.Position=$expectedOffset;$hasher=[Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
-            try{[long]$left=$entry.Length;while($left){$read=$stream.Read($buffer,0,[int][Math]::Min($left,$buffer.Length));if(-not $read){throw 'Truncated Misc payload.'};$hasher.AppendData($buffer,0,$read);$left-=$read};if([Convert]::ToHexString($hasher.GetHashAndReset()) -cne $entry.Hash){throw 'Misc payload hash mismatch.'}}finally{$hasher.Dispose()}
-            $stream.Position=$directoryPosition;$expectedOffset+=$entry.Length
+            $expectedOffset+=$entry.Length
         }
+        $archiveHash=[Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
+        try {
+            $stream.Position=0
+            [Reborn.PackageFile]::Transfer($stream,$null,$header,$buffer,$archiveHash,$null)
+            foreach($entry in $Entries){[Reborn.PackageFile]::VerifyPayload($stream,$entry.Length,$entry.Hash,$buffer,$archiveHash)}
+            return [Convert]::ToHexString($archiveHash.GetHashAndReset())
+        } finally {$archiveHash.Dispose();$reader.Dispose()}
     } finally {$writer.Dispose();$stream.Dispose()}
 }
 
@@ -145,8 +203,14 @@ function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$S
         foreach($part in $miscParts){$skuText+="add-big $($part.Name)`r`n";$newFiles+=$part.Name}
         $newFiles+= $skuName
         [IO.File]::WriteAllText((Join-Path $stage $skuName),$skuText,[Text.Encoding]::ASCII)
-        $inventory=@(foreach($name in $newFiles){[pscustomobject]@{Name=$name;Sha256=(Get-FileHash -LiteralPath (Join-Path $stage $name)).Hash}})
-        if($inventory[0].Sha256 -cne (Get-FileHash -LiteralPath $Streams).Hash){throw 'Final streams copy differs.'}
+        # Reborn: Misc receipt hashes are already proved against the stored archive under its exclusive handle.
+        $streamsHash=[Reborn.PackageFile]::Hash((Join-Path $stage $streamsName))
+        if($streamsHash -cne [Reborn.PackageFile]::Hash($Streams)){throw 'Final streams copy differs.'}
+        $inventory=@(
+            [pscustomobject]@{Name=$streamsName;Sha256=$streamsHash}
+            foreach($part in $miscParts){[pscustomobject]@{Name=$part.Name;Sha256=$part.Sha256}}
+            [pscustomobject]@{Name=$skuName;Sha256=[Reborn.PackageFile]::Hash((Join-Path $stage $skuName))}
+        )
         $receipt=Join-Path $output $receiptName
         # Reborn: old receipts own only verified exact-version files; extra parts follow the same rollback path.
         $previousFiles=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::OrdinalIgnoreCase)
@@ -165,7 +229,7 @@ function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$S
             if($name -ceq $receiptName){continue}
             $target=Join-Path $output $name;Assert-RebornPackagePath $target
             if($previousFiles.ContainsKey($name)){
-                if(-not(Test-Path -LiteralPath $target -PathType Leaf) -or (Get-FileHash -LiteralPath $target).Hash -cne $previousFiles[$name]){throw ('Modified final package retained: '+$name)}
+                if(-not(Test-Path -LiteralPath $target -PathType Leaf) -or [Reborn.PackageFile]::Hash($target) -cne $previousFiles[$name]){throw ('Modified final package retained: '+$name)}
             }elseif(Test-Path -LiteralPath $target){throw ('Unmanaged final package collision retained: '+$name)}
         }
         [IO.File]::WriteAllText((Join-Path $stage $receiptName),([pscustomobject]@{Format='RebornDocumentsPackage1';ModName=$ModName;Version=$Version;Files=$inventory;MiscEntries=$miscCount}|ConvertTo-Json -Depth 5))

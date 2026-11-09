@@ -129,7 +129,8 @@ internal sealed class SchemaNativeContract
         SlowDeathContract.Normalize(document);
         // Reborn: original laser states and scripted draws may list their element families out of XSD order.
         SourceFamilyOrder.Normalize(document);
-        SubObjectsUpgradeContract.Normalize(document,schemas.Schemas);document.Schemas.Add(schemas.Schemas);
+        // Reborn: validate the private native proof copy with the existing compiled schema set.
+        SubObjectsUpgradeContract.Normalize(document,schemas.Schemas);document.Schemas=schemas.Schemas;
         document.Validate((_,e)=>throw new InvalidDataException(e.Message));ConscriptBehaviorSurvey.ResolveStrong(document,schemas,catalog);return document;
     }
 

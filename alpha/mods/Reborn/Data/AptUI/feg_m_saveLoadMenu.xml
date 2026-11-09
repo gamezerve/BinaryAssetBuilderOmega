@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: use the original Save/Load screen with a self-contained background. -->
+  <Includes>
+    <Include type="all" source="feg_m_saveLoadMenu/feg_m_saveLoadMenu.xml" />
+  </Includes>
+</AssetDeclaration>

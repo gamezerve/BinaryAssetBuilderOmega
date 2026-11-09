@@ -85,7 +85,8 @@ internal static class SdkGameObjectInheritance
             }
             foreach(var asset in assets)root.ReplaceChild(Resolve(asset.LocalName+":"+asset.GetAttribute("id"),0),asset);
             // Reborn: validate a disposable clone so schema defaults never leak into the authored/merged source as explicit overriding values.
-            var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas.Add(schemas);check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
+            // Reborn: the expanded owner is private to this validation and can use the existing compiled schema set.
+            var check=new XmlDocument{XmlResolver=null};check.LoadXml(xml.OuterXml);check.Schemas=schemas;check.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));
             // Reborn: whitespace-only empty modules are formatting, not text payload; remove it only where the compiled schema proves empty/element-only content.
             NormalizeStructuralWhitespace(xml.DocumentElement!,check.DocumentElement!);
             byte[] bytes=Encoding.UTF8.GetBytes(xml.OuterXml);if(!SdkSourceScale.Unrestricted && (bytes.Length>4*1048576))throw new InvalidDataException("Merged GameObject source exceeds 4 MiB.");

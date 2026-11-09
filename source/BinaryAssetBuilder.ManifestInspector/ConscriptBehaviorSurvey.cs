@@ -87,17 +87,80 @@ internal static class ConscriptBehaviorSurvey
         }
         finally{Settings.Current=saved;}
     }
+    [ThreadStatic] private static ReferenceCatalog? currentCatalog;
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: index one immutable build catalog, preserving every candidate so duplicate strong targets still fail. */
+    //-------------------------------------------------------------------------------------------------
+    internal sealed class ReferenceCatalog : IDisposable
+    {
+        private readonly ReferenceCatalog? previous;
+        private readonly SchemaSet schemas;
+        private readonly ManifestAsset[] assets;
+        private readonly ILookup<uint,ManifestAsset> instances;
+        private readonly Dictionary<string,HashSet<uint>> allowedTypes=new(StringComparer.Ordinal);
+
+        // Reborn: the lookup is valid only for this exact schema and catalog pair during the synchronous build.
+        internal ReferenceCatalog(SchemaSet schemas,ManifestAsset[] assets)
+        {
+            this.schemas=schemas;
+            this.assets=assets;
+            instances=assets.ToLookup(a=>a.InstanceId);
+            previous=currentCatalog;
+            currentCatalog=this;
+        }
+
+        // Reborn: test the original array and schema identities before reusing any cached target selection.
+        internal bool Matches(SchemaSet schema,ManifestAsset[] catalog)=>ReferenceEquals(schemas,schema)&&ReferenceEquals(assets,catalog);
+
+        // Reborn: check exact typed import occurrences against the original catalog without scanning unrelated identities.
+        internal int Count(uint instanceId,uint typeId)=>instances[instanceId].Count(a=>a.TypeId==typeId);
+
+        // Reborn: cache derivation results per declared type and filter the small bucket for the actual instance hash.
+        internal ManifestAsset[] Find(uint instanceId,string referenceType,XmlSchemaType required)
+        {
+            if(!allowedTypes.TryGetValue(referenceType,out var allowed))
+            {
+                allowed=DerivedTypes(schemas,required);
+                allowedTypes.Add(referenceType,allowed);
+            }
+            return instances[instanceId].Where(a=>allowed.Contains(a.TypeId)).ToArray();
+        }
+
+        // Reborn: release this catalog at the end of the build and restore any enclosing scope.
+        public void Dispose()=>currentCatalog=previous;
+    }
+
+    // Reborn: use the same official derivation rule for both scoped builds and standalone checks.
+    private static HashSet<uint> DerivedTypes(SchemaSet schemas,XmlSchemaType required)=>
+        schemas.Schemas.GlobalTypes.Values.Cast<XmlSchemaType>()
+            .Where(t=>XmlSchemaType.IsDerivedFrom(t,required,XmlSchemaDerivationMethod.None))
+            .Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: schema-derived strong references resolve to one concrete catalog target before production Core normalization; weak IDs and numeric compiler indices are not authored. */
     //-------------------------------------------------------------------------------------------------
     internal static void ResolveStrong(XmlDocument document,SchemaSet schemas,ManifestAsset[] catalog)
     {
+        var index=currentCatalog;
+        if(index!=null&&!index.Matches(schemas,catalog))index=null;
         foreach(XmlNode node in document.SelectNodes("//* | //@*")!)
         {
             var type=node.SchemaInfo.SchemaType;if(type==null || !XmlSchemaType.IsDerivedFrom(type,schemas.XmlAssetReferenceType,XmlSchemaDerivationMethod.None))continue;string name=(node is XmlAttribute attribute?attribute.Value:node.InnerText).Trim();if(name.Length==0 || name.Contains(':'))continue;if(name.Contains('\\'))throw new InvalidDataException("Authored behavior compiler index refused.");
             string? referenceType=null;var declaration=node is XmlAttribute?node.SchemaInfo.SchemaAttribute?.UnhandledAttributes:node.SchemaInfo.SchemaElement?.UnhandledAttributes;referenceType=Annotation(declaration);
             for(XmlSchemaType? current=type;referenceType==null && current!=null;){referenceType=Annotation(current.UnhandledAttributes);var next=current.BaseXmlSchemaType;if(ReferenceEquals(next,current))break;current=next;}
-            if(referenceType==null)throw new InvalidDataException("Strong behavior reference type missing.");var required=schemas.GetXmlType(referenceType)??throw new InvalidDataException("Behavior reference schema missing: "+referenceType);uint id=new InstanceHandle(name).InstanceId;var allowed=schemas.Schemas.GlobalTypes.Values.Cast<XmlSchemaType>().Where(t=>XmlSchemaType.IsDerivedFrom(t,required,XmlSchemaDerivationMethod.None)).Select(t=>FastHash.GetHashCode(t.Name!)).ToHashSet();var targets=catalog.Where(a=>a.InstanceId==id && allowed.Contains(a.TypeId)).ToArray();if(targets.Length!=1)throw new InvalidDataException("Behavior strong target missing/ambiguous: "+referenceType+":"+name);if(node is XmlAttribute a)a.Value=targets[0].Name;else node.InnerText=targets[0].Name;
+            if(referenceType==null)throw new InvalidDataException("Strong behavior reference type missing.");
+            var required=schemas.GetXmlType(referenceType)??throw new InvalidDataException("Behavior reference schema missing: "+referenceType);
+            uint id=new InstanceHandle(name).InstanceId;
+            ManifestAsset[] targets;
+            if(index!=null)targets=index.Find(id,referenceType,required);
+            else
+            {
+                var allowed=DerivedTypes(schemas,required);
+                targets=catalog.Where(a=>a.InstanceId==id&&allowed.Contains(a.TypeId)).ToArray();
+            }
+            if(targets.Length!=1)throw new InvalidDataException("Behavior strong target missing/ambiguous: "+referenceType+":"+name);
+            if(node is XmlAttribute a)a.Value=targets[0].Name;else node.InnerText=targets[0].Name;
         }
         //-------------------------------------------------------------------------------------------------
         /** Reborn: only the official asset-schema namespace defines reference target annotations. */

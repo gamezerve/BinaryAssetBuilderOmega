@@ -327,8 +327,8 @@ internal static class ConscriptVariableBehaviorSource
         Align(source.DocumentElement!,aligned.DocumentElement!,upgradeIds);
         return new(origins,behaviors.Length);
 
-        // Reborn: comparison copies materialize official defaults without introducing allocations into the user's authored source.
-        XmlDocument Qualified(XmlDocument input){var document=Clone(input);document.Schemas.Add(schemas);document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));foreach(XmlAttribute a in document.SelectNodes("//@*")!)a.Value=a.Value;return Clone(document);}
+        // Reborn: comparison copies reuse the compiled schema and materialize defaults outside the authored source.
+        XmlDocument Qualified(XmlDocument input){var document=Clone(input);document.Schemas=schemas;document.Validate((_,e)=>throw SdkXmlDiagnostics.SchemaError(e));foreach(XmlAttribute a in document.SelectNodes("//@*")!)a.Value=a.Value;return Clone(document);}
         // Reborn: only known ABI fixed fields and the own local ID are masked; all nested fields/text/reference identities stay visible.
         bool Matches(ConscriptModuleScalarContract.Owner owner,ConscriptModuleScalarContract.Owner template)
         {

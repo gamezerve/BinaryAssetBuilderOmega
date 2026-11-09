@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Security.Cryptography;
 using System.Text;
 using BinaryAssetBuilder.Core;
 
@@ -93,6 +94,84 @@ internal static class ArmorDiagnosticPackage
     //-------------------------------------------------------------------------------------------------
     internal static byte[] Serialize(byte[][] payloads, bool includeVariants = false, bool defaultRoute = false)
     {
+        var (header, contents)=Layout(payloads,includeVariants,defaultRoute);
+        byte[] bytes=new byte[BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(4))];
+        header.CopyTo(bytes,0);
+        int offset=header.Length;
+        foreach(byte[] payload in contents)
+        {
+            payload.CopyTo(bytes,offset);
+            offset+=payload.Length;
+        }
+        return bytes;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: write the same linked variants without allocating a three-stream archive in the x86 compiler. */
+    //-------------------------------------------------------------------------------------------------
+    internal static void WriteDefaultPackage(string path,byte[][] payloads)
+    {
+        var (header,contents)=Layout(payloads,includeVariants:true,defaultRoute:true);
+        using var stream=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None);
+        stream.Write(header);
+        foreach(byte[] payload in contents)stream.Write(payload);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: independently parse the default BIG directory, verify each stored variant and hash the exact bytes in bounded buffers. */
+    //-------------------------------------------------------------------------------------------------
+    internal static string VerifyDefaultPackage(string path,byte[][] payloads)
+    {
+        using var stream=File.OpenRead(path);
+        Span<byte> prefix=stackalloc byte[16];
+        if(stream.Length<prefix.Length)throw new InvalidDataException("Conscript trial BIG header differs.");
+        stream.ReadExactly(prefix);
+        uint headerSize=BinaryPrimitives.ReadUInt32BigEndian(prefix[12..]);
+        if(!prefix[..4].SequenceEqual("BIG4"u8)||BinaryPrimitives.ReadUInt32LittleEndian(prefix[4..])!=stream.Length
+            ||BinaryPrimitives.ReadUInt32BigEndian(prefix[8..])!=15||headerSize<16||headerSize>4096)
+            throw new InvalidDataException("Conscript trial BIG header differs.");
+
+        using var archive=BigArchive.Open(path,15,4096);
+        using var hash=IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        byte[] buffer=new byte[65536];
+        stream.Position=0;
+        stream.ReadExactly(buffer.AsSpan(0,(int)headerSize));
+        hash.AppendData(buffer,0,(int)headerSize);
+        long offset=headerSize;
+        int index=0;
+        byte[] version="\r\n"u8.ToArray();
+        foreach(string variant in new[]{"","_l","_m"})
+        {
+            for(int part=0;part<=Extensions.Length;part++)
+            {
+                bool marker=part==Extensions.Length;
+                string suffix=marker?".version":Extensions[part];
+                byte[] expected=marker?version:payloads[part];
+                var entry=archive.Entries[index++];
+                if(entry.Name!="data\\mod"+variant+suffix||entry.Offset!=offset||entry.StoredSize!=expected.Length)
+                    throw new InvalidDataException("Conscript trial variant differs.");
+                for(int start=0;start<expected.Length;)
+                {
+                    int count=Math.Min(buffer.Length,expected.Length-start);
+                    var bytes=buffer.AsSpan(0,count);
+                    archive.ReadEntryRange(entry,start,bytes);
+                    if(!bytes.SequenceEqual(expected.AsSpan(start,count)))
+                        throw new InvalidDataException("Conscript trial variant differs.");
+                    hash.AppendData(bytes);
+                    start+=count;
+                }
+                offset+=entry.StoredSize;
+            }
+        }
+        if(offset!=stream.Length)throw new InvalidDataException("Conscript trial unowned archive suffix.");
+        return Convert.ToHexString(hash.GetHashAndReset());
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share BIG4 directory geometry between byte-array test fixtures and streaming compiler output. */
+    //-------------------------------------------------------------------------------------------------
+    private static (byte[] Header,byte[][] Contents) Layout(byte[][] payloads,bool includeVariants,bool defaultRoute)
+    {
         // Reborn: the explicit trial mode clones only this verified armor family into the observed empty/_L/_M suffix slots.
         if (payloads.Length != 4) throw new InvalidDataException("Armor package requires four chunks.");
         // Reborn: the separate default-reader experiment uses mod names and CRLF markers without changing any stream bytes.
@@ -106,8 +185,8 @@ internal static class ArmorDiagnosticPackage
         int directorySize = 16 + names.Sum(name => 8 + name.Length);
         int headerSize = (directorySize + 7) & ~7;
         int size = checked(headerSize + contents.Sum(payload => payload.Length));
-        // Reborn: shared mixed-object packaging uses checked BIG4/int32 allocation bounds, not the original single-armor experiment's one-MiB quota.
-        byte[] bytes = new byte[size];
+        // Reborn: keep the existing checked stream-size bounds while allocating only the directory.
+        byte[] bytes = new byte[headerSize];
         Encoding.ASCII.GetBytes("BIG4").CopyTo(bytes, 0);
         BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(4), (uint)size);
         BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(8), (uint)names.Length);
@@ -119,10 +198,9 @@ internal static class ArmorDiagnosticPackage
             BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset), (uint)payloadOffset);
             BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(directoryOffset + 4), (uint)payload.Length);
             names[index].CopyTo(bytes, directoryOffset + 8);
-            payload.CopyTo(bytes, payloadOffset);
             directoryOffset += 8 + names[index].Length; payloadOffset += payload.Length;
         }
-        return bytes;
+        return (bytes,contents);
     }
 
     //-------------------------------------------------------------------------------------------------

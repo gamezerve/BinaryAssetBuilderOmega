@@ -50,8 +50,8 @@ function Get-RebornOfficialMapFolders([string]$DataRoot,[string]$OfficialMapDire
 #-------------------------------------------------------------------------------------------------
 <# Reborn: discover maps, use the actual native source backend and retain all successful map files until the full map stage passes. #>
 #-------------------------------------------------------------------------------------------------
-function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result,[string]$ModStaticPackage,[string]$OfficialMapDirectory,[string[]]$OfficialMapDirectories) {
-    $plans=@()
+function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[string]$StaticManifest,[string]$GlobalManifest,[string]$Compiler,[string]$Work,[string]$Detail,[string]$GlobalContext,[ref]$Result,[string]$ModStaticPackage,[string]$OfficialMapDirectory,[string[]]$OfficialMapDirectories,[string]$CacheRoot,[string]$CacheKey,[hashtable]$Witness,[switch]$ForceRebuild) {
+    $plans=[Collections.Generic.List[object]]::new()
     $folders=@(Get-RebornOfficialMapFolders $DataRoot -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $OfficialMapDirectories)
     $explicit=$OfficialMapDirectory -or $null-ne $OfficialMapDirectories
     foreach($folder in $folders){
@@ -67,37 +67,68 @@ function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[s
         foreach($file in $loose){Assert-RebornPackagePath $file.FullName}
         $target=Join-Path $Work ('maps/'+$folder.Name);$null=New-Item -ItemType Directory -Path $target
         Write-SdkBuildLine ('Map source: '+$entry)
+        if($CacheRoot -and !$ForceRebuild){
+            $saved=Read-RebornMapCache $CacheRoot $CacheKey $folder.Name $entry $Witness $target
+            if($saved){
+                $plans.Add($saved)
+                Write-SdkBuildLine ('Map cache hit: '+$folder.Name)
+                # Reborn: a cache hit retains the source warnings of the compilation it replaces.
+                foreach($warning in $saved.Warnings){Write-SdkCompilerLine $warning $Detail}
+                continue
+            }
+        }
+        # Reborn: bind loose file bytes before the compiler runs, alongside its XML and resource witnesses.
+        $warnings=[Collections.Generic.List[string]]::new()
+        $looseEvidence=@($loose | Sort-Object Name | ForEach-Object {[pscustomobject]@{Name=$_.Name;Sha256=[Reborn.PackageFile]::Hash($_.FullName)}})
         # Reborn: missing terrain sources warn and skip only this map; no placeholder atlas or partial map is published.
-        & (Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe') map-resource-preflight $entry $Sdk (Join-Path $target 'terrain-audit') 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail}
+        & (Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe') map-resource-preflight $entry $Sdk (Join-Path $target 'terrain-audit') 2>&1 | ForEach-Object {
+            $line=[string]$_
+            if($line -match '^\s*(?:\[[^\]]+\]\s*)?Warning:'){$warnings.Add($line)}
+            Write-SdkCompilerLine $line $Detail
+        }
         if($LASTEXITCODE-eq 3){Write-SdkBuildLine ('Warning: MAPSKIPPED '' '+$folder.Name+' '' Missing terrain resources; this map was not rebuilt. Existing Misc content is retained.');continue}
         if($LASTEXITCODE-ne 0){throw ('Map resource preflight failed: '+$entry)}
         $arguments=@('-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'Invoke-Ra3Ep1ConscriptAlphaBuild.ps1'),'-ModXml',$entry,'-StaticManifest',$StaticManifest,'-GlobalManifest',$GlobalManifest,'-CompilerDirectory',$Compiler,'-OutputRoot',$target)
         if($GlobalContext){$arguments+=@('-GlobalStreamContext',$GlobalContext)}
         # Reborn: the main static package is an external provider for this map, never another XML include.
         if($ModStaticPackage){$arguments+=@('-MapStaticPackage',$ModStaticPackage)}
-        & $Settings.PowerShell7 @arguments 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail}
+        & $Settings.PowerShell7 @arguments 2>&1 | ForEach-Object {
+            $line=[string]$_
+            if($line -match '^\s*(?:\[[^\]]+\]\s*)?Warning:'){$warnings.Add($line)}
+            Write-SdkCompilerLine $line $Detail
+        }
         if($LASTEXITCODE-ne 0){throw ('Map compilation failed: '+$entry+'. No map output was copied to Misc. Review the source/native processor diagnostic above.')}
         $receipt=Get-Content -LiteralPath (Join-Path $target 'alpha-build.json') -Raw|ConvertFrom-Json
         $stage=Join-Path $target 'misc-map'
-        & (Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-stage-map-package $receipt.PackagePath $stage 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail}
+        & (Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-stage-map-package $receipt.PackagePath $stage 2>&1 | ForEach-Object {
+            $line=[string]$_
+            if($line -match '^\s*(?:\[[^\]]+\]\s*)?Warning:'){$warnings.Add($line)}
+            Write-SdkCompilerLine $line $Detail
+        }
         if($LASTEXITCODE-ne 0){throw ('Map stream staging failed: '+$entry)}
-        foreach($file in $loose){$hash=(Get-FileHash -LiteralPath $file.FullName).Hash;Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $stage $file.Name);if((Get-FileHash -LiteralPath $file.FullName).Hash-cne $hash -or (Get-FileHash -LiteralPath (Join-Path $stage $file.Name)).Hash-cne $hash){throw ('Map source changed while copying: '+$file.FullName)}}
-        $plans+= [pscustomobject]@{Name=$folder.Name;Entry=$entry;Stage=$stage;Sources=$receipt.AuthoredSources;Files=@(Get-ChildItem -LiteralPath $stage -File -Recurse | ForEach-Object {[pscustomobject]@{Relative=[IO.Path]::GetRelativePath($stage,$_.FullName);Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})}
+        foreach($file in $looseEvidence){
+            $input=Join-Path $folder.FullName $file.Name;$destination=Join-Path $stage $file.Name
+            Copy-Item -LiteralPath $input -Destination $destination
+            if([Reborn.PackageFile]::Hash($destination)-cne $file.Sha256){throw ('Map source changed while copying: '+$input)}
+        }
+        $plans.Add([pscustomobject]@{Name=$folder.Name;Entry=$entry;Stage=$stage;Sources=$receipt.AuthoredSources;Searches=$receipt.PathSearches;Loose=$looseEvidence;Warnings=$warnings.ToArray();Fresh=$true;Target=$target;Files=@(Get-ChildItem -LiteralPath $stage -File -Recurse | ForEach-Object {[pscustomobject]@{Relative=[IO.Path]::GetRelativePath($stage,$_.FullName);Sha256=[Reborn.PackageFile]::Hash($_.FullName)}})})
     }
-    $Result.Value=@($plans)
+    $Result.Value=$plans.ToArray()
 }
 
 #-------------------------------------------------------------------------------------------------
 <# Reborn: publish only fully compiled generations, preserving unrelated authored Misc files and keeping all files under each Official map path. #>
 #-------------------------------------------------------------------------------------------------
-function Publish-RebornMapOutputs([object[]]$Plans,[string]$Misc) {
+function Publish-RebornMapOutputs([object[]]$Plans,[string]$Misc,[switch]$Witnessed) {
     foreach($plan in $Plans){
-        foreach($source in $plan.Sources){if((Get-FileHash -LiteralPath $source.Path).Hash-cne $source.Sha256){throw ('Map XML source changed during compilation: '+$source.Path)}}
+        if(!$Witnessed){foreach($source in $plan.Sources){if([Reborn.PackageFile]::Hash($source.Path)-cne $source.Sha256){throw ('Map XML source changed during compilation: '+$source.Path)}}}
         $destination=Join-Path $Misc ('Data/Maps/Official/'+$plan.Name);Assert-RebornPackagePath $destination
         foreach($file in $plan.Files){
             $inputPath=Join-Path $plan.Stage $file.Relative;$outputPath=Join-Path $destination $file.Relative
             Assert-RebornPackagePath $outputPath
-            if((Get-FileHash -LiteralPath $inputPath).Hash-cne $file.Sha256){throw 'Staged map data changed before Misc publication.'}
+            if([Reborn.PackageFile]::Hash($inputPath)-cne $file.Sha256){throw 'Staged map data changed before Misc publication.'}
+            # Reborn: a cache hit can repopulate a missing Misc file without rewriting an already identical one.
+            if([IO.File]::Exists($outputPath) -and [Reborn.PackageFile]::Hash($outputPath)-ceq $file.Sha256){continue}
             $null=New-Item -ItemType Directory -Force -Path (Split-Path -Parent $outputPath)
             Copy-Item -LiteralPath $inputPath -Destination $outputPath -Force
         }

@@ -12,7 +12,8 @@ internal static class ConscriptReferenceSpellings
     //-------------------------------------------------------------------------------------------------
     internal static void Compare(XmlDocument candidate,XmlDocument model,XmlSchemaSet schemas,bool allowRetarget=false,bool allowUpgradeWeak=false)
     {
-        foreach(var document in new[]{candidate,model}){document.Schemas.Add(schemas);document.Validate((_,e)=>throw new InvalidDataException(e.Message));}
+        // Reborn: use the same compiled schema for both comparison documents.
+        foreach(var document in new[]{candidate,model}){document.Schemas=schemas;document.Validate((_,e)=>throw new InvalidDataException(e.Message));}
         var strong=schemas.GlobalTypes[new XmlQualifiedName("AssetReference","uri:ea.com:eala:asset")] as XmlSchemaType;
         Visit(candidate.DocumentElement!,model.DocumentElement!);
 
