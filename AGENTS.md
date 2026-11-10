@@ -1,0 +1,1 @@
+Check "docs/UPRISING\_DECOMPILATION\_REVIEW\_CHECKLIST.md" occationally.

@@ -314,6 +314,55 @@
 <!-- Reborn: retail Lua registration excludes INERT before checking ForceLuaRegistration; retain SPELL_BOOK and immobility while enabling event delivery. -->
 <GameObject id="PlayerSpellBook" inheritFrom="PlayerSpellBook" KindOf="SPELL_BOOK IMMOBILE IGNORES_SELECT_ALL"><Behaviors>
 <ObjectSMCHelper id="ObjectSMCHelper"/>
+
+			<!-- Reborn: successful sidebar casts animate only the casting player's launch facility. -->
+			<OCLSpecialPower
+				id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank1"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank1"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl1"
+				CreateLocation="CREATE_AT_LOCATION"
+				xai:joinAction="Replace"
+				AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+				AttributeModifierRange="65535">
+				<AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>SovietKrasna45</IncludeThing>
+				</AttributeModifierAffects>
+			</OCLSpecialPower>
+			<OCLSpecialPower
+				id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank2"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank2"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl2"
+				CreateLocation="CREATE_AT_LOCATION"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Soviet_OrbitalRefuse_Rank2"
+				LeechRechargePercentFromSpecialPower="SpecialPowerOrbitalRefuse_Rank1"
+				xai:joinAction="Replace"
+				AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+				AttributeModifierRange="65535">
+				<AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>SovietKrasna45</IncludeThing>
+				</AttributeModifierAffects>
+			</OCLSpecialPower>
+			<OCLSpecialPower
+				id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank3"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank3"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl3"
+				CreateLocation="CREATE_AT_LOCATION"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Soviet_OrbitalRefuse_Rank3"
+				LeechRechargePercentFromSpecialPower="SpecialPowerOrbitalRefuse_Rank2"
+				xai:joinAction="Replace"
+				AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+				AttributeModifierRange="65535">
+				<AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>SovietKrasna45</IncludeThing>
+				</AttributeModifierAffects>
+			</OCLSpecialPower>
+
 <LUAEventList id="ModuleTag_RebornParadropSpellbookEvents" EventListName="RebornParadropSpellbookFunctions"/>
 <ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow1" AddConditionFlags="USER_4" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row1</TriggeredBy></ModelConditionUpgrade>
 <ModelConditionUpgrade id="ModuleTag_RebornParadropBookRow3" AddConditionFlags="USER_9" Permanent="true"><TriggeredBy>Upgrade_RebornParadrop_Row3</TriggeredBy></ModelConditionUpgrade>

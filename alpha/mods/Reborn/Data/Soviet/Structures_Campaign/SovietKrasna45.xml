@@ -2,7 +2,11 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
-		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
+		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" />
+		<!-- Reborn: the launch uses the stock clip and the reload adds its own clip to the same rig. -->
+		<Include type="all" source="ART:GV_Krasna45Reload.w3x" />
+		<!-- Reborn: use the silo model with a separately skinned sliding hatch. -->
+		<Include type="all" source="ART:GV_Krasna45Silo.w3x" />
 
 		<!-- <Include -->
 			<!-- type="all" -->
@@ -14,6 +18,7 @@
 			type="instance"
 			source="DATA:BaseObjects/BaseSovietStructure.xml" />
 	</Includes>
+	<!-- Reborn: allow one active satellite launch facility per player. -->
 	<GameObject
 		id="SovietKrasna45"
 		inheritFrom="BaseSovietStructure"
@@ -31,7 +36,8 @@
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
 		EditorName="SovietKrasna45"
 		Description="DESC:SOVIETKRASNA45"
-		TypeDescription="TYPE:SOVIETKRASNA45">
+		TypeDescription="TYPE:SOVIETKRASNA45"
+		MaxSimultaneousOfType="1">
 		<DisplayName
 			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">NAME:SatelliteLaunchFacility</DisplayName>
 
@@ -56,36 +62,62 @@
 				ExtraPublicBone="BONE_CONTACT_POINT_01 BONE_CONTACT_POINT_02 BONE_CONTACT_POINT_03 BONE_CONTACT_POINT_04 BONE_CONTACT_POINT_05 BONE_CONTACT_POINT_06 BONE_CONTACT_POINT_07 BONE_CONTACT_POINT_08 BONE_CONTACT_POINT_09 BONE_CONTACT_POINT_10 BONE_CONTACT_POINT_11 BONE_CONTACT_POINT_12 BONE_CONTACT_POINT_13 BONE_CONTACT_POINT_14 BONE_CONTACT_POINT_15 BONE_CONTACT_POINT_16 BONE_CONTACT_POINT_17 BONE_CONTACT_POINT_18 BONE_CONTACT_POINT_19 BONE_CONTACT_POINT_20">
 				
 				
-				<ModelConditionState	ParseCondStateType="PARSE_DEFAULT">
-					<Model				Name="GV_SovietSatelliteFacility" />
-					<ParticleSysBone		BoneName="FXBone02"		FXParticleSystemTemplate="Shuttle_Steam"		FollowBone="true"/>
-					<ParticleSysBone		BoneName="FXBone03"		FXParticleSystemTemplate="Shuttle_Steam02"		FollowBone="true"/>
+				<!-- Reborn: a docked rocket is visible throughout cooldown, with steam restricted to the unlocked ready rank. -->
+				<ModelConditionState ParseCondStateType="PARSE_DEFAULT">
+					<Model Name="GV_KRASNA45SILO" />
 				</ModelConditionState>
-				
-				<ModelConditionState	ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_6">
-					<Model				Name="GV_SovietSatelliteFacility" />
+
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_1 SPECIALPOWER1_READY">
+					<Model Name="GV_KRASNA45SILO" />
+					<ParticleSysBone BoneName="FXBone02" FXParticleSystemTemplate="Shuttle_Steam" FollowBone="true" />
+					<ParticleSysBone BoneName="FXBone03" FXParticleSystemTemplate="Shuttle_Steam02" FollowBone="true" />
 				</ModelConditionState>
-				
-				<AnimationState			ParseCondStateType="PARSE_NORMAL"		ConditionsYes="USER_6">
-					<Animation			AnimationName="GV_SovietSatelliteFacility"			AnimationBlendTime="0"			AnimationMode="ONCE"/>
-          <ParticleSysBone
+
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_2 SPECIALPOWER2_READY">
+					<Model Name="GV_KRASNA45SILO" />
+					<ParticleSysBone BoneName="FXBone02" FXParticleSystemTemplate="Shuttle_Steam" FollowBone="true" />
+					<ParticleSysBone BoneName="FXBone03" FXParticleSystemTemplate="Shuttle_Steam02" FollowBone="true" />
+				</ModelConditionState>
+
+				<ModelConditionState ParseCondStateType="PARSE_NORMAL" ConditionsYes="USER_3 SPECIALPOWER3_READY">
+					<Model Name="GV_KRASNA45SILO" />
+					<ParticleSysBone BoneName="FXBone02" FXParticleSystemTemplate="Shuttle_Steam" FollowBone="true" />
+					<ParticleSysBone BoneName="FXBone03" FXParticleSystemTemplate="Shuttle_Steam02" FollowBone="true" />
+				</ModelConditionState>
+
+				<!-- Reborn: play the reload once on exit from the launch, then hold its docked final pose. -->
+				<AnimationState ParseCondStateType="PARSE_DEFAULT" Flags="START_FRAME_LAST" StateName="STATE_Krasna45Idle">
+					<Animation AnimationName="GV_KRASNA45RELOAD" AnimationMode="MANUAL" AnimationBlendTime="0" />
+					<Script>
+						if CurDrawablePrevAnimationState() == "STATE_Krasna45Launch" then
+							CurDrawableSetTransitionAnimState("TRANS_Krasna45Reload")
+						end
+					</Script>
+				</AnimationState>
+
+				<AnimationState			ParseCondStateType="PARSE_NORMAL"		ConditionsYes="USER_6" StateName="STATE_Krasna45Launch">
+					<Animation			AnimationName="GV_KRASNA45SILO_LAUNCH"			AnimationBlendTime="0"			AnimationMode="ONCE"/>
+					<ParticleSysBone
 						BoneName="FXBone01"
 						FXParticleSystemTemplate="Shuttle_Exhaust"
 						FollowBone="true"/>
-          <ParticleSysBone
+					<ParticleSysBone
 						BoneName="FXBone01"
 						FXParticleSystemTemplate="Shuttle_Fire"
 						FollowBone="true"/>
-          <ParticleSysBone
+					<ParticleSysBone
 						BoneName="FXBone01"
 						FXParticleSystemTemplate="Shuttle_Start"
 						FollowBone="false"/>
-          <ParticleSysBone
+					<ParticleSysBone
 						BoneName="FXBone01"
 						FXParticleSystemTemplate="Shuttle_Start2"
 						FollowBone="false"/>
 				</AnimationState>
-        
+
+				<AnimationState ParseCondStateType="PARSE_TRANSITION" Flags="START_FRAME_FIRST" StateName="TRANS_Krasna45Reload">
+					<Animation AnimationName="GV_KRASNA45RELOAD" AnimationMode="ONCE" AnimationBlendTime="0" />
+				</AnimationState>
 			</ScriptedModelDraw>
 		</Draws>
 
@@ -101,12 +133,72 @@
 				UnpackTime="20s" />
 
 				
-			<!--Monitors when this special power template is ready to fire and sets a model condition-->
-			<MonitorSpecialPowerTimerUpdate
-				id="ModuleTag_VacuumBombReadyToFireUpdate"
+			<!-- Reborn: show only the highest purchased Orbital Refuse rank. -->
+			<CommandSetUpgrade id="ModuleTag_Krasna45CommandsRank1" CommandSet="SovietKrasna45CommandSetRank1">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank1</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank2</ConflictsWith>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank3</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade id="ModuleTag_Krasna45CommandsRank2" CommandSet="SovietKrasna45CommandSetRank2">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank2</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank3</ConflictsWith>
+			</CommandSetUpgrade>
+			<CommandSetUpgrade id="ModuleTag_Krasna45CommandsRank3" CommandSet="SovietKrasna45CommandSetRank3">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank3</TriggeredBy>
+			</CommandSetUpgrade>
+
+			<!-- Reborn: match ready steam to the selected protocol rank and clear the earlier rank on promotion. -->
+			<ModelConditionUpgrade id="ModuleTag_Krasna45VisualRank1" AddConditionFlags="USER_1">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank1</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank2</ConflictsWith>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank3</ConflictsWith>
+			</ModelConditionUpgrade>
+			<MonitorSpecialPowerTimerUpdate id="ModuleTag_Krasna45ReadyRank1"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank1" ReadyCondition="SPECIALPOWER1_READY" />
+			<ModelConditionUpgrade id="ModuleTag_Krasna45VisualRank2" AddConditionFlags="USER_2" RemoveConditionFlags="USER_1">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank2</TriggeredBy>
+				<ConflictsWith>Upgrade_RebornOrbitalRefuseRank3</ConflictsWith>
+			</ModelConditionUpgrade>
+			<MonitorSpecialPowerTimerUpdate id="ModuleTag_Krasna45ReadyRank2"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank2" ReadyCondition="SPECIALPOWER2_READY" />
+			<ModelConditionUpgrade id="ModuleTag_Krasna45VisualRank3" AddConditionFlags="USER_3" RemoveConditionFlags="USER_1 USER_2">
+				<TriggeredBy>Upgrade_RebornOrbitalRefuseRank3</TriggeredBy>
+			</ModelConditionUpgrade>
+			<MonitorSpecialPowerTimerUpdate id="ModuleTag_Krasna45ReadyRank3"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank3" ReadyCondition="SPECIALPOWER3_READY" />
+
+			<!-- Reborn: start the launch sequence only after the facility successfully casts the shared player power. -->
+			<OCLSpecialPower
+				id="ModuleTag_Krasna45OrbitalRefuseRank1"
 				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank1"
-				ReadyCondition="SPECIALPOWER1_READY"
-			/>
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl1"
+				CreateLocation="CREATE_AT_LOCATION"
+				SetModelCondition="USER_6"
+				SetModelConditionTime="8.5s" />
+			<OCLSpecialPower
+				id="ModuleTag_Krasna45OrbitalRefuseRank2"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank2"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl2"
+				CreateLocation="CREATE_AT_LOCATION"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Soviet_OrbitalRefuse_Rank2"
+				LeechRechargePercentFromSpecialPower="SpecialPowerOrbitalRefuse_Rank1"
+				SetModelCondition="USER_6"
+				SetModelConditionTime="8.5s" />
+			<OCLSpecialPower
+				id="ModuleTag_Krasna45OrbitalRefuseRank3"
+				SpecialPowerTemplate="SpecialPowerOrbitalRefuse_Rank3"
+				UpdateModuleStartsAttack="false"
+				AvailableAtStart="true"
+				OCL="OCL_OrbitalRefuseSpawnerLvl3"
+				CreateLocation="CREATE_AT_LOCATION"
+				LeechRechargePercentPlayerTechTrigger="PlayerTech_Soviet_OrbitalRefuse_Rank3"
+				LeechRechargePercentFromSpecialPower="SpecialPowerOrbitalRefuse_Rank2"
+				SetModelCondition="USER_6"
+				SetModelConditionTime="8.5s" />
 				
 			<xi:include
 				href="DATA:Includes/GenericBuildingRepair.xml" />
@@ -157,6 +249,10 @@
 			</DestroyDie>					 
 
 		</Behaviors>
+		<!-- Reborn: route the selected facility's targeted Unit Ability through the standard structure command state machine. -->
+		<AI>
+			<AIUpdate id="ModuleTag_AIUpdate" AutoAcquireEnemiesWhenIdle="NO" StateMachine="StructureAIStateMachine" />
+		</AI>
 		<Body>
 			<ActiveBody
 				id="ModuleTag_Body"
@@ -164,8 +260,9 @@
 				/>
 		</Body>
    		<ClientBehaviors>
+			<!-- Reborn: both cast routes use the launch condition for the original sound. -->
 			<ModelConditionAudioLoopClientBehavior id="MissileLaunch">
-				<ModelConditionSound Sound="S02_SatelliteFacility_MissileLaunchMS" RequiredFlags="SPECIALPOWER1_READY" /> 
+				<ModelConditionSound Sound="S02_SatelliteFacility_MissileLaunchMS" RequiredFlags="USER_6" />
 			</ModelConditionAudioLoopClientBehavior>
 		</ClientBehaviors>
 		

@@ -39,13 +39,30 @@
 			StatusBitFlagsExclude="AIRBORNE_TARGET OVER_WATER WATER_LOCOMOTOR_ACTIVE NOT_IN_WORLD UNDER_IRON_CURTAIN"/>
 	</SpecialPowerTemplate>
 
+	<!-- Reborn: expose the purchased ranks to the facility while preserving the Soviet stock bindings. -->
+	<UpgradeTemplate id="Upgrade_RebornOrbitalRefuseRank1" Type="PLAYER" />
+	<UpgradeTemplate id="Upgrade_RebornOrbitalRefuseRank2" Type="PLAYER" />
+	<UpgradeTemplate id="Upgrade_RebornOrbitalRefuseRank3" Type="PLAYER" />
+
+	<PlayerTechUpgradeBinding id="PlayerTechUpgradeBinding_Soviet">
+		<Binding TechDependency="PlayerTech_Soviet_TerrorDroneEggs" UpgradeToGrant="Upgrade_SovietTerrorDroneEggs" />
+		<Binding TechDependency="PlayerTech_Soviet_CrushPuppies" UpgradeToGrant="Upgrade_SovietCrushPuppiesPower" />
+		<Binding TechDependency="PlayerTech_Soviet_OrbitalRefuse_Rank1" UpgradeToGrant="Upgrade_RebornOrbitalRefuseRank1" />
+		<Binding TechDependency="PlayerTech_Soviet_OrbitalRefuse_Rank2" UpgradeToGrant="Upgrade_RebornOrbitalRefuseRank2" />
+		<Binding TechDependency="PlayerTech_Soviet_OrbitalRefuse_Rank3" UpgradeToGrant="Upgrade_RebornOrbitalRefuseRank3" />
+	</PlayerTechUpgradeBinding>
+
+	<!-- Reborn: the original launch animation is 251 frames at 30 FPS. Match its lifetime with a visual-only modifier. -->
+	<AttributeModifier id="AttributeModifier_RebornKrasna45Launch" Category="NONE" Duration="8.5s" ModelConditionsSet="USER_6" />
+
+	<!-- Reborn: retain a player-scoped timer shared by the facility and spellbook for each rank. -->
 	<SpecialPowerTemplate
 		id="SpecialPowerOrbitalRefuse_Rank1"
 		ReloadTime="180s"
 		TargetType="LOCATION"
 		RadiusCursorRadius="75"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
-		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS SHARED_SYNC"
 		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank1">
 		<GameDependency
 			id="Soviet_OrbitalRefuseRank1_GameDependency">
@@ -60,7 +77,7 @@
 		TargetType="LOCATION"
 		RadiusCursorRadius="125"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
-		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS SHARED_SYNC"
 		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank2">
 		<GameDependency
 			id="Soviet_OrbitalRefuseRank2_GameDependency">
@@ -73,7 +90,7 @@
 		ReloadTime="300s"
 		TargetType="LOCATION"
 		RadiusCursorRadius="175"
-		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS"
+		Flags="IS_PLAYER_POWER WATER_OK NOT_IN_NANOSWARM IGNORE_MAP_EXTENTS SHARED_SYNC"
 		EvaEventToPlayWhenSelectingTarget="SelectSpecialPowerTarget"
 		RequiredPlayerTech="PlayerTech_Soviet_OrbitalRefuse_Rank3">
 		<GameDependency

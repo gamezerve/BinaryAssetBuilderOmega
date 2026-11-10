@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<Includes>
+		<Include type="all" source="ART:FXShinzoPlacementHint.w3x" />
+	</Includes>
+	<!-- Reborn: preview only the arrow row at the second Shinzo house's joining edge. -->
+	<GameObject
+		id="JapanShinzoPlacementHint"
+		Side="Neutral"
+		EditorSorting="UNIT"
+		CommandSet="EmptyCommandSet"
+		IsTrainable="false"
+		KindOf="NO_COLLIDE IGNORE_FOR_VICTORY UNATTACKABLE NOT_AUTOACQUIRABLE DO_NOT_CLASSIFY INERT"
+		RadarPriority="UNIT"
+		EditorName="JapanShinzoPlacementHint">
+		<Draws>
+			<ScriptedModelDraw id="ModuleTag_Draw" OkToChangeModelColor="true">
+				<ModelConditionState ParseCondStateType="PARSE_DEFAULT">
+					<Model Name="FXShinzoPlacementHint" />
+				</ModelConditionState>
+				<AnimationState ParseCondStateType="PARSE_DEFAULT">
+					<Animation AnimationName="FXShinzoPlacementHint" AnimationMode="LOOP" />
+				</AnimationState>
+			</ScriptedModelDraw>
+		</Draws>
+		<Body>
+			<PropBody id="ModuleTag_Body" />
+		</Body>
+		<Geometry IsSmall="false">
+			<Shape Type="BOX" MajorRadius="88" MinorRadius="42" Height="20">
+				<Offset x="0.0" y="0.0" z="0.0" />
+			</Shape>
+		</Geometry>
+	</GameObject>
+</AssetDeclaration>

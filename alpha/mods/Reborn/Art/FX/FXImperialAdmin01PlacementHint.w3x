@@ -1,0 +1,1025 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+	<!-- Reborn: fit the refinery floor material and inward arrows to this building footprint. -->
+	<W3DMesh id="FXImperialAdmin01PlacementHint.FOOTPRINT" GeometryType="Normal">
+		<BoundingBox>
+			<Min X="-56.12451" Y="-55.443822" Z="0" />
+			<Max X="61.64549" Y="56.490178" Z="0" />
+		</BoundingBox>
+		<BoundingSphere Radius="81.238835">
+			<Center X="2.76049" Y="0.523178" Z="0" />
+		</BoundingSphere>
+		<Vertices>
+			<V X="-56.12451" Y="-55.443822" Z="0" />
+			<V X="-30" Y="-55.443822" Z="0" />
+			<V X="-56.12451" Y="-45" Z="0" />
+			<V X="-30" Y="-45" Z="0" />
+			<V X="-56.12451" Y="-45" Z="0" />
+			<V X="-30" Y="-45" Z="0" />
+			<V X="-56.12451" Y="-15" Z="0" />
+			<V X="-30" Y="-15" Z="0" />
+			<V X="-56.12451" Y="-15" Z="0" />
+			<V X="-30" Y="-15" Z="0" />
+			<V X="-56.12451" Y="15" Z="0" />
+			<V X="-30" Y="15" Z="0" />
+			<V X="-56.12451" Y="15" Z="0" />
+			<V X="-30" Y="15" Z="0" />
+			<V X="-56.12451" Y="45" Z="0" />
+			<V X="-30" Y="45" Z="0" />
+			<V X="-56.12451" Y="45" Z="0" />
+			<V X="-30" Y="45" Z="0" />
+			<V X="-56.12451" Y="56.490178" Z="0" />
+			<V X="-30" Y="56.490178" Z="0" />
+			<V X="-30" Y="-55.443822" Z="0" />
+			<V X="0" Y="-55.443822" Z="0" />
+			<V X="-30" Y="-45" Z="0" />
+			<V X="0" Y="-45" Z="0" />
+			<V X="-30" Y="-45" Z="0" />
+			<V X="0" Y="-45" Z="0" />
+			<V X="-30" Y="-15" Z="0" />
+			<V X="0" Y="-15" Z="0" />
+			<V X="-30" Y="-15" Z="0" />
+			<V X="0" Y="-15" Z="0" />
+			<V X="-30" Y="15" Z="0" />
+			<V X="0" Y="15" Z="0" />
+			<V X="-30" Y="15" Z="0" />
+			<V X="0" Y="15" Z="0" />
+			<V X="-30" Y="45" Z="0" />
+			<V X="0" Y="45" Z="0" />
+			<V X="-30" Y="45" Z="0" />
+			<V X="0" Y="45" Z="0" />
+			<V X="-30" Y="56.490178" Z="0" />
+			<V X="0" Y="56.490178" Z="0" />
+			<V X="0" Y="-55.443822" Z="0" />
+			<V X="30" Y="-55.443822" Z="0" />
+			<V X="0" Y="-45" Z="0" />
+			<V X="30" Y="-45" Z="0" />
+			<V X="0" Y="-45" Z="0" />
+			<V X="30" Y="-45" Z="0" />
+			<V X="0" Y="-15" Z="0" />
+			<V X="30" Y="-15" Z="0" />
+			<V X="0" Y="-15" Z="0" />
+			<V X="30" Y="-15" Z="0" />
+			<V X="0" Y="15" Z="0" />
+			<V X="30" Y="15" Z="0" />
+			<V X="0" Y="15" Z="0" />
+			<V X="30" Y="15" Z="0" />
+			<V X="0" Y="45" Z="0" />
+			<V X="30" Y="45" Z="0" />
+			<V X="0" Y="45" Z="0" />
+			<V X="30" Y="45" Z="0" />
+			<V X="0" Y="56.490178" Z="0" />
+			<V X="30" Y="56.490178" Z="0" />
+			<V X="30" Y="-55.443822" Z="0" />
+			<V X="60" Y="-55.443822" Z="0" />
+			<V X="30" Y="-45" Z="0" />
+			<V X="60" Y="-45" Z="0" />
+			<V X="30" Y="-45" Z="0" />
+			<V X="60" Y="-45" Z="0" />
+			<V X="30" Y="-15" Z="0" />
+			<V X="60" Y="-15" Z="0" />
+			<V X="30" Y="-15" Z="0" />
+			<V X="60" Y="-15" Z="0" />
+			<V X="30" Y="15" Z="0" />
+			<V X="60" Y="15" Z="0" />
+			<V X="30" Y="15" Z="0" />
+			<V X="60" Y="15" Z="0" />
+			<V X="30" Y="45" Z="0" />
+			<V X="60" Y="45" Z="0" />
+			<V X="30" Y="45" Z="0" />
+			<V X="60" Y="45" Z="0" />
+			<V X="30" Y="56.490178" Z="0" />
+			<V X="60" Y="56.490178" Z="0" />
+			<V X="60" Y="-55.443822" Z="0" />
+			<V X="61.64549" Y="-55.443822" Z="0" />
+			<V X="60" Y="-45" Z="0" />
+			<V X="61.64549" Y="-45" Z="0" />
+			<V X="60" Y="-45" Z="0" />
+			<V X="61.64549" Y="-45" Z="0" />
+			<V X="60" Y="-15" Z="0" />
+			<V X="61.64549" Y="-15" Z="0" />
+			<V X="60" Y="-15" Z="0" />
+			<V X="61.64549" Y="-15" Z="0" />
+			<V X="60" Y="15" Z="0" />
+			<V X="61.64549" Y="15" Z="0" />
+			<V X="60" Y="15" Z="0" />
+			<V X="61.64549" Y="15" Z="0" />
+			<V X="60" Y="45" Z="0" />
+			<V X="61.64549" Y="45" Z="0" />
+			<V X="60" Y="45" Z="0" />
+			<V X="61.64549" Y="45" Z="0" />
+			<V X="60" Y="56.490178" Z="0" />
+			<V X="61.64549" Y="56.490178" Z="0" />
+		</Vertices>
+		<Normals>
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+			<N X="0" Y="0" Z="1" />
+		</Normals>
+		<TexCoords>
+			<T X="0.0554767" Y="0.1057434" />
+			<T X="0.2562" Y="0.1057434" />
+			<T X="0.0554767" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0554767" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0554767" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0554767" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0554767" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0554767" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0554767" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0554767" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0554767" Y="0.1677171" />
+			<T X="0.2562" Y="0.1677171" />
+			<T X="0.0257" Y="0.1057434" />
+			<T X="0.2562" Y="0.1057434" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.1677171" />
+			<T X="0.2562" Y="0.1677171" />
+			<T X="0.0257" Y="0.1057434" />
+			<T X="0.2562" Y="0.1057434" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.1677171" />
+			<T X="0.2562" Y="0.1677171" />
+			<T X="0.0257" Y="0.1057434" />
+			<T X="0.2562" Y="0.1057434" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.2562" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.2562" Y="0.256" />
+			<T X="0.0257" Y="0.1677171" />
+			<T X="0.2562" Y="0.1677171" />
+			<T X="0.0257" Y="0.1057434" />
+			<T X="0.0383428" Y="0.1057434" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.0383428" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.0383428" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.0383428" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.0383428" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.0383428" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.0383428" Y="0.256" />
+			<T X="0.0257" Y="0.0255" />
+			<T X="0.0383428" Y="0.0255" />
+			<T X="0.0257" Y="0.256" />
+			<T X="0.0383428" Y="0.256" />
+			<T X="0.0257" Y="0.1677171" />
+			<T X="0.0383428" Y="0.1677171" />
+		</TexCoords>
+		<Triangles>
+			<T>
+				<V>0</V>
+				<V>1</V>
+				<V>2</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>2</V>
+				<V>1</V>
+				<V>3</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>4</V>
+				<V>5</V>
+				<V>6</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>6</V>
+				<V>5</V>
+				<V>7</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>8</V>
+				<V>9</V>
+				<V>10</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>10</V>
+				<V>9</V>
+				<V>11</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>12</V>
+				<V>13</V>
+				<V>14</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>14</V>
+				<V>13</V>
+				<V>15</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>16</V>
+				<V>17</V>
+				<V>18</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>18</V>
+				<V>17</V>
+				<V>19</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>20</V>
+				<V>21</V>
+				<V>22</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>22</V>
+				<V>21</V>
+				<V>23</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>24</V>
+				<V>25</V>
+				<V>26</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>26</V>
+				<V>25</V>
+				<V>27</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>28</V>
+				<V>29</V>
+				<V>30</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>30</V>
+				<V>29</V>
+				<V>31</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>32</V>
+				<V>33</V>
+				<V>34</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>34</V>
+				<V>33</V>
+				<V>35</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>36</V>
+				<V>37</V>
+				<V>38</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>38</V>
+				<V>37</V>
+				<V>39</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>40</V>
+				<V>41</V>
+				<V>42</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>42</V>
+				<V>41</V>
+				<V>43</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>44</V>
+				<V>45</V>
+				<V>46</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>46</V>
+				<V>45</V>
+				<V>47</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>48</V>
+				<V>49</V>
+				<V>50</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>50</V>
+				<V>49</V>
+				<V>51</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>52</V>
+				<V>53</V>
+				<V>54</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>54</V>
+				<V>53</V>
+				<V>55</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>56</V>
+				<V>57</V>
+				<V>58</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>58</V>
+				<V>57</V>
+				<V>59</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>60</V>
+				<V>61</V>
+				<V>62</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>62</V>
+				<V>61</V>
+				<V>63</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>64</V>
+				<V>65</V>
+				<V>66</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>66</V>
+				<V>65</V>
+				<V>67</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>68</V>
+				<V>69</V>
+				<V>70</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>70</V>
+				<V>69</V>
+				<V>71</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>72</V>
+				<V>73</V>
+				<V>74</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>74</V>
+				<V>73</V>
+				<V>75</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>76</V>
+				<V>77</V>
+				<V>78</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>78</V>
+				<V>77</V>
+				<V>79</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>80</V>
+				<V>81</V>
+				<V>82</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>82</V>
+				<V>81</V>
+				<V>83</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>84</V>
+				<V>85</V>
+				<V>86</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>86</V>
+				<V>85</V>
+				<V>87</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>88</V>
+				<V>89</V>
+				<V>90</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>90</V>
+				<V>89</V>
+				<V>91</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>92</V>
+				<V>93</V>
+				<V>94</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>94</V>
+				<V>93</V>
+				<V>95</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>96</V>
+				<V>97</V>
+				<V>98</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+			<T>
+				<V>98</V>
+				<V>97</V>
+				<V>99</V>
+				<Nrm X="0" Y="0" Z="1" />
+				<Dist>0</Dist>
+			</T>
+		</Triangles>
+		<FXShader ShaderName="DefaultW3D.fx">
+			<Constants>
+				<Float Name="ColorAmbient">
+					<Value>0</Value>
+					<Value>0</Value>
+					<Value>0</Value>
+				</Float>
+				<Float Name="ColorDiffuse">
+					<Value>0</Value>
+					<Value>0</Value>
+					<Value>0</Value>
+				</Float>
+				<Float Name="ColorSpecular">
+					<Value>0</Value>
+					<Value>0</Value>
+					<Value>0</Value>
+				</Float>
+				<Float Name="Shininess">
+					<Value>1</Value>
+				</Float>
+				<Float Name="ColorEmissive">
+					<Value>0.25098</Value>
+					<Value>0.25098</Value>
+					<Value>0.25098</Value>
+				</Float>
+				<Float Name="EmissiveHDRMultipler">
+					<Value>1</Value>
+				</Float>
+				<Float Name="Opacity">
+					<Value>1</Value>
+				</Float>
+				<Float Name="EdgeFadeOut">
+					<Value>0</Value>
+				</Float>
+				<Int Name="NumTextures">
+					<Value>1</Value>
+				</Int>
+				<Texture Name="Texture_0">
+					<Value>FXRefinery_Hint</Value>
+				</Texture>
+				<Texture Name="Texture_1">
+					<Value>FXRefinery_Hint</Value>
+				</Texture>
+				<Bool Name="UseRecolorColors">
+					<Value>false</Value>
+				</Bool>
+				<Bool Name="HouseColorPulse">
+					<Value>false</Value>
+				</Bool>
+				<Bool Name="UseWorldCords">
+					<Value>false</Value>
+				</Bool>
+				<Bool Name="DepthWriteEnable">
+					<Value>false</Value>
+				</Bool>
+				<Bool Name="AlphaTestEnable">
+					<Value>false</Value>
+				</Bool>
+				<Bool Name="CullingEnable">
+					<Value>true</Value>
+				</Bool>
+				<Int Name="BlendMode">
+					<Value>2</Value>
+				</Int>
+				<Int Name="SecondaryTextureBlendMode">
+					<Value>0</Value>
+				</Int>
+				<Int Name="TexCoordMapper_0">
+					<Value>0</Value>
+				</Int>
+				<Float Name="TexCoordTransform_0">
+					<Value>1</Value>
+					<Value>1</Value>
+					<Value>0</Value>
+					<Value>0</Value>
+				</Float>
+				<Float Name="TextureAnimation_FPS_NumPerRow_LastFrame_FrameOffset_0">
+					<Value>0</Value>
+					<Value>1</Value>
+					<Value>1</Value>
+					<Value>0</Value>
+				</Float>
+				<Int Name="TexCoordMapper_1">
+					<Value>0</Value>
+				</Int>
+				<Float Name="TexCoordTransform_1">
+					<Value>1</Value>
+					<Value>1</Value>
+					<Value>0</Value>
+					<Value>0</Value>
+				</Float>
+			</Constants>
+		</FXShader>
+	</W3DMesh>
+	<W3DHierarchy id="FXImperialAdmin01PlacementHint">
+		<Pivot Name="roottransform" Parent="-1">
+			<Translation X="0" Y="0" Z="0" />
+			<Rotation X="0" Y="0" Z="0" W="1" />
+			<FixupMatrix M00="1" M10="0" M20="0" M30="0" M01="0" M11="1" M21="0" M31="0" M02="0" M12="0" M22="1" M32="0" M03="0" M13="0" M23="0" M33="0" />
+		</Pivot>
+		<Pivot Name="footprint" Parent="0">
+			<Translation X="0" Y="0" Z="4" />
+			<Rotation X="0" Y="0" Z="0" W="1" />
+			<FixupMatrix M00="1" M10="0" M20="0" M30="0" M01="0" M11="1" M21="0" M31="0" M02="0" M12="0" M22="1" M32="0" M03="0" M13="0" M23="0" M33="0" />
+		</Pivot>
+		<Pivot Name="arrow_left" Parent="0">
+			<Translation X="-81.12451" Y="0.523178" Z="13.64077" />
+			<Rotation X="0.183013" Y="-0.183013" Z="-0.683013" W="0.683013" />
+			<FixupMatrix M00="1" M10="0" M20="0" M30="0" M01="0" M11="1" M21="0" M31="0" M02="0" M12="0" M22="1" M32="0" M03="0" M13="0" M23="0" M33="0" />
+		</Pivot>
+		<Pivot Name="arrow_right" Parent="0">
+			<Translation X="86.64549" Y="0.523178" Z="13.64077" />
+			<Rotation X="0.183013" Y="0.183013" Z="0.683013" W="0.683013" />
+			<FixupMatrix M00="1" M10="0" M20="0" M30="0" M01="0" M11="1" M21="0" M31="0" M02="0" M12="0" M22="1" M32="0" M03="0" M13="0" M23="0" M33="0" />
+		</Pivot>
+		<Pivot Name="arrow_rear" Parent="0">
+			<Translation X="2.76049" Y="81.490178" Z="13.64077" />
+			<Rotation X="0" Y="0.258819" Z="0.965926" W="0" />
+			<FixupMatrix M00="1" M10="0" M20="0" M30="0" M01="0" M11="1" M21="0" M31="0" M02="0" M12="0" M22="1" M32="0" M03="0" M13="0" M23="0" M33="0" />
+		</Pivot>
+	</W3DHierarchy>
+	<W3DContainer id="FXImperialAdmin01PlacementHint" Hierarchy="FXImperialAdmin01PlacementHint">
+		<SubObject SubObjectID="FOOTPRINT" BoneIndex="1">
+			<RenderObject>
+				<Mesh>FXImperialAdmin01PlacementHint.FOOTPRINT</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="ARROW_LEFT" BoneIndex="2">
+			<RenderObject>
+				<Mesh>FXREFINERY_HINT.ARROW_02</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="ARROW_RIGHT" BoneIndex="3">
+			<RenderObject>
+				<Mesh>FXREFINERY_HINT.ARROW_01</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="ARROW_REAR" BoneIndex="4">
+			<RenderObject>
+				<Mesh>FXREFINERY_HINT.ARROW_03</Mesh>
+			</RenderObject>
+		</SubObject>
+	</W3DContainer>
+	<W3DAnimation id="FXImperialAdmin01PlacementHint" Hierarchy="FXImperialAdmin01PlacementHint" NumFrames="21" FrameRate="30">
+		<CompressionSettings AllowAdaptiveDelta="false" />
+		<Channels>
+			<ChannelScalar Pivot="2" Type="YTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>2.01439691</Frame>
+				<Frame>4.06773376</Frame>
+				<Frame>6.10160398</Frame>
+				<Frame>8.05758286</Frame>
+				<Frame>9.8772583</Frame>
+				<Frame>11.4162788</Frame>
+				<Frame>12.6550245</Frame>
+				<Frame>13.7221832</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>13.7221832</Frame>
+				<Frame>12.6550245</Frame>
+				<Frame>11.4162788</Frame>
+				<Frame>9.8772583</Frame>
+				<Frame>8.05758286</Frame>
+				<Frame>6.10160398</Frame>
+				<Frame>4.06773376</Frame>
+				<Frame>2.01439691</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelScalar Pivot="2" Type="ZTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-1.43170905</Frame>
+				<Frame>-2.043854</Frame>
+				<Frame>-2.89208198</Frame>
+				<Frame>-4.22642517</Frame>
+				<Frame>-6.08085585</Frame>
+				<Frame>-8.23247528</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-8.2324791</Frame>
+				<Frame>-6.08085585</Frame>
+				<Frame>-4.22642517</Frame>
+				<Frame>-2.89208198</Frame>
+				<Frame>-2.043854</Frame>
+				<Frame>-1.43170905</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelQuaternion Pivot="2" Type="Orientation" FirstFrame="0">
+				<Frame X="0" Y="0" Z="0" W="1" />
+				<Frame X="-0.0610886514" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.469468713" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.573367476" Y="0" Z="0" W="0.819026768" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.469468683" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.0610886551" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-3.7252903e-09" Y="0" Z="0" W="1" />
+			</ChannelQuaternion>
+			<ChannelScalar Pivot="3" Type="YTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>2.01439691</Frame>
+				<Frame>4.06773376</Frame>
+				<Frame>6.10160398</Frame>
+				<Frame>8.05758667</Frame>
+				<Frame>9.8772583</Frame>
+				<Frame>11.416275</Frame>
+				<Frame>12.6550245</Frame>
+				<Frame>13.722187</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>14.7464495</Frame>
+				<Frame>13.722187</Frame>
+				<Frame>12.6550217</Frame>
+				<Frame>11.416275</Frame>
+				<Frame>9.8772583</Frame>
+				<Frame>8.05758667</Frame>
+				<Frame>6.10160398</Frame>
+				<Frame>4.06773376</Frame>
+				<Frame>2.01439691</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelScalar Pivot="3" Type="ZTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-1.43170905</Frame>
+				<Frame>-2.043854</Frame>
+				<Frame>-2.89208198</Frame>
+				<Frame>-4.22642517</Frame>
+				<Frame>-6.08085585</Frame>
+				<Frame>-8.23247528</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-10.4583969</Frame>
+				<Frame>-8.2324791</Frame>
+				<Frame>-6.08085585</Frame>
+				<Frame>-4.22642517</Frame>
+				<Frame>-2.89208198</Frame>
+				<Frame>-2.043854</Frame>
+				<Frame>-1.43170905</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelQuaternion Pivot="3" Type="Orientation" FirstFrame="0">
+				<Frame X="0" Y="0" Z="0" W="1" />
+				<Frame X="-0.0610886514" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.469468713" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.573367476" Y="0" Z="0" W="0.819026768" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.469468683" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.0610886551" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-3.7252903e-09" Y="0" Z="0" W="1" />
+			</ChannelQuaternion>
+			<ChannelScalar Pivot="4" Type="YTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>2.01440406</Frame>
+				<Frame>4.06774092</Frame>
+				<Frame>6.1016078</Frame>
+				<Frame>8.05758953</Frame>
+				<Frame>9.87726593</Frame>
+				<Frame>11.4162827</Frame>
+				<Frame>12.6550245</Frame>
+				<Frame>13.7221909</Frame>
+				<Frame>14.7464561</Frame>
+				<Frame>14.7464561</Frame>
+				<Frame>14.7464561</Frame>
+				<Frame>13.7221909</Frame>
+				<Frame>12.6550245</Frame>
+				<Frame>11.4162827</Frame>
+				<Frame>9.87726593</Frame>
+				<Frame>8.05758953</Frame>
+				<Frame>6.1016078</Frame>
+				<Frame>4.06774092</Frame>
+				<Frame>2.01440406</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelScalar Pivot="4" Type="ZTranslation" FirstFrame="0">
+				<Frame>0</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-1.43171299</Frame>
+				<Frame>-2.04385805</Frame>
+				<Frame>-2.89209008</Frame>
+				<Frame>-4.22642899</Frame>
+				<Frame>-6.08085585</Frame>
+				<Frame>-8.23248291</Frame>
+				<Frame>-10.4584007</Frame>
+				<Frame>-10.4584007</Frame>
+				<Frame>-10.4584007</Frame>
+				<Frame>-8.23248291</Frame>
+				<Frame>-6.08086014</Frame>
+				<Frame>-4.22642899</Frame>
+				<Frame>-2.89209008</Frame>
+				<Frame>-2.04385805</Frame>
+				<Frame>-1.43171299</Frame>
+				<Frame>-0.954474986</Frame>
+				<Frame>-0.510963023</Frame>
+				<Frame>0</Frame>
+			</ChannelScalar>
+			<ChannelQuaternion Pivot="4" Type="Orientation" FirstFrame="0">
+				<Frame X="0" Y="0" Z="0" W="1" />
+				<Frame X="-0.0610886514" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.469468713" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.573367476" Y="0" Z="0" W="0.819026768" />
+				<Frame X="-0.522380114" Y="0" Z="0" W="0.852551818" />
+				<Frame X="-0.469468683" Y="0" Z="0" W="0.882972717" />
+				<Frame X="-0.414633214" Y="0" Z="0" W="0.909978986" />
+				<Frame X="-0.358354688" Y="0" Z="0" W="0.933570683" />
+				<Frame X="-0.300633132" Y="0" Z="0" W="0.953747809" />
+				<Frame X="-0.241949543" Y="0" Z="0" W="0.970199943" />
+				<Frame X="-0.182303935" Y="0" Z="0" W="0.983237445" />
+				<Frame X="-0.121696293" Y="0" Z="0" W="0.992549956" />
+				<Frame X="-0.0610886551" Y="0" Z="0" W="0.998137474" />
+				<Frame X="-3.7252903e-09" Y="0" Z="0" W="1" />
+			</ChannelQuaternion>
+		</Channels>
+	</W3DAnimation>
+</AssetDeclaration>

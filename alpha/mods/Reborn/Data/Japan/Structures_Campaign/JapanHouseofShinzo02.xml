@@ -2,6 +2,7 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
+		<Include type="all" source="DATA:Japan/Props/JapanShinzoFirstPlacementHint.xml" />
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<!-- <Include type="all"	source="ART:TH_ShinzoHouse02.W3X" /> -->
@@ -34,7 +35,7 @@
 		CommandSet="JapanHouseofShinzo02CommandSet"
 		KindOf="+FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
 		RadarPriority="STRUCTURE"
-		PlacementViewAngle="255d"
+		PlacementViewAngle="225d"
 		EnergyProduction="-25"
 		ProductionQueueType="OTHER_STRUCTURE"
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
@@ -93,6 +94,24 @@
 		</Draws>
 		
 		<Behaviors>
+			<!-- Reborn: inverse Iga offset locates the first house from the second house. -->
+			<AssistedPlacementInfoBehavior id="ModuleTag_ShinzoReversePlacementInfo">
+				<HintObject HintDisplayObject="JapanShinzoFirstPlacementHint" HintOpacity="1.0">
+					<ObjectFilter Rule="ANY">
+						<IncludeThing>JapanHouseofShinzo</IncludeThing>
+					</ObjectFilter>
+				</HintObject>
+				<SuggestedOffset x="-8.068665" y="164.645947" z="0.0" />
+			</AssistedPlacementInfoBehavior>
+			<!-- Reborn: snap to the owner's first house and keep the Iga Prefecture placement angle. -->
+			<AssistedPlacementBehavior
+			    id="ModuleTag_ShinzoHousePlacement"
+			    PlacementHint="NONE"
+			    SnappingDistance="50">
+			    <RequirementObjectFilter Rule="ANY" Relationship="SAME_PLAYER">
+			        <IncludeThing>JapanHouseofShinzo</IncludeThing>
+			    </RequirementObjectFilter>
+			</AssistedPlacementBehavior>
 
 
 			<Physics

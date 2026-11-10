@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<W3DContainer id="JURADARSHIP_SKN" Hierarchy="JURADARSHIP_SKL">
+		<SubObject SubObjectID="OBBOX01" BoneIndex="0">
+			<RenderObject>
+				<CollisionBox>JURADARSHIP_SKN.OBBOX01</CollisionBox>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="JURADARSHIP" BoneIndex="1">
+			<RenderObject>
+				<Mesh>JURADARSHIP_SKN.JURADARSHIP</Mesh>
+			</RenderObject>
+		</SubObject>
+	</W3DContainer>
+</AssetDeclaration>

@@ -2,6 +2,7 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
+		<Include type="all" source="DATA:Japan/Props/JapanImperialAdmin01PlacementHint.xml" />
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_02.W3X" /> -->
@@ -66,6 +67,23 @@
 		</Draws>
 		
 		<Behaviors>
+			<!-- Reborn: assist only this administration building and its designated anchors. -->
+			<AssistedPlacementBehavior id="ModuleTag_AdminSnap" PlacementHint="NONE" SnappingDistance="50">
+				<RequirementObjectFilter Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>JapanImperialAdmin01</IncludeThing>
+				</RequirementObjectFilter>
+			</AssistedPlacementBehavior>
+
+			<!-- Reborn: Vladivostok placement of Admin 01 relative to Admin 02. -->
+			<AssistedPlacementInfoBehavior id="ModuleTag_AdminHintTo01">
+				<HintObject HintDisplayObject="JapanImperialAdmin01PlacementHint" HintOpacity="1.0">
+					<ObjectFilter Rule="ANY">
+						<IncludeThing>JapanImperialAdmin01</IncludeThing>
+					</ObjectFilter>
+				</HintObject>
+				<SuggestedOffset x="-69.150574" y="-68.921477" z="0.0" />
+			</AssistedPlacementInfoBehavior>
+
 
 			<Physics
 				id="ModuleTag_Physics"/>

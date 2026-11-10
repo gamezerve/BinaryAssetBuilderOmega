@@ -7,6 +7,7 @@
 		<!-- <Include type="all"	source="ART:TH_ShinzoHouse.W3X" /> -->
 		<Include type="instance" source="DATA:Civilian/Yucatan_YU/Props/YU_HotelDebris.xml" />
 		<Include type="instance" source="DATA:Japan\Props/TH_ShinzoHouse_Collapse.xml" />
+		<Include type="all" source="DATA:Japan/Props/JapanShinzoPlacementHint.xml" />
 
 
 		<!-- <Include type="all"	source="ART:Reborn\Art\Structures\Imperial\TH_ShinzoHouse.xml" /> -->
@@ -39,7 +40,7 @@
 		CommandSet="JapanHouseofShinzoCommandSet"
 		KindOf="+FS_TECHNOLOGY +ACTIVATE_AFTER_UNPACK -CAN_BUILD_ON_WATER -CAN_BUILD_ON_DEEP_WATER"
 		RadarPriority="STRUCTURE"
-		PlacementViewAngle="255d"
+		PlacementViewAngle="225d"
 		EnergyProduction="-25"
 		ProductionQueueType="OTHER_STRUCTURE"
 		BuildPlacementTypeFlag="OTHER_STRUCTURE"
@@ -99,6 +100,22 @@
 		</Draws>
 		
 		<Behaviors>
+			<!-- Reborn: snap the first house to the second house when it is placed first. -->
+			<AssistedPlacementBehavior id="ModuleTag_ShinzoFirstHousePlacement" PlacementHint="NONE" SnappingDistance="50">
+				<RequirementObjectFilter Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>JapanHouseofShinzo02</IncludeThing>
+				</RequirementObjectFilter>
+			</AssistedPlacementBehavior>
+			<!-- Reborn: use the Iga Prefecture offset in the first house's local coordinates. -->
+			<AssistedPlacementInfoBehavior id="ModuleTag_ShinzoHousePlacementInfo">
+				<!-- Reborn: show the fitted footprint when placing the second Shinzo house. -->
+				<HintObject HintDisplayObject="JapanShinzoPlacementHint" HintOpacity="1.0">
+					<ObjectFilter Rule="ANY">
+						<IncludeThing>JapanHouseofShinzo02</IncludeThing>
+					</ObjectFilter>
+				</HintObject>
+				<SuggestedOffset x="8.068665" y="-164.645947" z="0.0" />
+			</AssistedPlacementInfoBehavior>
 
 
 			<Physics

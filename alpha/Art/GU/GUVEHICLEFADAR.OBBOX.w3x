@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<W3DCollisionBox id="GUVEHICLEFADAR.OBBOX" JoypadPickingOnly="false">
+		<Center X="-1.695765" Y="-0.258640" Z="18.005968"/>
+		<Extent X="15.482391" Y="17.075459" Z="18.005968"/>
+	</W3DCollisionBox>
+</AssetDeclaration>

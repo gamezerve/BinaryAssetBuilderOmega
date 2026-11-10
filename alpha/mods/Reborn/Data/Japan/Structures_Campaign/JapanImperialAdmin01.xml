@@ -2,6 +2,8 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<Tags></Tags>
 	<Includes>
+		<Include type="all" source="DATA:Japan/Props/JapanImperialAdmin02PlacementHint.xml" />
+		<Include type="all" source="DATA:Japan/Props/JapanImperialAdmin03PlacementHint.xml" />
 		<Include type="all" source="DATA:GlobalData/GlobalDefines.xml" /> 
 
 		<!-- <Include type="all"	source="ART:VL_ImperialAdminBuilding_01.W3X" /> -->
@@ -61,6 +63,34 @@
 		</Draws>
 		
 		<Behaviors>
+			<!-- Reborn: assist only this administration building and its designated anchors. -->
+			<AssistedPlacementBehavior id="ModuleTag_AdminSnap" PlacementHint="NONE" SnappingDistance="50">
+				<RequirementObjectFilter Rule="ANY" Relationship="SAME_PLAYER">
+					<IncludeThing>JapanImperialAdmin02</IncludeThing>
+					<IncludeThing>JapanImperialAdmin03</IncludeThing>
+				</RequirementObjectFilter>
+			</AssistedPlacementBehavior>
+
+			<!-- Reborn: Vladivostok placement of Admin 02 relative to Admin 01. -->
+			<AssistedPlacementInfoBehavior id="ModuleTag_AdminHintTo02">
+				<HintObject HintDisplayObject="JapanImperialAdmin02PlacementHint" HintOpacity="1.0">
+					<ObjectFilter Rule="ANY">
+						<IncludeThing>JapanImperialAdmin02</IncludeThing>
+					</ObjectFilter>
+				</HintObject>
+				<SuggestedOffset x="-69.150574" y="-68.921477" z="0.0" />
+			</AssistedPlacementInfoBehavior>
+
+			<!-- Reborn: Vladivostok placement of Admin 03 relative to Admin 01. -->
+			<AssistedPlacementInfoBehavior id="ModuleTag_AdminHintTo03">
+				<HintObject HintDisplayObject="JapanImperialAdmin03PlacementHint" HintOpacity="1.0">
+					<ObjectFilter Rule="ANY">
+						<IncludeThing>JapanImperialAdmin03</IncludeThing>
+					</ObjectFilter>
+				</HintObject>
+				<SuggestedOffset x="69.752302" y="-69.275461" z="0.0" />
+			</AssistedPlacementInfoBehavior>
+
 
 
 			

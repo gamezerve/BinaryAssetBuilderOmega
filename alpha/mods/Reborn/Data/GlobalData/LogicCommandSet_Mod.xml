@@ -572,10 +572,18 @@
 		<Cmd>Command_ActivateEjectPassengersMoaiSpecialPower</Cmd>
 	</LogicCommandSet>
 
-	<LogicCommandSet
-		id="SovietKrasna45CommandSet">
+	<!-- Reborn: the facility starts without an ability and unlocks one ranked command at a time. -->
+	<LogicCommandSet id="SovietKrasna45CommandSet" />
+
+	<LogicCommandSet id="SovietKrasna45CommandSetRank1">
 		<Cmd>Command_OrbitalRefuse_Rank1</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet id="SovietKrasna45CommandSetRank2">
 		<Cmd>Command_OrbitalRefuse_Rank2</Cmd>
+	</LogicCommandSet>
+
+	<LogicCommandSet id="SovietKrasna45CommandSetRank3">
 		<Cmd>Command_OrbitalRefuse_Rank3</Cmd>
 	</LogicCommandSet>
 

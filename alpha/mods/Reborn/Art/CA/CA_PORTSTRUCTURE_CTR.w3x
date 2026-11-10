@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<W3DContainer id="CA_PORTSTRUCTURE" Hierarchy="CA_PORTSTRUCTURE">
+		<SubObject SubObjectID="NEWSKIN_FILL01" BoneIndex="0">
+			<RenderObject>
+				<Mesh>CA_PORTSTRUCTURE.NEWSKIN_FILL01</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="NEWSKIN_CIV01" BoneIndex="0">
+			<RenderObject>
+				<Mesh>CA_PORTSTRUCTURE.NEWSKIN_CIV01</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="OBBOX01" BoneIndex="1">
+			<RenderObject>
+				<CollisionBox>CA_PORTSTRUCTURE.OBBOX01</CollisionBox>
+			</RenderObject>
+		</SubObject>
+	</W3DContainer>
+</AssetDeclaration>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<W3DContainer id="GUVEHICLEF_SKNR" Hierarchy="GUVEHICLEF_SKL">
+		<SubObject SubObjectID="GUVEHICLEF" BoneIndex="0">
+			<RenderObject>
+				<Mesh>GUVEHICLEF_SKNR.GUVEHICLEF</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="OBBOX" BoneIndex="0">
+			<RenderObject>
+				<CollisionBox>GUVEHICLEF_SKNR.OBBOX</CollisionBox>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="UGRAIL_01" BoneIndex="17">
+			<RenderObject>
+				<Mesh>GUVEHICLEF_SKNR.UGRAIL_01</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="UGRAILACCELERATOR_01" BoneIndex="17">
+			<RenderObject>
+				<Mesh>GUVEHICLEF_SKNR.UGRAILACCELERATOR_01</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="UGRAILACCELERATOR_BARREL" BoneIndex="14">
+			<RenderObject>
+				<Mesh>GUVEHICLEF_SKNR.UGRAILACCELERATOR_BARREL</Mesh>
+			</RenderObject>
+		</SubObject>
+		<SubObject SubObjectID="UGRAIL_BARREL" BoneIndex="14">
+			<RenderObject>
+				<Mesh>GUVEHICLEF_SKNR.UGRAIL_BARREL</Mesh>
+			</RenderObject>
+		</SubObject>
+	</W3DContainer>
+</AssetDeclaration>
