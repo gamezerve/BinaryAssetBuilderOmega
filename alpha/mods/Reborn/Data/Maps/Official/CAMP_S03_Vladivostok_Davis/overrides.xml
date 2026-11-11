@@ -28,6 +28,10 @@
 	<GameObject
 		id="VL_ImperialMilitaryAdminBuilding_01"
 		inheritFrom="VL_ImperialMilitaryAdminBuilding_01">
+		<ArmorSet
+			id="DefaultArmor"
+			Armor="StructureArmor"
+			DamageFX="GenericStructureDamageFX" />
 		<Body>
 			<ActiveBody
 				id="ModuleTag_Body"
@@ -88,5 +92,13 @@
 		inheritFrom="ThreatLevel1"
 		EnterEvent="S_S03Threat1">
 	</PathMusicGameDynamicState>
+
+  <!-- Reborn: replace the stock tactical Vera portrait only in the Vladivostok map stream. -->
+  <Texture id="RebornVladZhanaAtlas" File="ART:Images/RebornCampaignZhanaAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <PackedTextureImage id="Vera" Texture="RebornVladZhanaAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
 
 </AssetDeclaration>

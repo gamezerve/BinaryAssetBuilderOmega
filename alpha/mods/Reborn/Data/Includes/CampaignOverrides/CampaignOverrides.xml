@@ -428,6 +428,34 @@
         </NearestSecondaryObjectFilter>
       </OCLSpecialPower>
 
+      <!-- Reborn: campaign sidebar casts play the launch and reload animations on the caster's Krasna45. -->
+      <OCLSpecialPower
+        id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank1"
+        AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+        AttributeModifierRange="65535">
+        <AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+          <IncludeThing>SovietKrasna45</IncludeThing>
+        </AttributeModifierAffects>
+      </OCLSpecialPower>
+
+      <OCLSpecialPower
+        id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank2"
+        AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+        AttributeModifierRange="65535">
+        <AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+          <IncludeThing>SovietKrasna45</IncludeThing>
+        </AttributeModifierAffects>
+      </OCLSpecialPower>
+
+      <OCLSpecialPower
+        id="ModuleTag_OCL_SpecialPower_OrbitalRefuse_Rank3"
+        AttributeModifier="AttributeModifier_RebornKrasna45Launch"
+        AttributeModifierRange="65535">
+        <AttributeModifierAffects Rule="ANY" Relationship="SAME_PLAYER">
+          <IncludeThing>SovietKrasna45</IncludeThing>
+        </AttributeModifierAffects>
+      </OCLSpecialPower>
+
       <!-- FINAL SQUADRON cast delay reduction-->
       <OCLSpecialPower
 				id="ModuleTag_FinalSquadronL1"

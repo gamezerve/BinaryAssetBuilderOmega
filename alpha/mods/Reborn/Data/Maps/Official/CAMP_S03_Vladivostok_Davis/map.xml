@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -517,7 +520,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -34362,6 +34364,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -34389,6 +34392,9 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="TDirt_Yucatan02;TDirt_Yucatan02_nrm;TRock_Yucatan03;TRock_Yucatan03_nrm;TDirt_Yucatan04;TDirt_Yucatan04_nrm;Pavement_Vlad10;Pavement_Vlad10_NRM;TDirt_Yucatan01;TDirt_Yucatan01_nrm;TReef_Yucatan02;TReef_Yucatan02_nrm;TReef_Yucatan01;TReef_Yucatan01_nrm;Pavement_Vlad06;Pavement_Vlad06_NRM;TSnow_Solvang01;TSnow_Solvang01_nrm;TSnow_Iceland04;TSnow_Iceland04_NRM;Pavement_Vlad07;Pavement_Vlad07_NRM;Pavement_Vlad05;Pavement_Vlad05_NRM;Pavement_Vlad11;Pavement_Vlad11_NRM;TSand_Cannes03;TSand_Cannes03_NRM;Pavement_Vlad01;Pavement_Vlad01_NRM;Pavement_Vlad03;Pavement_Vlad03_NRM;TTransition_Yucatan12;TTransition_Yucatan12_nrm;TDirt_Easter02;TDirt_Easter02_NRM;TDirt_CapeCod05;TDirt_CapeCod05_nrm;Pavement_Vlad04;Pavement_Vlad04_NRM;TDirt_Yucatan03;TDirt_Yucatan03_nrm;TPave_CapeCod02;TPave_CapeCod02_nrm;Pavement_Vlad09;Pavement_Vlad09_NRM;Pavement_Kremlin04;Pavement_Kremlin04_NRM;Pavement_Vlad02;Pavement_Vlad02_NRM;TGrass_CapeCod11;TGrass_CapeCod11_nrm;TDirt_Easter07;TDirt_Easter07_NRM;Pavement_GibraltarBoardwalk;Pavement_"/>
 		</WorldDict>
 		<PostEffect
 			Effect="LUSaturateColors_Vol"/>
@@ -37736,6 +37742,37 @@
 					<ParameterList>
 						<ObjectType
 							Object="SovietMiner"/>
+					</ParameterList>
+				</Action>
+			</Script>
+			<Script
+				id="P1 - Restricted to Build Soviet">
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="SovietCommandCenter"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="SovietMortarcycle"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="SovietDesolatorInfantry"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="SovietLargeScoutInfantry"/>
 					</ParameterList>
 				</Action>
 			</Script>

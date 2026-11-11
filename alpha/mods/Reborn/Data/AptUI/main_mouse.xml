@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
   <!-- Reborn: load the LanMod5 Chapters row-count override. -->
+  <!-- Reborn: Pass the normalized RA3 mission id to the results page. -->
   <Includes>
     <Include type="all" source="main_mouse/main_mouse.xml" />
   </Includes>

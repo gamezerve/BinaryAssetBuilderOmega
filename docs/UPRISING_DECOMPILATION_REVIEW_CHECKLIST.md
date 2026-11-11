@@ -6,6 +6,24 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
 
 ## Open
 
+- [ ] **HordeMemberCollideModuleData — establish the asset route and classify compiler coverage.**
+  - EA EP1 includes the derived type without extra fields. GameObject exposes the base Collide element. The retail factory 006fdb70, constructor 0071e300 and callback 0078b7c0 identify a concrete class whose collision handler resolves horde and containment state.
+  - No dedicated Mod Builder model, marshaler or dispatch was found. Check whether stock assets use a derived type under Collide or whether the engine attaches the module programmatically. Verify the wire identity and base-sized record against a stock asset before adding a compiler path.
+
+- [ ] **SquishCollideModuleData — verify the named EP1 XML route selects the retail layout.**
+  - Retail factory 006fdb50, constructor 0073ee40 and collision callback 0080fc10 confirm a float CrushAnimTime at +0x08, UseVehicleStyleCrush at +0x0c and AllowAllyCrush at +0x0d. EA EP1 schema exposes the named SquishCollide element.
+  - The reviewed TypeId 0xB5EB41ED route explicitly selects the matching 0x10-byte Ep1SquishCollideModuleData. The ordinary GameObject switch still selects the legacy SquishCollideModuleData for the same ID. That legacy model writes CrushKillDelay at +0x0c and UseDirectionCheck at +0x10.
+  - Compile a named EP1 SquishCollide without authored TypeId, set the two booleans independently, and compare the emitted record and metadata with a stock asset. If that path reaches the legacy switch, route it to the EP1 model and retain a separate legacy-target test.
+
+- [ ] **ReflectDamageModuleData, EvacuateDamageModuleData, HordeTransportContainDamageModuleData and CallHelpOnDamageModuleData — establish the asset route and classify compiler coverage.**
+  - The official EP1 schemas declare these types as DamageModuleData derivatives. The GameObject schema exposes a base Damage element. Searches of the checked Mod Builder source found no matching concrete model, marshaler or dispatch entry for these types.
+  - ReflectDamage factory 006fda50, constructor 00720950 and callback 00811600 establish a concrete runtime class. The callback tests the first 32 bits of the mask at data +0x08 and reads the multiplier and minimum at +0x10/+0x14. The bytes at +0x0c remain unverified.
+  - EvacuateDamage factory 006fda70, constructor 00759e50 and callback 0078e500 establish a second runtime class. Runtime reads place the weak weapon reference, damage type, panic threshold and frame window at +0x08/+0x0c/+0x10/+0x14.
+  - HordeTransportContainDamageModuleData also derives from DamageModuleData and adds no fields. Factory 006fda90, constructor 00720890 and damage callback 00811280 establish the runtime class. The callback reads owner and event state, and no matching concrete Mod Builder model or dispatch was found.
+  - CallHelpOnDamageModuleData is also declared in the EA EP1 schema and has a retail factory at 006fdab0. Callback 007708a0 reads the low 32 bits of DamageTypes at +0x08, CallRadius +0x10, CallDelay +0x14, ValidObjs +0x18, and MoveToAttacker +0x1c. No concrete model, marshaler or dispatch was found. Verify the full mask and the ObjectFilter relocation against a stock record.
+  - Check which stock asset records instantiate each type, how the base Damage element resolves the derived data, and the native record extent, mask encoding and weak-reference metadata before adding a compiler model.
+
+
 - [ ] **DozerAIUpdateModuleData — verify the inherited AI layout against a retail Dozer record.**
   - The Uprising schema derives from AIUpdateModuleData and adds `RepairHealthPercentPerSecond`, `BoredTime`, and `BoredRange`.
   - The active `0x8D093323` dispatch uses `DozerAIUpdateModuleData`, which embeds and marshals the legacy AIUpdate model. The compiler also has a separate 76-byte retail-qualified EP1 AI base.
@@ -186,6 +204,62 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
   - General GameObject dispatch `0x431722A9` selects the legacy model. The dedicated EP1 route writes the 44-byte header but rejects populated `WeaponSlotContained` lists.
   - Retail constructor `007d79b0` reads the four count/pointer pairs starting at `+0x0c`. The contained branch reads `+0x24/+0x28`, iterates with stride `0x1c`, and initializes a distinct runtime slot at `007d7cb3`.
   - Verify generic dispatch against already-qualified EP1 examples. Find a populated original contained-slot record and verify its nested fields, imports, metadata and round trip.
+
+- [ ] **WeaponScatterEffectUpdate — qualify ScatterAmount values outside the runtime byte range.**
+  - The EA schema declares `ScatterAmount` as `xs:int`; the active marshaler preserves the complete signed value at module-data `+0x0c`.
+  - Retail `0081cfda` reads the low byte from `+0x0c` and the scatter handler uses it as an unsigned queue limit. At this consumer, `-1` behaves as 255 and 256 behaves as zero.
+  - Keep the stock record width. Review authored-value validation or diagnostics for the range 0–255 and qualify boundary cases against the retail consumer before changing compiler behavior.
+
+- [ ] **TemporarilyDefectUpdate — qualify the Uprising compiler route.**
+  - Retail factory `006fd5d0` constructs the module. Start helper `007f13a0` adds module-data `+0x08` to the current frame when the caller supplies no deadline, matching `DefectionFrameCount` in EA's Uprising schema.
+  - The compiler route for `0x4d76910c` is under `KANESWRATH`, with a comment that only discusses Tiberium Wars. Both current XmlCompiler configurations define the symbol, so this source inspection does not establish a default-build dispatch failure.
+  - Locate a compiled Uprising witness and verify the type identity, duration encoding, native size and metadata. Update the dispatch comment and qualify the route against the EP1 schema after the stock check.
+
+- [ ] **EvacuateGarrisonSpecialPowerModuleData — qualify GameObject compiler support.**
+  - EA's Uprising schema extends SpecialAbilityUpdateModuleData without derived fields. The inspected EP1 GameObject schema has no element for the module.
+  - Mod Builder has no concrete model or dispatch entry for module-data type ID `0xdb0bac4c`. Its generic unknown-module route allocates the generic behavior base and omits the concrete type ID.
+  - Retail factory `006fd6d0` constructs a `0xbc`-byte runtime object. Transfer `007d20c0` delegates to the base, and callback `007e1590` resolves inherited target ID `+0x4c` before submitting order kind `0x3d`.
+  - Find a compiled original or establish an authored GameObject use case, then verify inherited field encoding, type ID, imports and round trip before adding a dispatch entry.
+
+- [ ] **GiveOrRestoreUpgradeSpecialPowerModuleData — qualify the EP1 tail without the legacy WeaponFlags field.**
+  - The TW and KW schemas declare WeaponFlags. EA's EP1 schema only declares CommandButton and UpgradeToGive beyond SpecialAbilityUpdateModuleData.
+  - The shared Mod Builder model and active marshaler append and write a four-word WeaponFlags mask. Retail activation and the position eligibility callback consume UpgradeToGive at module-data `+0x104`. The traced paths do not read the mask.
+  - Verify a compiled EP1 record's extent, metadata, command-button storage and upgrade import before choosing a separate EP1 model or changing the shared dispatch.
+
+- [ ] **PillageModuleData — qualify GameObject compiler support.**
+  - EA's EP1 schema declares PillageAmount, NumDamageEventsPerPillage and ObjectFilter. The inspected GameObject schema has no corresponding element and Mod Builder has no model or dispatch for type ID `0x6ce208f7`.
+  - Retail factory `006fd730` creates a `0x1c`-byte runtime object. The damage callback `0071ab80` reads the amount at module-data `+0x08`, threshold at `+0x0c` and filter at `+0x10`. It uses transaction category `0x1c` (PILLAGE).
+  - Find a compiled original or establish an authored GameObject use case, then qualify filter representation, metadata, type ID and round trip before introducing a compiler route.
+
+- [ ] **ActivateModuleSpecialAbilityUpdateModuleData — add qualification for the EP1 type identity.**
+  - The EP1 GameObject schema declares the type with ID `0xcd33bcee`. Mod Builder has a shared list item and a dispatch for the differently named ActivateModuleSpecialPowerModuleData (`0xa63dc46b`), but no dispatch for the EP1 ID.
+  - Retail dispatcher `00771420` reads the list count at `+0xfc` and pointer at `+0x100`, with a `0x0c` stride. Entries use ModuleId at `+0x00` and TriggerType at `+0x04`. The shared item metadata places TriggerAtTargetPosition at `+0x08`; this dispatcher does not read it.
+  - Verify a compiled or authored EP1 record with a populated list, its concrete type ID, metadata, linked module IDs, and round trip.
+
+- [ ] **AttributeModifierNavalModuleData — qualify the missing EP1 dispatch.**
+  - EA's Uprising GameObject schema exposes AttributeModifierNaval. The module type extends CreateModuleData with one AttributeModifierRef. Mod Builder has no model or dispatch case for type ID `0xa34ced5c`.
+  - Retail create callback `00755f00` passes module-data `+0x08` to the attribute-modifier helper after the surface test.
+  - Verify a compiled or authored EP1 record with a populated reference, including the imported ID, metadata, native extent and round trip.
+
+- [ ] **PreorderCreateModuleData — determine whether EP1 assets require a compiler route.**
+  - EA's EP1 schema declares an empty CreateModuleData extension. The inspected GameObject schema has no element for it, and Mod Builder has no concrete model or dispatch for type ID `0x2a36dc1f`.
+  - Retail factory `006fd8d0` allocates the `0x18`-byte runtime object. The create callback updates the PREORDER model condition. Transfer delegates to the inherited creation-state path.
+  - Locate a compiled EP1 record or an authored use case, then qualify the concrete type identity, inherited extent, metadata and round trip.
+
+- [ ] **SpecialPowerCreateModuleData — establish whether EP1 assets require compiler support.**
+  - EA's Uprising schema defines an empty CreateModuleData extension. The inspected EP1 GameObject schema has no corresponding element. Mod Builder has no concrete model or dispatch for type ID `0x6a8c7338`.
+  - Retail factory `006fd950` allocates the module. Build-complete callback `0070cf30` notifies each attached special-power interface, consistent with EA's Zero Hour implementation.
+  - Find a compiled EP1 GameObject record or an authored use case before qualifying the concrete type ID, inherited extent, metadata and round trip.
+
+- [ ] **InactiveBodyModuleData — qualify dispatch for a named Body/InactiveBody child.**
+  - EA's Uprising GameObject schema places InactiveBody under Body. Its concrete type adds no asset fields to BodyModuleData. Retail factory `006fdd10` allocates a separate `0x18`-byte runtime object.
+  - GameObject.Body uses the exact `BodyModuleData**` overload. The `0x29234e6e` case exists in `BehaviorModuleData**`; the body switch currently leaves the destination untouched.
+  - Verify an original or authored Body/InactiveBody record through the GameObject compiler, including the body pointer, concrete type ID, inherited fields and round trip.
+
+- [ ] **ShieldBodyModuleData — qualify the EP1 body layout and compiler route.**
+  - The generic Body dispatch allocates concrete type `0xd3565857` with the legacy ActiveBody base. The declared x86 layout places ShieldAmount at `+0x6c`; retail recharge helper `00758500` reads it at `+0x5c`. The explicit EP1 body allocator currently excludes ShieldBody.
+  - Retail damage, armor and status paths also confirm the shield tail offsets `+0x50` through `+0x68`, including ShieldArmor at `+0x60`, recharge idle time at `+0x64`, and the active model condition at `+0x68`.
+  - Verify a populated EP1 GameObject Body/ShieldBody record, preserving its concrete type, inherited ActiveBody semantics, all shield fields, imports, relocations and round trip.
 
 ## Resolved
 

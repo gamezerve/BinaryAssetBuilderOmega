@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssetDeclaration xmlns="uri:ea.com:eala:asset">
   <!-- Reborn: package the RA3-only campaign score screen. -->
+  <!-- Reborn: use RA3 personality string keys when shared Uprising keys rename campaign commanders. -->
+  <!-- Reborn: Use the mission id from the shell router for the localized co-commander name. -->
   <Includes>
     <Include type="all" source="fes_m_ra3PostgameRoundup/fes_m_ra3PostgameRoundup.xml" />
   </Includes>

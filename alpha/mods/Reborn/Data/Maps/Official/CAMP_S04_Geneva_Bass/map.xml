@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:TSCloudMed.xml"
 			type="instance"/>
 		<Include
@@ -328,7 +331,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -46859,6 +46861,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -46886,6 +46889,9 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="TPave_Geneva02;TPave_Geneva02_NRM;TSand_Cannes06;TSand_Cannes06_NRM;TPave_Geneva01;TPave_Geneva01_NRM;TGrass_Geneva01;TGrass_Geneva01_NRM;TPave_Geneva04;TPave_Geneva04_NRM;TDirt_Yucatan01;TDirt_Yucatan01_nrm;TDirt_Yucatan02;TDirt_Yucatan02_nrm;TPave_Geneva05;TPave_Geneva05_NRM;TPave_Heidel09;TPave_Heidel09_nrm;TDirt_Yucatan04;TDirt_Yucatan04_nrm;TGrass_Geneva02;TGrass_Geneva02_NRM;TSand_Cannes03;TSand_Cannes03_NRM;TReef_Yucatan02;TReef_Yucatan02_nrm;TGrass_Geneva03;TGrass_Geneva03_NRM;TGrass_Geneva05;TGrass_Geneva05_NRM;TPave_Cannes03;TPave_Cannes03_NRM;TGrass_GenevaClockC;TGrass_GenevaClockC_NRM;Grass_Heidelberg06;Grass_Heidelberg06_nrm;Pavement_SaintPetersburg05;Pavement_SaintPetersburg05_NRM;TGrass_GenevaClockA;TGrass_GenevaClockA_NRM;TGrass_GenevaClockD;TGrass_GenevaClockD_NRM;TGrass_GenevaClockB;TGrass_GenevaClockB_NRM;TPave_Golf02;TPave_Golf02_NRM;TGrass_Geneva04;TGrass_Geneva04_NRM;TPave_Golf05;TPave_Golf05_NRM;TPave_Golf01;TPave_Golf01_NRM;TPave_Golf04;TPave_Golf04_NRM;"/>
 		</WorldDict>
 		<MapAnalysis
 			CellsExamined="316250"
@@ -47405,49 +47411,56 @@
 							Type="ALLOW_DISALLOW_ONE_BUILDING">
 							<ParameterList>
 								<ObjectType
+									Object="SovietGrinderVehicle"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedSuperWeapon"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedBaseDefenseAdvanced"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedTechStructure"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedSuperWeapon"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedBaseDefenseAdvanced"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
+									Object="AlliedTechStructure"/>
+							</ParameterList>
+						</Action>
+						<Action
+							Type="ALLOW_DISALLOW_ONE_BUILDING">
+							<ParameterList>
+								<ObjectType
 									Object="SovietScoutVehicle"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedSuperWeapon"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedBaseDefenseAdvanced"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedTechStructure"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedSuperWeapon"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedBaseDefenseAdvanced"/>
-							</ParameterList>
-						</Action>
-						<Action
-							Type="ALLOW_DISALLOW_ONE_BUILDING">
-							<ParameterList>
-								<ObjectType
-									Object="AlliedTechStructure"/>
 							</ParameterList>
 						</Action>
 					</Script>
