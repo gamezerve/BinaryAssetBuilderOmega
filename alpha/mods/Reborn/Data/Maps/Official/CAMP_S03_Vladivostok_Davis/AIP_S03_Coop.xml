@@ -13,7 +13,7 @@
     BaseCompactness="0.5"
     CanBuildInAlliedBuildRadii="true"
 		CommanderPortrait="RebornCampaignZhanaPortrait"
-    PersonalityUIName="Personality:Zhana">
+    PersonalityUIName="Personality:ZhanaRA3">
 
 	<!-- Voice Responses -->
 		<FeedbackEntry FeedbackKey="PlanAttackBeaconPlaced" EvaEvent="SovietCoopZhanaPlanAttack" FeedbackTo="ALLIES"/>

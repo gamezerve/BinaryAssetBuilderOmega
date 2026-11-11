@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset">
+  <!-- Reborn: package the RA3-only campaign score screen. -->
+  <Includes>
+    <Include type="all" source="fes_m_ra3PostgameRoundup/fes_m_ra3PostgameRoundup.xml" />
+  </Includes>
+</AssetDeclaration>
