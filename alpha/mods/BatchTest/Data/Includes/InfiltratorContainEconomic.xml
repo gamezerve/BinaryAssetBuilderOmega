@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="us-ascii"?>
-
-	<InfiltratorContain xmlns="uri:ea.com:eala:asset"
-		id="ModuleTag_InfiltratorContain"
-		Effect="STEAL_MONEY"
-		Amount="2000"
-		BlockedDuration="30s">
-	</InfiltratorContain>

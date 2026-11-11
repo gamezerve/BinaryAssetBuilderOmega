@@ -6,6 +6,8 @@
 	<Tags/>
   
 	<Includes>	
+		<!-- Reborn: restore original RA3 building armor for this mission. -->
+		<Include type="all" source="DATA:Includes/CampaignOverrides/RA3BuildingArmorOverrides.xml" />
 		<Include type="all" source="DATA:Includes/CampaignOverrides/CampaignOverrides.xml"/><!-- Campaign Specific Overrides -->	
 		<Include type="instance" source="DATA:Neutral/Structures/OreNode.xml" />
 		<Include type="instance" source="DATA:PathMusic/StandardPathMusicGameDynamicState.xml" />

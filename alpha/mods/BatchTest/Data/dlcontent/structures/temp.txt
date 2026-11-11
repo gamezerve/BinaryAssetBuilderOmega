@@ -1,1 +1,0 @@
-Structures go in this directory.

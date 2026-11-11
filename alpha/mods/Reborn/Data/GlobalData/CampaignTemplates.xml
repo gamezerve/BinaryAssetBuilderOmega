@@ -552,7 +552,7 @@
 
     <AICommander
 		Portrait="RebornCampaignMoskvinPortrait" 
-	    Personality="AIP_S02_Coop_SovietShockSpecialist"
+	    Personality="AIP_S02_Coop_SovietShockSpecialistRA3"
 	    Description="CommanderDescription:Coop_SovietShockSpecialist"
 	    Faction="Soviet">
     </AICommander>

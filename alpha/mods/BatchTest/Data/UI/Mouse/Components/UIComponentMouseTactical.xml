@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!-- *********************************************************************** -->
-<!-- * Tactical portion of the Mouse-based in-game UI					   * -->
-<!-- *********************************************************************** -->
-
-<UIComponentMouseTactical xmlns="uri:ea.com:eala:asset" 
-	Priority="100" />

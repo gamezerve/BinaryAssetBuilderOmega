@@ -6,6 +6,8 @@
 	xmlns:xai="uri:ea.com:eala:asset:instance">
 	<Tags/>
 	<Includes>
+		<!-- Reborn: restore original RA3 building armor for this mission. -->
+		<Include type="all" source="DATA:Includes/CampaignOverrides/RA3BuildingArmorOverrides.xml" />
     <!-- Campaign Specific Overrides START -->
     <Include type="all" source="DATA:Includes/CampaignOverrides/PlayerTechs_CAMP.xml" />
     <Include type="instance" source="DATA:Allied\Units_Campaign\CAMP_AlliedBomberAircraft_Infantry_2.xml" />

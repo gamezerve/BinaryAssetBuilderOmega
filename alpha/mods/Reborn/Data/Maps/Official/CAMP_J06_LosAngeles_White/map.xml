@@ -704,7 +704,6 @@
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
 		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
-		<Include type="all" source="DATA:Includes/CampaignOverrides/RA3BuildingArmorOverrides.xml" />
 		<Include
 			source="overrides.xml"
 			type="all"/>

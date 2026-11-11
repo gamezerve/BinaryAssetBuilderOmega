@@ -32501,6 +32501,13 @@
 								Object="SovietLargeScoutInfantry"/>
 						</ParameterList>
 					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="SovietDesolatorInfantry"/>
+						</ParameterList>
+					</Action>
 				</Script>
 				<Script
 					id="Map Setup - Reveal Fortress">
