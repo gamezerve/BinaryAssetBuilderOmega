@@ -78,7 +78,7 @@
 						<IncludeThing>JapanImperialAdmin02</IncludeThing>
 					</ObjectFilter>
 				</HintObject>
-				<SuggestedOffset x="-69.150574" y="-68.921477" z="0.0" />
+				<SuggestedOffset x="-69.150417" y="-68.921159" z="0.0" />
 			</AssistedPlacementInfoBehavior>
 
 			<!-- Reborn: Vladivostok placement of Admin 03 relative to Admin 01. -->
@@ -88,7 +88,7 @@
 						<IncludeThing>JapanImperialAdmin03</IncludeThing>
 					</ObjectFilter>
 				</HintObject>
-				<SuggestedOffset x="69.752302" y="-69.275461" z="0.0" />
+				<SuggestedOffset x="69.252615" y="-69.275404" z="0.0" />
 			</AssistedPlacementInfoBehavior>
 
 

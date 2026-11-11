@@ -81,7 +81,7 @@
 						<IncludeThing>JapanImperialAdmin01</IncludeThing>
 					</ObjectFilter>
 				</HintObject>
-				<SuggestedOffset x="-69.752302" y="69.275461" z="0.0" />
+				<SuggestedOffset x="-69.252615" y="69.275404" z="0.0" />
 			</AssistedPlacementInfoBehavior>
 
 
@@ -150,14 +150,15 @@
 		</Body>
 		<Geometry
 			IsSmall="false">
+			<!-- Reborn: trim the seam-facing collision edge by 0.5 at the exact Vladivostok snap point. -->
 <Shape 
      Type= "BOX"
-     MajorRadius = "30.1373"
+     MajorRadius = "29.8873"
      MinorRadius = "35.562"
      Height = "77.6697"
      ContactPointGeneration = "STRUCTURE" >
     <Offset
-        x = "22.3677"
+        x = "22.6177"
         y = "-0.13641"
         z = "0.0" />
 </Shape>
