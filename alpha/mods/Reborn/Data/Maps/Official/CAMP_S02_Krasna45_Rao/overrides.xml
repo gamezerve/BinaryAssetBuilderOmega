@@ -1073,4 +1073,12 @@
             <TextureSize x="512" y="512"/>
       </RadarTerrainImage>
 
+  <!-- Reborn: replace the stock tactical Moskvin portrait only in the Krasna-45 map stream. -->
+  <Texture id="RebornKrasna45MoskvinAtlas" File="ART:Images/RebornCampaignMoskvinAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <PackedTextureImage id="Moskvin" Texture="RebornKrasna45MoskvinAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
+
 </AssetDeclaration>

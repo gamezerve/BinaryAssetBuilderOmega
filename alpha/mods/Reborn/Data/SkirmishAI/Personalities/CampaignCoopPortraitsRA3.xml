@@ -4,18 +4,12 @@
   <Includes>
     <Include type="instance" source="DATA:Maps/Official/CAMP_S01_LeningradCanals_Rao/AIP_S01_Coop.xml" />
     <Include type="instance" source="DATA:SkirmishAI/Personalities/AIP_T06_Coop.xml" />
-    <Include type="instance" source="DATA:Maps/Official/CAMP_S02_Krasna45_Rao/AIP_S02_Coop.xml" />
   </Includes>
   <!-- Reborn: keep the original personality type and every inherited behavior while changing only the displayed portrait. -->
   <AIPersonalityDefinition id="AIP_S01_Coop_SovietHeavyArmorRA3"
       inheritFrom="AIP_S01_Coop_SovietHeavyArmor"
       PersonalityType="AIP_S01_Coop_SovietHeavyArmor"
       CommanderPortrait="RebornCoopOlegPortrait" />
-  <!-- Reborn: use Moskvin's HUD portrait while retaining the original Krasna-45 AI personality. -->
-  <AIPersonalityDefinition id="AIP_S02_Coop_SovietShockSpecialistRA3"
-      inheritFrom="AIP_S02_Coop_SovietShockSpecialist"
-      PersonalityType="AIP_S02_Coop_SovietShockSpecialistRA3"
-      CommanderPortrait="RebornCoopMoskvinPortrait" />
   <AIPersonalityDefinition id="AIP_T06_CoopRA3"
       inheritFrom="AIP_T06_Coop"
       PersonalityType="AIP_T06_Coop"
