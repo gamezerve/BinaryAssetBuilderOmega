@@ -6,6 +6,27 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
 
 ## Open
 
+- [ ] **EP1 ProjectileUpdate BezierSplineProjectile — qualify the schema-supported movement mode.**
+  - The EA and Mod Builder EP1 ProjectileUpdate.xsd files pair BezierSplineProjectile with Movement/BezierSpline and one or more ProjectilePathRef entries. The active Marshaler.ProjectileUpdate.cs rejects the selector. The EP1 metadata tokenizer and ManifestInspector movement dispatch recognize only the falling and straight-line movement records.
+  - Retail factory 00748ec0 selects discriminator 3 and calls 00742ac0. The child constructed by 00742860 reads the Movement record at module data +0x18. BezierLaunchState entry 0075a440 uses the count at Movement +0x14 and the path-reference array at +0x18.
+  - Retail dispatcher 004b7750 allocates 0x1c bytes for TypeId 0xb38f4984. Reader 0045d160 confirms Velocity +0x04, Range +0x08, Gravity +0x0c (default 1), FlightPathAdjustMaxDistancePerFrame +0x10 (default 0), Path count +0x14 and resolved array +0x18. Helper 0043fb10 invokes the reference resolver once per row. Verify serialized path imports and relocation metadata against an independently produced native asset. Exercise the named XML route and metadata readers with a multi-path compile-and-read fixture.
+
+- [ ] **EP1 ProjectileUpdate BalloonProjectile — qualify the schema-supported movement mode.**
+  - The official EA and Mod Builder EP1 ProjectileUpdate.xsd files pair BalloonProjectile with Movement/BalloonMoveToGround. BalloonProjectileMoveToGroundData adds no fields to ProjectileMoveBase.
+  - Retail factory 00748ec0 selects discriminator 2 and calls 007427f0. The constructor reads Movement from module data +0x18, stores it at state +0x24 and installs BalloonMoveToGroundState vtable 00c4b000. Tick 00805e80 follows the owner AI goal and reads no balloon-specific movement fields.
+  - The active Marshaler.ProjectileUpdate.cs explicitly rejects BalloonProjectile. The EP1 metadata tokenizer and ManifestInspector movement dispatch currently recognize only the BombProjectile and StraightLineProjectile movement classes.
+  - Retail dispatcher 004b7750 allocates 0x04 bytes for TypeId 0x1a5b5a69. Reader 00432980 delegates to the ProjectileMoveBase TypeId reader. Confirm emitted relocation metadata against an independently produced native asset. Then exercise the named BalloonMoveToGround XML route and the matching metadata paths with a compile-and-read fixture.
+
+- [ ] **EP1 ProductionUpdate QuantityModifier — qualify populated lists.**
+  - EA permits up to two rows with a GameObjectWeakRef Name and signed Count. The active EP1 marshaler rejects populated QuantityModifier lists.
+  - Retail 00482d80 passes module-data +0x3c/+0x40 to 00449340, which allocates 0x08 bytes per row. Reader 0042be00 copies the weak template ID at +0x00 and Count at +0x04. Queue insertion 0075eb00 resolves the ID and copies Count from the first matching template row into entry +0x28.
+  - Compare populated EP1 list metadata and weak-reference encoding with an independently produced native reference before enabling the writer. Verify that the named GameObject route preserves row order.
+
+- [ ] **EP1 ProductionUpdate ProductionModifier — qualify populated lists.**
+  - EA's schema permits up to two rows. The active EP1 marshaler rejects any populated list.
+  - Retail type `0x6ec75439` allocates a `0x54`-byte module record. Loader `00482d80` sends the list at `+0x44/+0x48` to `00464670`, which allocates `0x84` bytes per row. Reader `00457f80` resolves `RequiredUpgrade` at `+0x00`, defaults the cost and time floats at `+0x04/+0x08` to 1.0, and loads the embedded `ModifierFilter` at `+0x0c`.
+  - Compare populated native stream metadata, strong upgrade imports and the nested filter against a stock or independently produced reference record before enabling the writer. The runtime row stride is confirmed independently of the serialized representation.
+
 - [ ] **HordeMemberCollideModuleData — establish the asset route and classify compiler coverage.**
   - EA EP1 includes the derived type without extra fields. GameObject exposes the base Collide element. The retail factory 006fdb70, constructor 0071e300 and callback 0078b7c0 identify a concrete class whose collision handler resolves horde and containment state.
   - No dedicated Mod Builder model, marshaler or dispatch was found. Check whether stock assets use a derived type under Collide or whether the engine attaches the module programmatically. Verify the wire identity and base-sized record against a stock asset before adding a compiler path.
@@ -260,6 +281,95 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
   - The generic Body dispatch allocates concrete type `0xd3565857` with the legacy ActiveBody base. The declared x86 layout places ShieldAmount at `+0x6c`; retail recharge helper `00758500` reads it at `+0x5c`. The explicit EP1 body allocator currently excludes ShieldBody.
   - Retail damage, armor and status paths also confirm the shield tail offsets `+0x50` through `+0x68`, including ShieldArmor at `+0x60`, recharge idle time at `+0x64`, and the active model condition at `+0x68`.
   - Verify a populated EP1 GameObject Body/ShieldBody record, preserving its concrete type, inherited ActiveBody semantics, all shield fields, imports, relocations and round trip.
+
+- [ ] **CreateAndEnterObjectSpecialPowerModuleData — qualify the derived EP1 OCL layout.**
+  - Retail action `007ff8d0` reads the optional FXOffset vector pointer at `+0x20c`, immediately after the 524-byte EP1 OCL base.
+  - Mod Builder dispatches `0x38c496d8` through CreateAndEnterObjectSpecialPowerModuleData and the legacy OCL marshaler. That x86 record places FXOffset at `+0x208` and inherits the legacy location enum and UpgradeOCL item layout. The separate base OCL dispatch uses the EP1 record.
+  - Qualify the derived route with a populated FXOffset, CreateLocationOffset and UpgradeOCL, checking concrete type ID, relocations, metadata and round trip.
+
+- [ ] **ObjectStatusSpecialAbilityUpdateModuleData — qualify the missing EP1 compiler dispatch.**
+  - EA's Uprising GameObject schema exposes this SpecialAbilityUpdate extension. Retail registration identifies type `0x079b6ead`; the reviewed compiler has no concrete model or dispatch for it.
+  - Retail constructor `007a94c0` sets Status1. Callback `007fced0` alternates two 32-byte inline ObjectStatusBitFlags masks at `+0xfc` and `+0x11c`.
+  - Qualify an original or authored GameObject record with distinct nonempty masks. Verify concrete ID, native field offsets, inherited fields, metadata and round trip.
+
+- [ ] **WeaponModeSpecialPowerUpdateModuleData — establish whether EP1 assets require compiler support.**
+  - EA's Uprising type schema declares Duration, AttributeModifier and LockWeaponSlot. Retail registers type `0x3041e295`. The inspected GameObject schema has no matching element and the compiler has no concrete model or dispatch.
+  - Retail activation `0075fab0` reads Duration at `+0x18` and AttributeModifier at `+0x1c`. Expiry removes the modifier. The LockWeaponSlot access remains unverified.
+  - Locate a populated original or an authored use case before qualifying the inherited layout, LockWeaponSlot, concrete type, metadata and round trip.
+
+- [ ] **SpecialPowerUpdateModuleData — qualify the EP1 base mask and StartsPaused offsets.**
+  - EA's Uprising schema adds DisabledTypesToIgnore with default HELD. Retail getter `00722920` reads the 32-bit mask at `+0x0c`; the owner gate at `007442c0` consumes it. Constructor `007441a0` reads StartsPaused at `+0x14`.
+  - Mod Builder dispatch `0xb9b2a9b3` uses a model that puts InitiateSound at `+0x0c` and StartsPaused at `+0x10` on x86. Its marshaler omits DisabledTypesToIgnore.
+  - Qualify the base and applicable derived types with a nonempty mask, StartsPaused and InitiateSound. Verify native offsets, defaults, imports, relocations, metadata and round trip.
+
+- [ ] **DeflectSpecialPowerModuleData — determine whether EP1 assets require a compiler route.**
+  - EA's Uprising type schema declares a fieldless SpecialPowerUpdateModuleData extension. Retail registers type `0x7fa7defc` and allocates its runtime object through `006fdf70`. The GameObject schema and compiler have no matching route.
+  - Activation `00722990` schedules the pending transition. Update `00742ec0` manages the active bit, and `00722930` dispatches through incoming object modules while active.
+  - Locate an original or authored asset before qualifying the type ID, inherited EP1 mask and StartsPaused layout, metadata and round trip.
+
+- [ ] **DamageFieldUpdateModuleData — use the EP1 FireWeaponUpdate base.**
+  - Retail constructor `007d5de0` calls `007c3590`, which reads the status pointer at `+0x18` and walks the list at `+0x10/+0x14` with a 16-byte stride. Shared update `00778f30` reads FireInterval at `+0x08` and AliveOnly at `+0x1c`. The derived action `007eda00` reads Radius at `+0x20` and RequiredUpgrade at `+0x24`.
+  - The generic `0xf3b802d5` route embeds the 24-byte legacy FireWeaponUpdate model and invokes its legacy marshaler. On x86 that places Radius at `+0x18` and RequiredUpgrade at `+0x1c`. The standalone EP1 FireWeaponUpdate route uses the verified 32-byte base.
+  - Qualify a compiled DamageFieldUpdate with a nonzero FireInterval and Radius, a populated nugget, status validation, RequiredUpgrade and ObjectFilter. Verify concrete type ID, imports, relocations, metadata and round trip.
+
+- [ ] **FireWeaponWhenDeadBehaviorModuleData — qualify the generic EP1 dispatch.**
+  - Retail die callback `007dd7d0` reads FireAtGround at `+0x8f` and UseMyKillerAsWeaponSource at `+0x90`. Registration uses `0x90ceb49c`. The EP1 schema declares both flags.
+  - The reviewed EP1 selection route uses the 148-byte Ep1FireWeaponWhenDeadBehaviorModuleData and writes both bytes. The generic GameObject switch still maps the same ID to the 144-byte legacy model, which has neither field.
+  - Exercise the generic EP1 authoring path with both flags set and compare its data, imports, metadata and round trip to the reviewed selection route.
+
+- [ ] **DamageFilteredCreateObjectDieModuleData — qualify the EP1 compiler route.**
+  - The EP1 type schema declares this DieModuleData extension and retail registration uses `0x76ab5e78`. The current GameObject schema and compiler sources contain no concrete route for the type.
+  - Die callback `0078e970` reads CreationList at `+0x34`, the instant subtype at `+0x38` and the post-trigger duration at `+0x40`. Damage callback `00770cd0` uses the duration subtype at `+0x3c` and records the frame and source player.
+  - Locate a stock or authored GameObject witness before adding the route. Verify the inherited DieModuleData prefix, the creation-list import, both subtype values, the duration, metadata and round trip.
+
+- [ ] **CreateObjectDieModuleData — qualify the generic EP1 dispatch.**
+  - Retail die callback `007a3790` reads CreationList at `+0x34`, required count/pointer at `+0x38/+0x3c` and forbidden count/pointer at `+0x40/+0x44`.
+  - The reviewed EP1 route uses the 72-byte Ep1CreateObjectDieModuleData. The generic GameObject route for `0x3b68b768` selects the 80-byte legacy model. Its extra DebrisPortionOfSelf length/pointer pair at `+0x38/+0x3c` shifts both lists eight bytes later.
+  - Exercise the generic EP1 authoring route with both upgrade lists populated and compare native offsets, imports, metadata and round trip to the reviewed EP1 route.
+
+- [ ] **HordeAIUpdateModuleData — route the inherited fields through the EP1 AI model.**
+  - Retail registration uses `0x55d77703`. Constructor `007fb6d0` calls shared AI constructor `007ec990`. Update `0080a280` tail-jumps to `00806e60`, which reads module-data byte `+0x49` at `0080707f`.
+  - The stock-qualified EP1 AI model places FadeOnPortals at `+0x49`. The active HordeAIUpdate marshaler delegates to the legacy AIUpdate model, where that byte falls inside SpawnOffsetRadius. The EP1 schema declares no HordeAIUpdate-specific fields.
+  - Find a retail HordeAIUpdate asset and qualify inherited values, state-machine and locomotor fields, imports, metadata and round trip through the EP1 layout.
+
+- [ ] **SupplyTruckAIUpdateModuleData — use the EP1 AI base in the generic compiler route.**
+  - Retail registers type `0x9ab8094d`. `0070ea70` checks MaxBoxes at `+0x4c`, `00725d10` reads the center and warehouse delays at `+0x50/+0x54`, and `0070ead0` reads CanPathThroughUnitsWhileDocking at `+0x6f`. The last getter is SupplyTruckAIInterface slot 33 and is consumed by AIDockState entry.
+  - `Marshaler.ModulesAIModuleData.cs` selects the legacy SupplyTruckAIUpdateModuleData and its marshaler delegates to AIUpdateModuleData. An x86 reflection probe of the deployed alpha compiler measured legacy AIUpdateModuleData at `0x5c` and Ep1AIUpdateModuleData at `0x4c`. The active model places those fields at `+0x5c`, `+0x60/+0x64` and `+0x7f`, respectively.
+  - Qualify the EP1 route with distinct nonzero delays, MaxBoxes, both docking and harvesting flags, and a populated inherited AI record. Verify native bytes, imports, relocations, metadata and round trip. TransportHelicopterAIUpdate embeds the same legacy model, so qualify that route against its own retail evidence before reusing the fix.
+
+- [ ] **EP1 AI StateMachine selector — verify authoring support for OreRefineryStateMachine.**
+  - The EP1 XSD and Ep1AIStateMachineType expose OreRefineryStateMachine at ordinal `0x0b`. The generic Ep1AIUpdate marshaler writes that scalar at native `+0x3c`.
+  - Retail base AI factory `0070f2d0` reads `+0x3c`. Jump-table entry `0070f5b8` goes directly to the null-return epilogue at `0070f584`. The common initializer `0070f620` uses the returned pointer immediately. This path needs an authoring guard or a qualified runtime witness before treating ordinal `0x0b` as usable with the generic AI module.
+  - TransportHelicopterAIStateMachine at ordinal `0x0d` does construct through `008337e0`. This is a StateMachine value on the common AI module. The standalone TransportHelicopterAIUpdate compiler type `0xa9936c0d` had no matching name or ID in the inspected retail image and remains unqualified.
+
+- [ ] **FormationAssistantTemplate — check equal cell counts across rows before emitting the asset.**
+  - The EP1 XSD permits each Row to contain an independent number of Cell elements. A probe against the deployed x86 SDK passed both 1,1 and 1,2 cell counts through the admitted schema and StockAssetRootCompiler.Compile. The emitted instance buffers preserved those exact counts at the 8-byte row stride.
+  - Retail create callback `00584ea0` compares each row count with the first at `00584ec3`. A mismatch branches to the null return at `00584f72` before runtime allocation. Replacement callback `00584f80` performs the same check at `00584fa0` and exits before touching the current wrapper.
+  - Add an authored diagnostic for unequal widths and qualify it with the rectangular and uneven fixtures. Keep each cell's variable Definition list independent. The retail rule compares the number of cells per row.
+
+- [ ] **UIMouseTacticalLookAt — diagnose ViewBookmark lists longer than eight rows.**
+  - The EP1 LookAt schema declares `ViewBookmark` with `maxOccurs="unbounded"`. The x86 source-tree Mod Builder compiler accepts eight and nine rows, preserving counts 8 and 9 at instance `+0x34` in 124-byte and 132-byte buffers.
+  - Retail initializer `00a5fdf0` reads the serialized count at `00a60017`, substitutes the constant 8 at `00c8e00c` when it is exceeded, and uses the capped value as the loop bound at `00a600a3`. The ninth row is emitted but receives no runtime binding.
+  - Add an EP1 authoring diagnostic for more than eight rows. Re-run the 8-row and 9-row fixtures from Reborn’s `Reconstruction/UIMouseTacticalLookAt/LookAtAssetProbe.cs` against the production authoring path.
+
+- [ ] **EncloseBehaviorModuleData layout index — verify x86 string and inline filter sizes.**
+  - Retail callbacks `00719110` and `007ce1e0` read ScaledBoneName pointer at `+0x14` and EnclosureRadius at `+0x18`. `007b3d10` passes the inline filter at `+0x1c`.
+  - The Mod Builder declaration uses x86 `Relo.String<sbyte>` (length and pointer) and the manifest inspector records the stock contract as 148 bytes. The generated Reborn layout index assigns four bytes to AnsiString and reports a 60-byte record with EnclosureRadius at `+0x14` and Filter at `+0x18`.
+  - Revalidate the index against the x86 compiler layout. Cover AnsiString and the inline ObjectFilter and check the generated offsets against the stock contract before using the index to apply Ghidra types.
+  - The same generated-index issue affects Ep1SpecialPowerTemplate. It reports TargetType at `+0x0c` and a zero-byte Flags field at `+0x14`. Retail `00806470` and `007fff70` read TargetType at `+0x14` and the flags dword at `+0x1c`. Verify both 8-byte AnsiString members and the fixed uint[1] flag buffer when requalifying the index.
+  - WeaponTemplate is a second measured index regression. The deployed alpha and Release ManifestInspector x86 types both measure 0x154, with ClipSize +0x78, RestrictedHeightRange +0xb0, IncompatibleAttributeModifier +0x124, ScaleAttackRangeByAmmoRemaining +0x130 and UseCenterForRangeCheck +0x14f. Retail routines 0074d0c0, 00731880 and 007ad370 read those offsets. The generated index reports 0x120 and +0x60, +0x98, +0xf0, +0xfc and +0x11b. Use the measured x86 offsets as regression fixtures for the index.
+  - Ep1Shape is another measured index case. Retail loader 00b10dd0 advances 0x30 bytes in the native shape array and 0x28 in the converted runtime array. The existing EP1 Mod Builder geometry smoke test already checks the native 48-byte type. The generated index currently reports 0x28 for the native Ep1Shape and shifts MajorRadius +0x10, Height +0x20 and Active +0x2c to +0x0c, +0x18 and +0x24. Include Name and Other as eight-byte x86 strings in the index fixture.
+  - ProjectedBuildabilityInfo isolates the fixed-buffer issue. The deployed alpha x86 type and retail loop 00525ac0 both use 0x74 bytes. x86 places BuildPlacementTypes, StatusToReject and ModelConditionsToReject at +0x08, +0x0c and +0x2c, followed by height limit +0x68, filter +0x6c and PrimaryBuidability +0x70. The index assigns all three bitflag structs zero bytes and reports 0x14. Add this record as a fixed-buffer size and offset fixture.
+
+- [ ] **FXParticleSysBoneNugget layout index — account for the two-word x86 Bone string.**
+  - Type ID `0xba0b1771` selects factory `00551700` through `0056bd4f`. Binding reader `008b02c0` and the inline path at `008cd703` read the Bone pointer at `+0x30`, then TriggerType, HoldBetweenStateID, ActionType and Particle at `+0x34/+0x38/+0x3c/+0x40`. RequireFrequentUpdate is a byte at `+0x50`.
+  - Reborn's generated EP1 Mod Builder layout index treats AnsiString as four bytes and reports Particle at `+0x3c` and RequireFrequentUpdate at `+0x4c`. The actual declaration uses `Relo.String<sbyte>`, whose x86 layout is a length and pointer. Add this record as a regression fixture for the index. For FXListAtBonePosFXNugget, retail `005653c0` reads FX at `+0x2c` and the second Bone word at `+0x34`; the index ends that record at `0x34`.
+  - Verify emitted x86 instance data and relocations with a nonempty bone name, distinct trigger/state/action values, a referenced particle, nonzero Offset and RequireFrequentUpdate enabled. Qualify Offset against a retail consumer separately. The current finding concerns the generated index.
+
+- [ ] **EP1 AnimationMode comments — correct LOOP_PINGPONG and PLAY_TO_FRAME descriptions.**
+  - `schemas/ra3ep1/xsd/Includes/AnimationMode.xsd` associates the play-to-frame comment with ordinal 5 LOOP_PINGPONG and the reversal comment with ordinal 6 PLAY_TO_FRAME.
+  - Retail draw update dispatch at `008d92e7` routes ordinal 5 to `008d9377`, which reverses direction at boundaries. Ordinal 6 skips automatic advancement in that loop. Single-clip render state setter `004ef750` treats ordinal 6 as a target sample and selects direction relative to the current sample.
+  - Correct the explanatory comments while preserving enum order and numeric values.
 
 ## Resolved
 
