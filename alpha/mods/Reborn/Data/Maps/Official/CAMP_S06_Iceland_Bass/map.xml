@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUShiftBlue_Vol.xml"
 			type="instance"/>
 		<Include
@@ -244,7 +247,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -27454,24 +27456,22 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
 			<AssetIdProperty
 				Key="musicZone"
 				Value="MusicPalette_NotSet"/>
-			<IntProperty
-				Key="weather"
-				Value="2"/>
-			<IntProperty
-				Key="compression"
-				Value="1"/>
 			<StringProperty
 				Key="mapName"
 				Value=""/>
 			<StringProperty
 				Key="mapDescription"
 				Value=""/>
+			<IntProperty
+				Key="compression"
+				Value="1"/>
 			<RealProperty
 				Key="cameraGroundMinHeight"
 				Value="205"/>
@@ -27481,6 +27481,9 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<IntProperty
+				Key="weather"
+				Value="2"/>
 			<StringProperty
 				Key="terrainTextureStrings"
 				Value="TSand_Cannes01;TSand_Cannes01_NRM;TGrass_CapeCod19;TGrass_CapeCod19_nrm;TDirt_Yucatan04;TDirt_Yucatan04_nrm;TSnow_Iceland03;TSnow_Iceland03_NRM;TSand_Cannes04;TSand_Cannes04_NRM;TDirt_Iceland04;TDirt_Iceland04_NRM;TGrass_Yucatan03;TGrass_Yucatan03_nrm;TGravel_Yucatan01;TGravel_Yucatan01_nrm;Transition_Iceland01;Transition_Iceland01_NRM;TSnow_Solvang01;TSnow_Solvang01_nrm;Transition_Kremlin03;Transition_Kremlin03_NRM;TSnow_Iceland02;TSnow_Iceland02_NRM;TPave_Geneva02;TPave_Geneva02_NRM;Transition_Iceland03;Transition_Iceland03_NRM;Pavement_Kremlin05;Pavement_Kremlin05_NRM;Transition_Iceland02;Transition_Iceland02_NRM;Transition_Kremlin01;Transition_Kremlin01_NRM;TSnow_Iceland05;TSnow_Iceland05_NRM;Transition_Iceland04;Transition_Iceland04_NRM;TSnow_Iceland04;TSnow_Iceland04_NRM;TSnow_Solvang09;TSnow_Solvang09_NRM;Transition_Kremlin02;Transition_Kremlin02_NRM;TDirt_Iceland06;TDirt_Iceland06_NRM;TDirt_CapeCod07;TDirt_CapeCod07_nrm;TSnow_Solvang03;TSnow_Solvang03_nrm;Transition_Kremlin04;Transition_Kremlin04_NRM"/>

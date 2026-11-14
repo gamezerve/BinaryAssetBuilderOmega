@@ -171,10 +171,6 @@ namespace EALABuild
         public List<GUIElementData> GetModBuildGUIData()
         {
             List<GUIElementData> options = new List<GUIElementData>();
-            options.Add(new GUIElementData("alpha", "Uprising Alpha: Validate XML / Build Data / Make BIG", GUIElementData.LabelType, ScriptIndex.ModScript));
-            options.Add(new GUIElementData("scope", "Unchecked stages reuse their last successful output", GUIElementData.LabelType, ScriptIndex.ModScript));
-            // Reborn: distinguish reviewed variable behavior shapes from unrestricted nested GameObject/resource authoring.
-            options.Add(new GUIElementData("weapon", "Create BIG Files can package saved outputs without recompiling", GUIElementData.LabelType, ScriptIndex.ModScript));
             options.Add(new GUIElementData("buildaptui", "Build AptUI", GUIElementData.CheckBoxType, ScriptIndex.ModScript));
 			// Reborn: compile AdditionalMaps/MapMetaData_*.xml before static data, using EA's familiar persisted toggle.
             options.Add(new GUIElementData("buildglobal", "Build Global Data", GUIElementData.CheckBoxType, ScriptIndex.ModScript));

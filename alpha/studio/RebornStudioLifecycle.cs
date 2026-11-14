@@ -74,6 +74,8 @@ namespace Reborn
         {
             if (studio != null) return;
             studio = form;
+            // Reborn: give the Uprising SDK its own main-window title.
+            studio.Text = "Uprising Mod BuildStudio";
             studio.FormClosing += OnClosing;
             AttachOutput(form);
             AttachBuildStatus(form);
@@ -90,6 +92,16 @@ namespace Reborn
             buildFooter = new Panel { Name = "rebornBuildFooter", Dock = DockStyle.Bottom, Height = Math.Max(40, button == null ? 40 : button.Height + 10), Padding = new Padding(8, 5, 8, 5) };
             buildStatus = new BuildStatusIndicator { Name = "rebornBuildStatus", Dock = DockStyle.Fill, TabStop = false, AccessibleName = "Build status", AccessibleRole = AccessibleRole.StatusBar };
             buildFooter.Controls.Add(buildStatus);
+            // Reborn: keep the compiler version at the right edge while the build status uses the remaining space.
+            var compilerVersion = new Label
+            {
+                Name = "rebornCompilerVersion", Text = "v1.00", Dock = DockStyle.Right,
+                AutoSize = false, TextAlign = ContentAlignment.MiddleRight,
+                Padding = new Padding(12, 0, 0, 0), AccessibleName = "Compiler version v1.00"
+            };
+            buildFooter.Controls.Add(compilerVersion);
+            // Reborn: size only the width so the label can center vertically across the footer.
+            compilerVersion.Width = compilerVersion.PreferredWidth;
             if (button != null)
             {
                 // Reborn: reparent the existing button so its event handler, enabled state and build action remain EA's own.

@@ -69,5 +69,12 @@
 		EnterEvent="S_S05MykonosIntro">
   </PathMusicGameDynamicState>
 
+  <!-- Reborn: replace the stock tactical Vera portrait only in the Vladivostok map stream. -->
+  <PackedTextureImage id="Vera" Texture="RebornVladZhanaAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
+
 
 </AssetDeclaration>
