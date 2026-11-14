@@ -5,6 +5,8 @@
   xmlns:xai="uri:ea.com:eala:asset:instance">
 	<Tags/>
   <Includes>
+    <!-- Reborn: compile Naomi's mission-specific fleet personality with the Mount Fuji map. -->
+    <Include type="all" source="AIP_S07_JapanFleetCommand.xml" />
     <!-- Reborn: restore original RA3 building armor for this mission. -->
     <Include type="all" source="DATA:Includes/CampaignOverrides/RA3BuildingArmorOverrides.xml" />
     <Include type="all" source="DATA:Includes/CampaignOverrides/CampaignOverrides.xml"/><!-- Campaign Specific Overrides -->
@@ -84,5 +86,12 @@
 	<PathMusicGameDynamicState id="ThreatLevel1" inheritFrom="ThreatLevel1"
 		EnterEvent="S_S07FujiThreat1">
 	</PathMusicGameDynamicState>
+
+  <!-- Reborn: replace the stock tactical Moskvin portrait only in the Mt. Fuji map stream. -->
+  <PackedTextureImage id="Moskvin" Texture="RebornCoopMoskvinAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
 
 </AssetDeclaration>

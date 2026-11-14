@@ -3,6 +3,19 @@
 
 <!-- Reborn -->
 
+<!-- Emperor Yoshiro Portrait and Button from RA3 -->
+  <Texture id="RebornJapanEmperorYoshiroAtlas" File="ART:Images/RebornJapanEmperorYoshiroAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <PackedTextureImage id="Portrait_JapanEmperorYoshiro" Texture="RebornJapanEmperorYoshiroAtlas" Rotated="false">
+    <Dimensions x="101" y="76" />
+    <Coords x="1" y="1" />
+    <TextureDimensions x="256" y="128" />
+  </PackedTextureImage>
+  <PackedTextureImage id="Button_JapanEmperorYoshiro" Texture="RebornJapanEmperorYoshiroAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="112" y="1" />
+    <TextureDimensions x="256" y="128" />
+  </PackedTextureImage>
+
 <!-- Mod Logos and Mod Splash Screen -->
 	<OnDemandTexture id="Mod_Logo" File="ART:Images/Mod_Logo.dds" OutputFormat="DXT5" GenerateMipMaps="false" AllowAutomaticResize="false"/>
 	<OnDemandTexture id="Mod_Text" File="ART:Images/Mod_Text.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false"/>

@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -358,7 +361,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -2770,7 +2772,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="MJ_Structure_04"
-			id="MJ_STRUCTURE_04">
+			id="MJ_Structure_04">
 			<Position
 				x="2554.210887"
 				y="5437.841846"
@@ -2783,7 +2785,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="MJ_Structure_04"
-			id="MJ_STRUCTURE_04">
+			id="MJ_Structure_04">
 			<Position
 				x="2043.067847"
 				y="3494.928867"
@@ -2822,7 +2824,7 @@
 			Health="100"
 			Team="PlyrNeutral"
 			ThingTemplate="MJ_Structure_04"
-			id="MJ_STRUCTURE_04">
+			id="MJ_Structure_04">
 			<Position
 				x="3347.303043"
 				y="3021.196262"
@@ -2913,7 +2915,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="MJ_Structure_03"
-			id="MJ_STRUCTURE_03">
+			id="MJ_Structure_03">
 			<Position
 				x="2108.666025"
 				y="538.617162"
@@ -2926,7 +2928,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="MJ_Structure_04"
-			id="MJ_STRUCTURE_04">
+			id="MJ_Structure_04">
 			<Position
 				x="1787.872641"
 				y="1195.938324"
@@ -12403,7 +12405,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto03"
-			id="ST_Auto03">
+			id="ST_AUTO03">
 			<Position
 				x="2932.735463"
 				y="1947.519461"
@@ -19475,7 +19477,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto03"
-			id="ST_Auto03">
+			id="ST_AUTO03">
 			<Position
 				x="2354.456004"
 				y="1991.068484"
@@ -19488,7 +19490,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="3028.698249"
 				y="1959.090661"
@@ -19501,7 +19503,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2944.848425"
 				y="1933.87722"
@@ -21313,6 +21315,136 @@
 				x="95.345179"
 				y="612.5136"
 				z="0"/>
+		</Prop>
+		<Prop
+			Angle="1.330355"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="129.292307"
+				y="534.370967"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="0.294797"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="112.570539"
+				y="464.137163"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="1.595374"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="160.110346"
+				y="679.3424"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="0.294797"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="195.849809"
+				y="653.228407"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-1.362604"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="260"
+				y="780"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-0.102287"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="2086.343041"
+				y="1460.782988"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-1.402864"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="2055.917226"
+				y="1428.634664"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-3.060265"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="2133.833286"
+				y="1380.978985"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-0.405592"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="2295.533865"
+				y="1555.48032"
+				z="10"/>
+		</Prop>
+		<Prop
+			Angle="-1.402864"
+			EventList=""
+			Faction="PlyrCivilian/teamPlyrCivilian"
+			Health="100"
+			Team="PlyrCivilian"
+			ThingTemplate="GUKoi_01"
+			id="GUKOI_01">
+			<Position
+				x="2260.390085"
+				y="1488.446721"
+				z="10"/>
 		</Prop>
 		<Prop
 			Angle="0.487835"
@@ -26014,7 +26146,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1107.97184"
 				y="790.034964"
@@ -26027,7 +26159,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1149.896262"
 				y="339.750807"
@@ -26040,7 +26172,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="375.822806"
 				y="1036.455444"
@@ -26053,7 +26185,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1156.857464"
 				y="1239.486721"
@@ -26066,7 +26198,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2201.834666"
 				y="683.967606"
@@ -26079,7 +26211,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2791.087044"
 				y="1309.462646"
@@ -48470,86 +48602,6 @@
 				z="0"/>
 		</Audio>
 		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="129.292307"
-				y="534.370967"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="112.570539"
-				y="464.137163"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="160.110346"
-				y="679.3424"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="195.849809"
-				y="653.228407"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="260"
-				y="780"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="2086.343041"
-				y="1460.782988"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="2055.917226"
-				y="1428.634664"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="2133.833286"
-				y="1380.978985"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="2295.533865"
-				y="1555.48032"
-				z="10"/>
-		</Unknown>
-		<Unknown
-			ThingTemplate="GUKoi_01"
-			id="GUKOI_01">
-			<Position
-				x="2260.390085"
-				y="1488.446721"
-				z="10"/>
-		</Unknown>
-		<Unknown
 			ThingTemplate="SovietSupportBomber_S07"
 			id="SovietSupportBomber_S07">
 			<Position
@@ -48752,6 +48804,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -48782,6 +48835,9 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="Grass_Gibraltar02;Grass_Gibraltar02_NRM;Grass_Heidelberg01;Grass_Heidelberg01_nrm;TDirt_Yucatan06;TDirt_Yucatan06_nrm;TGrass_CapeCod11;TGrass_CapeCod11_nrm;TGrass_Yucatan05;TGrass_Yucatan05_nrm;TGrass_Yucatan03;TGrass_Yucatan03_nrm;Grass_Hawaii08;Grass_Hawaii08_NRM;TGravel_Yucatan01;TGravel_Yucatan01_nrm;TRock_Yucatan01;TRock_Yucatan01_nrm;Grass_Hawaii03;Grass_Hawaii03_NRM;Gravel_Heidelberg01;Gravel_Heidelberg01_NRM;TDirt_Yucatan01;TDirt_Yucatan01_nrm;TDirt_Yucatan02;TDirt_Yucatan02_nrm;Grass_Heidelberg05;Grass_Heidelberg05_nrm;TGrass_CapeCod09;TGrass_CapeCod09_nrm;TPave_CapeCod02;TPave_CapeCod02_nrm;TDirt_CapeCod02;TDirt_CapeCod02_nrm;TCliff_CapeCod01;TCliff_CapeCod01_nrm;TGrass_CapeCod04;TGrass_CapeCod04_nrm;Dirt_Heidelberg01;Dirt_Heidelberg01_NRM;TTransition_Yucatan09;TTransition_Yucatan09_nrm;TMisc_SteelDeck01;TMisc_SteelDeck01_nrm;TPave_Geneva01;TPave_Geneva01_NRM;TGrass_CapeCod21;TGrass_CapeCod21_nrm;TTransition_Yucatan10;TTransition_Yucatan10_nrm;TTransition_Yucatan12;TTransition_Yucatan12_nrm;TDirt_C"/>
 		</WorldDict>
 		<PostEffect
 			Effect="LUSaturateColors_Vol"/>

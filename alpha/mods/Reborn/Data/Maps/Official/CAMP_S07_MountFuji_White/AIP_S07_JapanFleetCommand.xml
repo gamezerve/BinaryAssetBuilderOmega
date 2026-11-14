@@ -37,6 +37,15 @@
     <BuildState id="AIState_S07_JapanTechBuildState" State="AIState_S07_JapanTechBuildState" Difficulty="EASY MEDIUM HARD BRUTAL"/>
 
     <SpecificUnitCap Unit="JapanNavyScoutShip" Cap="0" Difficulty="EASY MEDIUM HARD BRUTAL"/>
+    <!-- Reborn: cap both Giga Fortress production and deployed units for Naomi across all difficulties. -->
+    <SpecificUnitCap Unit="JapanFortressShipEgg" Cap="3" Difficulty="BRUTAL"/>
+    <SpecificUnitCap Unit="JapanFortressShip" Cap="3" Difficulty="BRUTAL"/>
+    <SpecificUnitCap Unit="JapanFortressShipEgg" Cap="2" Difficulty="HARD"/>
+    <SpecificUnitCap Unit="JapanFortressShip" Cap="2" Difficulty="HARD"/>
+    <SpecificUnitCap Unit="JapanFortressShipEgg" Cap="1" Difficulty="MEDIUM"/>
+    <SpecificUnitCap Unit="JapanFortressShip" Cap="1" Difficulty="MEDIUM"/>
+    <SpecificUnitCap Unit="JapanFortressShipEgg" Cap="0" Difficulty="EASY"/>
+    <SpecificUnitCap Unit="JapanFortressShip" Cap="0" Difficulty="EASY"/>
     
     <UnitCap Cap="75" Difficulty="EASY"/>
     <UnitCap Cap="75" Difficulty="MEDIUM"/>
