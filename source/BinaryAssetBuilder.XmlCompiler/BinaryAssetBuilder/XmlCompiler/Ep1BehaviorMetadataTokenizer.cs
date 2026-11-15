@@ -33,6 +33,34 @@ public static class Ep1BehaviorMetadataTokenizer
     // Reborn: crate, vision, energy and magnetic/vacuum modules have explicit original native witnesses.
     // Reborn: energy sharing uses independently observed PC own-field ABI and the original native Capture base.
     private static readonly bool EnergySharingRuntimeAbiFamily=Families.Add("DistributeEnergyToAlliesBehaviorModuleData");
+    // Reborn: the named environment update has an independent EA fixture and matching EP1 reader.
+    private static readonly bool DestructibleEnvironmentFamily = Families.Add("DestructibleEnvironmentUpdateModuleData");
+    // Reborn: both named EP1 choices preserve EA's original class hashes.
+    private static readonly bool SwitchLocomotorsAbilityFamily = Families.Add("SwitchLocomotorsSpecialAbilityUpdateModuleData");
+    private static readonly bool ReplaceSelfUpgradeFamily = Families.Add("ReplaceSelfUpgradeModuleData");
+    // Reborn: SubStructureBuild uses its original concrete upgrade class and repeated table signatures.
+    private static readonly bool SubStructureBuildFamily = Families.Add("SubStructureBuildUpgradeModuleData");
+    // Reborn: accept the native concrete delayed-weapon class with its EP1 parent.
+    private static readonly bool DelayedWeaponFireAbilityFamily = Families.Add("DelayedWeaponFireSpecialAbilityUpdateModuleData");
+    // Reborn: the named Leech behavior shares the EP1 Attach payload under its own wire class.
+    private static readonly bool LeechTargetingAttachFamily = Families.Add("LeechTargetingAttachUpdateModuleData");
+    // Reborn: use the EA color-table signature and the dedicated EP1 EMP record.
+    private static readonly bool EmpUpdateFamily = Families.Add("EMPUpdateModuleData");
+    // Reborn: the grant uses the EP1 command/ref pair under the original concrete identity.
+    private static readonly bool GiveOrRestoreUpgradeFamily = Families.Add("GiveOrRestoreUpgradeSpecialPowerModuleData");
+    // Reborn: accept the concrete activation and naval create families under their original wire names.
+    private static readonly bool ActivationAbilityFamily = Families.Add("ActivateModuleSpecialAbilityUpdateModuleData");
+    private static readonly bool NavalModifierFamily = Families.Add("AttributeModifierNavalModuleData");
+    // Reborn: admit the two separately qualified EP1 derived power classes.
+    private static readonly bool CreateAndEnterFamily = Families.Add("CreateAndEnterObjectSpecialPowerModuleData");
+    private static readonly bool ObjectStatusAbilityFamily = Families.Add("ObjectStatusSpecialAbilityUpdateModuleData");
+    // Reborn: include the named power base and damage field extension in the EP1 metadata route.
+    private static readonly bool SpecialPowerUpdateFamily = Families.Add("SpecialPowerUpdateModuleData");
+    private static readonly bool DamageFieldUpdateFamily = Families.Add("DamageFieldUpdateModuleData");
+    // Reborn: official named source routes select the retail sphere and attachment-derived layouts.
+    private static readonly bool SphereUpdateFamily = Families.Add("SphereModuleUpdateModuleData");
+    private static readonly bool StealUnitFamily = Families.Add("StealUnitUpdateModuleData");
+    private static readonly bool BoobyTrapFamily = Families.Add("BoobyTrapUpdateModuleData");
     private static readonly bool FinalOriginalBehaviorFamilies=Families.Add("MoneyCrateCollideModuleData") & Families.Add("UnitCrateCollideModuleData") & Families.Add("VeterancyCrateCollideModuleData") & Families.Add("SalvageCrateCollideModuleData") & Families.Add("RandomCrateCollideModuleData") & Families.Add("SpawnCrateUpdateModuleData") & Families.Add("EnergyDisablingBehaviorModuleData") & Families.Add("UnitVisionBehaviorModuleData") & Families.Add("SqueezeFlingUpdateModuleData") & Families.Add("ReplaceDrawModuleBehaviorModuleData") & Families.Add("GatherEjectUpdateModuleData") & Families.Add("CrateCollideModuleData");
     private static readonly bool RemainingCoverageFamilies=Families.Add("BombardAreaUpdateModuleData") & Families.Add("CaptureAndGiveUpgradeBehaviorModuleData");
     private static readonly bool AdditionalStockFamilies=Families.Add("SetLocomotorSpeedUpdateModuleData") & Families.Add("InvalidTargetsDeathUpdateModuleData") & Families.Add("SelectiveVisibilityBehaviorModuleData") & Families.Add("LaserScatterUpdateModuleData") & Families.Add("WeaponScatterEffectUpdateModuleData") & Families.Add("SubStructureBehaviorModuleData") & Families.Add("ParabolicCurveUpdateModuleData") & Families.Add("HeightDieUpdateModuleData") & Families.Add("DestroyObjectsUpdateModuleData");
@@ -123,12 +151,12 @@ public static class Ep1BehaviorMetadataTokenizer
 
     // Reborn: assign-slaves uses the existing native SpecialPower writer and independent stock-qualified metadata proof.
     public static string ReviewedWireName(string sourceName)
-    {string wire=sourceName switch{"RenderStoredThingTemplate"=>"ReplaceDrawModuleBehaviorModuleData","ActivateSpecialPowerOnCreate"=>"ActivateSpecialPowerOnCreate","ActivateModuleSpecialPower"=>"ActivateModuleSpecialPower","ShipSlowDeath"=>"ShipSlowDeathBehaviorModuleData","SwitchLocomotorUpdate"=>"SwitchLocomotorUpdate","SecondaryObjectListenerModule"=>"SecondaryObjectListenerModule","BezierProjectile"=>"BezierProjectileBehaviorModuleData","OreMinerBehavior"=>"OreMinerModuleData","OreNodeBehavior"=>"OreNodeModuleData","AimWeapon"=>"AimWeaponBehaviorModuleData","PlayerPowerManager"=>"PlayerPowerManagerBehaviorModuleData","QueueDockBehavior"=>"QueueDockModuleData","BuildingDestructionBehavior"=>"BuildingDestructionModuleData","FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData","LUAEventList"=>"LUAEventListBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
+    {string wire=sourceName switch{"SubStructureBuild"=>"SubStructureBuildUpgradeModuleData","RenderStoredThingTemplate"=>"ReplaceDrawModuleBehaviorModuleData","ActivateSpecialPowerOnCreate"=>"ActivateSpecialPowerOnCreate","ActivateModuleSpecialPower"=>"ActivateModuleSpecialPower","ShipSlowDeath"=>"ShipSlowDeathBehaviorModuleData","SwitchLocomotorUpdate"=>"SwitchLocomotorUpdate","SecondaryObjectListenerModule"=>"SecondaryObjectListenerModule","BezierProjectile"=>"BezierProjectileBehaviorModuleData","OreMinerBehavior"=>"OreMinerModuleData","OreNodeBehavior"=>"OreNodeModuleData","AimWeapon"=>"AimWeaponBehaviorModuleData","PlayerPowerManager"=>"PlayerPowerManagerBehaviorModuleData","QueueDockBehavior"=>"QueueDockModuleData","BuildingDestructionBehavior"=>"BuildingDestructionModuleData","FireWeaponWhenDead"=>"FireWeaponWhenDeadBehaviorModuleData","Physics"=>"PhysicsBehaviorModuleData","SlowDeath"=>"SlowDeathBehaviorModuleData","LUAEventList"=>"LUAEventListBehaviorModuleData",_=>sourceName+"ModuleData"};if(!Families.Contains(wire))throw new InvalidDataException("Behavior source family not reviewed: "+sourceName);return wire;}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: shared compilation/composition uses one explicit wire-to-native-model mapping, including all seven isolated EP1 records. */
     //-------------------------------------------------------------------------------------------------
     public static Type ReviewedNativeType(uint wire)
-    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name=="CrateCollideModuleData"?"Ep1CrateCollideModuleData":name is "MoneyCrateCollideModuleData" or "UnitCrateCollideModuleData" or "VeterancyCrateCollideModuleData" or "SalvageCrateCollideModuleData" or "RandomCrateCollideModuleData" or "SpawnCrateUpdateModuleData" or "EnergyDisablingBehaviorModuleData" or "UnitVisionBehaviorModuleData" or "SqueezeFlingUpdateModuleData" or "ReplaceDrawModuleBehaviorModuleData" or "GatherEjectUpdateModuleData"?"Ep1"+name:name is "HeightDieUpdateModuleData" or "HealCrateCollideModuleData" or "ChargeWeaponUpdateModuleData" or "PrematureDischargeSpecialPowerModuleData" or "SpiderHoleUpdateModuleData" or "ActivateSpecialPowerOnCreate" or "MovementSpecialPowerModuleData" or "TimedOpacityUpdateModuleData" or "MonitorConditionUpdateModuleData" or "LifetimeUpdateModuleData" or "ActivateModuleSpecialPower" or "BeamSpecialAbilityUpdateModuleData" or "DominateEnemySpecialPowerModuleData" or "InvisibilityBroadcastUpdateModuleData" or "LinearDamageUpdateModuleData" or "MagneticEffectUpdateModuleData" or "ReconstituteStateSpecialAbilityModuleData" or "SpecialDisguiseUpdateModuleData" or "StoreCurrentStateUpdateModuleData" or "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "MoneyGainAttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
+    {var names=Families.Where(n=>FastHash.GetHashCode(n)==wire).ToArray();if(names.Length!=1)throw new InvalidDataException("Behavior wire family not reviewed.");string name=names[0];string model=name=="CrateCollideModuleData"?"Ep1CrateCollideModuleData":name is "MoneyCrateCollideModuleData" or "UnitCrateCollideModuleData" or "VeterancyCrateCollideModuleData" or "SalvageCrateCollideModuleData" or "RandomCrateCollideModuleData" or "SpawnCrateUpdateModuleData" or "EnergyDisablingBehaviorModuleData" or "UnitVisionBehaviorModuleData" or "SqueezeFlingUpdateModuleData" or "ReplaceDrawModuleBehaviorModuleData" or "GatherEjectUpdateModuleData" or "SwitchLocomotorsSpecialAbilityUpdateModuleData" or "ReplaceSelfUpgradeModuleData" or "SubStructureBuildUpgradeModuleData" or "DelayedWeaponFireSpecialAbilityUpdateModuleData" or "LeechTargetingAttachUpdateModuleData" or "EMPUpdateModuleData" or "GiveOrRestoreUpgradeSpecialPowerModuleData" or "ActivateModuleSpecialAbilityUpdateModuleData" or "AttributeModifierNavalModuleData" or "CreateAndEnterObjectSpecialPowerModuleData" or "ObjectStatusSpecialAbilityUpdateModuleData" or "SpecialPowerUpdateModuleData" or "DamageFieldUpdateModuleData"?"Ep1"+name:name is "HeightDieUpdateModuleData" or "HealCrateCollideModuleData" or "ChargeWeaponUpdateModuleData" or "PrematureDischargeSpecialPowerModuleData" or "SpiderHoleUpdateModuleData" or "ActivateSpecialPowerOnCreate" or "MovementSpecialPowerModuleData" or "TimedOpacityUpdateModuleData" or "MonitorConditionUpdateModuleData" or "LifetimeUpdateModuleData" or "ActivateModuleSpecialPower" or "BeamSpecialAbilityUpdateModuleData" or "DominateEnemySpecialPowerModuleData" or "InvisibilityBroadcastUpdateModuleData" or "LinearDamageUpdateModuleData" or "MagneticEffectUpdateModuleData" or "ReconstituteStateSpecialAbilityModuleData" or "SpecialDisguiseUpdateModuleData" or "StoreCurrentStateUpdateModuleData" or "LiftObjectUpdateModuleData" or "AttachUpdateModuleData" or "MoneyGainAttachUpdateModuleData" or "BezierProjectileBehaviorModuleData" or "FireWeaponUpdateModuleData" or "PassiveAreaEffectBehaviorModuleData" or "EmotionTrackerUpdateModuleData" or "FireWeaponCollideModuleData" or "StealthDetectorUpdateModuleData" or "AttributeModifierAuraUpdateModuleData" or "SubObjectsUpgradeModuleData" or "WeaponFireSpecialAbilityUpdateModuleData" or "OCLSpecialPowerModuleData" or "PlayerPowerManagerBehaviorModuleData" or "AutoDepositUpdateModuleData" or "EngineerContainModuleData" or "RepairUpdateModuleData" or "ProductionUpdateModuleData" or "StructureUnpackUpdateModuleData" or "SpawnBehaviorModuleData" or "QueueProductionExitUpdateModuleData" or "WeaponSetUpdateModuleData" or "SquishCollideModuleData" or "PhysicsBehaviorModuleData" or "HitReactionBehaviorModuleData" or "StatusBitsUpgradeModuleData" or "CreateObjectDieModuleData" or "FireWeaponWhenDeadBehaviorModuleData" or "RecallUnitsSpecialPowerModuleData" or "ParkingPlaceBehaviorModuleData"?"Ep1"+name:name;return typeof(SageBinaryData.GameObject).Assembly.GetType("SageBinaryData."+model)??throw new InvalidDataException("Reviewed behavior native model absent.");}
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: select a bounded concrete family by its original wire identity; callers cannot submit unreviewed classes through the reflection/schema seam. */
@@ -151,13 +179,27 @@ public static class Ep1BehaviorMetadataTokenizer
         return new Builder(native.InstanceBuffer,schemas).Build(native,wireName,nativeType);
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: serialize only the independently qualified PropBody class through the shared schema writer; it is not admitted as a Behaviors leaf. */
+    /** Reborn: serialize the reviewed identity-only Body classes without admitting them as behavior leaves. */
     //-------------------------------------------------------------------------------------------------
-    public static Chunk TokenizePropBody(Chunk native,XmlSchemaSet schemas)
+    public static Chunk TokenizeIdentityBody(Chunk native,XmlSchemaSet schemas)
     {
-        if(native?.InstanceBuffer==null||native.InstanceBuffer.Length!=8||native.RelocationBuffer==null||native.RelocationBuffer.Length!=0||native.ImportsBuffer==null||native.ImportsBuffer.Length!=0||schemas==null||Word(native.InstanceBuffer,0)!=FastHash.GetHashCode("PropBodyModuleData")||Word(native.InstanceBuffer,4)==0)throw new InvalidDataException("Complete identity-only PropBody input required.");
-        return new Builder(native.InstanceBuffer,schemas).Build(native,"PropBodyModuleData",typeof(SageBinaryData.PropBodyModuleData));
+        if(native?.InstanceBuffer==null||native.InstanceBuffer.Length!=8||
+            native.RelocationBuffer?.Length!=0||native.ImportsBuffer?.Length!=0||schemas==null||
+            Word(native.InstanceBuffer,4)==0)
+            throw new InvalidDataException("Complete identity-only Body input required.");
+        var (name,model)=Word(native.InstanceBuffer,0) switch
+        {
+            0xFF88404Bu => ("PropBodyModuleData",typeof(SageBinaryData.PropBodyModuleData)),
+            0x29234E6Eu => ("InactiveBodyModuleData",typeof(SageBinaryData.InactiveBodyModuleData)),
+            _ => throw new InvalidDataException("Unreviewed identity-only Body class.")
+        };
+        return new Builder(native.InstanceBuffer,schemas).Build(native,name,model);
     }
+
+    // Reborn: existing direct PropBody callers keep their original entry point and class check.
+    public static Chunk TokenizePropBody(Chunk native,XmlSchemaSet schemas)
+        => native?.InstanceBuffer?.Length==8&&Word(native.InstanceBuffer,0)==0xFF88404Bu
+            ?TokenizeIdentityBody(native,schemas):throw new InvalidDataException("Complete identity-only PropBody input required.");
     //-------------------------------------------------------------------------------------------------
     /** Reborn: EP1 WeaponTemplate own table (no asset base row) with a polymorphic Nuggets pointer list; the caller maps each native TypeId to its reviewed schema class and native model. */
     //-------------------------------------------------------------------------------------------------
@@ -348,7 +390,7 @@ public static class Ep1BehaviorMetadataTokenizer
             if(schema?.Name=="ProjectileMoveData"&&type==typeof(SageBinaryData.ProjectileMoveBase).MakePointerType()){
                 uint pointer=Word(bytes,slot);if(pointer==0)throw new InvalidDataException("Projectile Movement is required.");int target=Pointer(pointer);uint wire=Word(bytes,target);
                 // Reborn: the original concrete class selects both metadata schema and allocation extent.
-                Type concrete=wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Unsupported projectile movement class.")};Claim(target,Size(concrete));relos.Add((uint)slot);
+                Type concrete=wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),SageBinaryData.BalloonProjectileMoveToGroundData.WireTypeId=>typeof(SageBinaryData.BalloonProjectileMoveToGroundData),SageBinaryData.BezierSplineProjectileData.WireTypeId=>typeof(SageBinaryData.BezierSplineProjectileData),_=>throw new InvalidDataException("Unsupported projectile movement class.")};Claim(target,Size(concrete));relos.Add((uint)slot);
                 int wrapper=Allocate(1);Row(wrapper,2,wire,(uint)Emit(concrete.Name,concrete,target,depth+1));Target(targetAt,wrapper);return;
             }
             if (type.IsPointer)
@@ -564,6 +606,8 @@ public static class Ep1BehaviorMetadataTokenizer
         "PartitionManagerDistTestType" => 0x9F0DA607, "Percentage" or "SageReal" or "xs:float" => 0x645864F3,
         // Reborn: destruction mesh/item signatures match the independently captured stock tokens and literal writer.
         "Poid:SubObject"=>0x03A28C40,"BuildingDestructionItem[]"=>0xFFDDEC52,
+        // Reborn: the EP1 Bezier reader expects this dedicated strong-reference array tag.
+        "ProjectilePathRef[]" => 0x2CCBA11C,
         "PlayerTechRef" => 0xDBBF0FDF, "Poid:ModuleData" => 0xBDF07965, "Poid:ObjectFilter" => 0x4D3B3F19,
         "RGBColor" => 0xAEE762A5, "SageBool" => 0x77E3F4F7, "SageInt" or "xs:int" => 0x23E650B8, "SageUnsignedInt" or "SageDurationUnsignedInt" => 0x763177A4,
         // Reborn: death-phase containers retain their own list signatures; repeated typed references use the same stock element wire as scalar references.
@@ -598,6 +642,12 @@ public static class Ep1BehaviorMetadataTokenizer
         "RelationshipBitFlags" => 0x7105FEF3u,
         // Reborn: captured directly from the original Uprising WorldBuilder CUAuto01 module.
         "SetLocomotorSpeedUpdateType" => 0x8CBFDD28u,
+        // Reborn: the EA environment fixture and EP1 reader use this vehicle-size enum tag.
+        "VehicleSize" => 0x37DA54ABu,
+        "Color3f" => 0x028426A3u,
+        // Reborn: EA-authored ReplaceSelfUpgrade option table type.
+        "ReplaceSelfUpgradeOptionsBitFlags" => 0xD0708290u,
+        "AvailableSubStructure[]" => 0xB3873AC3u, "OffsetInfo[]" => 0x645FAA23u,
         _ => throw new InvalidDataException("Behavior schema signature not reviewed: " + key)
     };
     //-------------------------------------------------------------------------------------------------

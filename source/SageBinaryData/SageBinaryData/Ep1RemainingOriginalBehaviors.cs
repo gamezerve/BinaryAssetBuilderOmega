@@ -3,6 +3,21 @@ using System.Runtime.InteropServices;
 using AnsiString=Relo.String<sbyte>;
 namespace SageBinaryData;
 
+// Reborn: the EA schema and EP1 reader use the same three vehicle-size ordinals.
+public enum VehicleSize { LIGHT, MEDIUM, HEAVY }
+
+// Reborn: EA native output and the EP1 reader agree on this 40-byte inline update.
+[StructLayout(LayoutKind.Sequential)]
+public struct DestructibleEnvironmentUpdateModuleData
+{
+    public const uint WireTypeId = 0x75FE8D90u;
+    public UpdateModuleData Base;
+    public VehicleSize Size;
+    public Coord3D LeftOffset;
+    public Coord3D RightOffset;
+    public SageBool Enabled;
+}
+
 // Reborn: all MoneyCrateCollideModuleData fields require independent original source/native proof before emission.
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct Ep1MoneyCrateCollideModuleData

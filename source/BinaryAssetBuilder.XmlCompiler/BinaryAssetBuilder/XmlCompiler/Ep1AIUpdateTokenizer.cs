@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using BinaryAssetBuilder.Core.Hashing;
 using Chunk=Relo.Chunk;
+using SageBinaryData;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
@@ -17,15 +18,41 @@ public static class Ep1AIUpdateTokenizer
     public static Chunk Tokenize(Chunk native)
     {
         if(native?.InstanceBuffer==null || native.InstanceBuffer.Length<76 || native.InstanceBuffer.Length>1048576 || native.RelocationBuffer==null || native.ImportsBuffer==null)throw new InvalidDataException("Bounded EP1 AI native graph required.");
-        var b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);var expectedRelos=new List<uint>();var expectedImports=new List<uint>();var owners=new List<(int Start,int End)>();Own(0,76);
-        if(Word(0)!=0x08DBC00E || Word(4)==0 || Word(16)>>5!=0 || Word(60)>16 || unchecked((int)Word(64)) is <-1 or >18 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)throw new InvalidDataException("AI concrete identity/enum/mask/flag/padding differs.");
+        var b=native.InstanceBuffer;var relos=Slots(native.RelocationBuffer);var imports=Slots(native.ImportsBuffer);var expectedRelos=new List<uint>();var expectedImports=new List<uint>();var owners=new List<(int Start,int End)>();
+        // Reborn: the EA-derived variants keep the common header coordinates and prepend their concrete metadata table.
+        uint wire = Word(0);
+        int extraRows = wire switch
+        {
+            0x08DBC00Eu => 0,
+            Ep1TransportAIUpdateModuleData.Wire or Ep1HordeAIUpdateModuleData.Wire => 24,
+            Ep1WanderAIUpdateModuleData.Wire => 72,
+            Ep1SupplyTruckAIUpdateModuleData.Wire => 180,
+            _ => throw new InvalidDataException("Unreviewed EP1 AI class.")
+        };
+        int headerSize = wire switch
+        {
+            Ep1WanderAIUpdateModuleData.Wire => 0x90,
+            Ep1SupplyTruckAIUpdateModuleData.Wire => 0x74,
+            _ => 0x4c
+        };
+        Own(0,headerSize);
+        if (headerSize == 0x90 && (b[0x8c]>1 || b[0x8d]>1 || b[0x8e]!=0 || b[0x8f]!=0))
+            throw new InvalidDataException("Wander AI flag/padding differs.");
+        // Reborn: validate all truck tail values before emitting native-offset metadata.
+        if(wire==Ep1SupplyTruckAIUpdateModuleData.Wire)
+        {
+            for(int at=0x50;at<=0x68;at+=4)Real(at);
+            if(b.AsSpan(0x6c,5).ToArray().Any(value=>value>1) || b.AsSpan(0x71,3).ToArray().Any(value=>value!=0))
+                throw new InvalidDataException("Supply truck AI flag/padding differs.");
+        }
+        if( Word(4)==0 || Word(16)>>5!=0 || Word(60)>16 || unchecked((int)Word(64)) is <-1 or >18 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)throw new InvalidDataException("AI concrete identity/enum/mask/flag/padding differs.");
         // Reborn: empty string lists have a reviewed count anchor; nonempty element-token encoding is not inferred from native-only tests.
         if(Word(40)!=0 || Word(44)!=0)throw new InvalidDataException("Nonempty AI SpecialContactPoints tokenization is not yet admitted.");
         foreach(int at in new[]{20,24,28,32,36,48,56})Real(at);
         int chooser=(int)Word(68);int visionCount=0,vision=0;
         if(chooser!=0)
         {
-            if(chooser<76 || chooser%4!=0)throw new InvalidDataException("AI chooser alignment differs.");Own(chooser,40);expectedRelos.Add(68);
+            if(chooser<headerSize || chooser%4!=0)throw new InvalidDataException("AI chooser alignment differs.");Own(chooser,40);expectedRelos.Add(68);
             foreach(int at in new[]{0,4,8,12})Real(chooser+at);
             if(Word(chooser+16)>>4!=0 || b.AsSpan(chooser+28,6).ToArray().Any(v=>v>1) || b[chooser+34]!=0 || b[chooser+35]!=0 || Word(chooser+36)==0)throw new InvalidDataException("AI chooser flags/strong reference differs.");expectedImports.Add((uint)(chooser+36));
             // Reborn: retail uses zero or one vision item (SovietAntiVehicleInfantry and ten others): 128-byte item, zero base word, Range +4, inline ObjectFilter +8.
@@ -34,22 +61,55 @@ public static class Ep1AIUpdateTokenizer
             else
             {
                 if(visionCount!=1)throw new InvalidDataException("Only one ObjectVisionRange per AI target chooser is supported.");
-                if(vision<76 || vision%4!=0)throw new InvalidDataException("AI vision item alignment differs.");Own(vision,128);expectedRelos.Add((uint)(chooser+24));
+                if(vision<headerSize || vision%4!=0)throw new InvalidDataException("AI vision item alignment differs.");Own(vision,128);expectedRelos.Add((uint)(chooser+24));
                 if(Word(vision)!=0)throw new InvalidDataException("AI vision item base word differs.");Real(vision+4);
                 if(Word(vision+112)!=0 || Word(vision+116)!=0 || Word(vision+120)!=0 || Word(vision+124)!=0)throw new InvalidDataException("ObjectVisionRange Filter IncludeThing/ExcludeThing is not supported yet.");
-                foreach(int at in new[]{104,108}){int flags=(int)Word(vision+at);if(flags==0)continue;if(flags<76 || flags%4!=0)throw new InvalidDataException("AI vision status flags alignment differs.");Own(flags,32);expectedRelos.Add((uint)(vision+at));}
+                foreach(int at in new[]{104,108}){int flags=(int)Word(vision+at);if(flags==0)continue;if(flags<headerSize || flags%4!=0)throw new InvalidDataException("AI vision status flags alignment differs.");Own(flags,32);expectedRelos.Add((uint)(vision+at));}
             }
         }
         int length=(int)Word(8),text=(int)Word(12);
         if(text==0){if(length!=0)throw new InvalidDataException("AI absent text has length.");}
         else
         {
-            if(length<0 || length>4096 || text<76 || text>b.Length-length-1 || b[text+length]!=0)throw new InvalidDataException("AI text bounds/terminator differ.");Own(text,length+1);for(int i=0;i<length;i++)if(b[text+i]==0 || b[text+i]>127)throw new InvalidDataException("AI token text currently requires non-NUL ASCII.");expectedRelos.Add(12);
+            if(length<0 || length>4096 || text<headerSize || text>b.Length-length-1 || b[text+length]!=0)throw new InvalidDataException("AI text bounds/terminator differ.");Own(text,length+1);for(int i=0;i<length;i++)if(b[text+i]==0 || b[text+i]>127)throw new InvalidDataException("AI token text currently requires non-NUL ASCII.");expectedRelos.Add(12);
         }
         if(!relos.Order().SequenceEqual(expectedRelos.Order()) || !imports.Order().SequenceEqual(expectedImports.Order()))throw new InvalidDataException("AI native auxiliary ownership differs.");
         int end=0;foreach(var owner in owners.OrderBy(o=>o.Start)){Padding(end,owner.Start);end=owner.End;}Padding(end,b.Length);
-        int prefix=chooser==0?348:visionCount==0?552:756;var output=new Chunk{InstanceBuffer=new byte[checked(prefix+b.Length)]};b.CopyTo(output.InstanceBuffer,prefix);
-        Token(0,2,0x08DBC00E,12);Token(12,1,0xF1002505,228);
+        int basePrefix=chooser==0?348:visionCount==0?552:756;
+        int prefix=basePrefix+extraRows;
+        var output=new Chunk{InstanceBuffer=new byte[checked(prefix+b.Length)]};b.CopyTo(output.InstanceBuffer,prefix);
+        Row(0,2,wire,12);
+        if (extraRows != 0)
+        {
+            Row(12,1,0x08DBC00E,(uint)(12+extraRows));
+            if (wire == Ep1WanderAIUpdateModuleData.Wire)
+            {
+                Row(24,0x65B2AA1E,0x77E3F4F7,(uint)(prefix+0x8c));
+                Row(36,0x4859EEC6,0x67DBBFC9,(uint)(prefix+0x4c));
+                Row(48,0x9E8FEAE3,0x77E3F4F7,(uint)(prefix+0x8d));
+                Row(60,0x6CA763A8,0x763177A4,(uint)(prefix+0x88));
+            }
+        }
+        // Reborn: EA writes the truck's own rows in schema order over its independent AI inheritance table.
+        if(wire==Ep1SupplyTruckAIUpdateModuleData.Wire)
+        {
+            var ownFields=new (uint Name,uint Tag,int Offset)[]
+            {
+                (0x6F9636D9u,0x763177A4u,0x4c), (0xD2904A75u,0x998669E8u,0x50),
+                (0x565C0BE6u,0x998669E8u,0x54), (0x763CC923u,0x645864F3u,0x58),
+                (0x8213E2BBu,0x645864F3u,0x5c), (0xE1146E25u,0x77E3F4F7u,0x6c),
+                (0x81693423u,0x77E3F4F7u,0x6d), (0xCD2C3B18u,0x645864F3u,0x60),
+                (0xBFDEC31Au,0x998669E8u,0x64), (0x7C9E6832u,0x998669E8u,0x68),
+                (0x8D9DAEB8u,0x77E3F4F7u,0x6e), (0xA99A1E4Au,0x77E3F4F7u,0x6f),
+                (0xB14635F6u,0x77E3F4F7u,0x70)
+            };
+            for(int i=0;i<ownFields.Length;i++)
+            {
+                var field=ownFields[i];
+                Row(24+i*12,field.Name,field.Tag,(uint)(prefix+field.Offset));
+            }
+        }
+        Token(12,1,0xF1002505,228);
         var fields=new[]{("AttackPriority",8,0x1A2933AAu),("AutoAcquireEnemiesWhenIdle",16,0x8B0FB9DAu),("StopChaseDistance",20,0x645864F3u),("StandGround",72,0x77E3F4F7u),("MinCowerTime",24,0x998669E8u),("MaxCowerTime",28,0x998669E8u),("BurningDeathTime",32,0x998669E8u),("ComboLocoAttackDistance",36,0x645864F3u),("SpecialContactPoints",40,0x6D66AE18u),("FadeOnPortals",73,0x77E3F4F7u),("IdleTargetTime",48,0x998669E8u),("MaxCombineChildren",52,0x763177A4u),("SpawnOffsetRadius",56,0x645864F3u),("StateMachine",60,0xAC6E35E0u),("DefaultLocomotorSet",64,0x845D12B2u),("UnitAITargetChooserData",68,0x243BEF01u)};
         for(int i=0;i<fields.Length;i++){var f=fields[i];uint target=f.Item1=="SpecialContactPoints"?336u:f.Item1=="UnitAITargetChooserData"?(chooser==0?0u:348u):(uint)(prefix+f.Item2);Token(24+i*12,FastHash.GetHashCode(f.Item1),f.Item3,target);}
         // Reborn: three empty inherited tables lead to the terminal ModuleData identity fields, not guessed native base offsets.
@@ -90,7 +150,10 @@ public static class Ep1AIUpdateTokenizer
         //-------------------------------------------------------------------------------------------------
         /** Reborn: metadata offsets belong to the generated prefix; they are not native relocation slots. */
         //-------------------------------------------------------------------------------------------------
-        void Token(int at,uint name,uint type,uint target){BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at,4),name);BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at+4,4),type);BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at+8,4),target);}
+        void Token(int at,uint name,uint type,uint target)
+            => Row(at+extraRows,name,type,target!=0&&target<basePrefix?target+(uint)extraRows:target);
+        // Reborn: concrete rows already use the final metadata coordinates.
+        void Row(int at,uint name,uint type,uint target){BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at,4),name);BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at+4,4),type);BinaryPrimitives.WriteUInt32LittleEndian(output.InstanceBuffer.AsSpan(at+8,4),target);}
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: input auxiliary buffers are empty or uniquely sentinel-framed and cannot hide duplicate/sentinel-only slots. */

@@ -14,25 +14,24 @@ internal static class ProductionUpdateContract
     internal const int NativeSize=84;
     internal const int MetadataSize=408;
     private const uint TypeId=0x6EC75439u;
-    // Reborn: populated modifier families remain unsupported; the Barracks separately qualifies the upgrade translation pointee/list.
-    private static readonly string[] Children={"QuantityModifier","ProductionModifier"};
+
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: refuse unimplemented weak/list/pointer content at its own source position rather than inside the native marshaler. */
+    /** Reborn: diagnose the unqualified BonusForType field at its source position. */
     //-------------------------------------------------------------------------------------------------
     internal static void Validate(XmlElement owner)
     {
         var bonus=owner.GetAttributeNode("BonusForType");if(bonus!=null && bonus.Value.Trim().Length!=0)throw SdkXmlDiagnostics.At(new InvalidDataException("ProductionUpdate BonusForType is not implemented yet on the EP1 production processor."),bonus);
-        foreach(var child in owner.ChildNodes.OfType<XmlElement>())if(Children.Contains(child.LocalName))throw SdkXmlDiagnostics.At(new InvalidDataException("ProductionUpdate "+child.LocalName+" is not implemented yet; only its omitted form is supported."),child);
+
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: upgrade translation counts, optional presence and target names belong to source/native proof, not an empty comparison template. */
+    /** Reborn: modifier lists and upgrade translations are checked by the source/native proof. */
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlElement actual,XmlElement model)
     {
-        foreach(var child in actual.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="GiveUpgradeToProduced").ToArray())actual.RemoveChild(child);
-        foreach(var child in model.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="GiveUpgradeToProduced"))actual.AppendChild(actual.OwnerDocument!.ImportNode(child,true));
+        foreach(var child in actual.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "GiveUpgradeToProduced" or "QuantityModifier" or "ProductionModifier").ToArray())actual.RemoveChild(child);
+        foreach(var child in model.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "GiveUpgradeToProduced" or "QuantityModifier" or "ProductionModifier"))actual.AppendChild(actual.OwnerDocument!.ImportNode(child,true));
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -49,6 +48,16 @@ internal static class ProductionUpdateContract
             // Reborn: print only the newly recovered list wire signature, never unrelated stock payloads.
             if(name=="SovietBarracks"){int table=(int)Word(captured.Bytes,module.Wrapper+8),give=GameObjectStockReview.Tokens(captured.Bytes,table)[FastHash.GetHashCode("GiveUpgradeToProduced")].Offset;var translation=GameObjectStockReview.Tokens(captured.Bytes,give)[FastHash.GetHashCode("UpgradeTranslate")];Console.WriteLine("Reborn: production UpgradeTranslate stock signature="+translation.Type.ToString("X8")+".");}
         }
+        // Reborn: the EA populated witness independently identifies both quantity metadata rows.
+        grammar.QualifyQuantityModifier(schemas.Schemas);
+        // Reborn: the retail modifier loader calls the same inline filter reader used by stock walls.
+        var wall = GameObjectStockReview.Capture(manifest, "GameObject:SovietWallPiece");
+        var wallModule = GameObjectModuleReview.Inspect(manifest, wall.Asset.Name).Containers
+            .Single(container => container.Name == "Behaviors").Modules.Single(module => module.TypeId == WallBuilderContract.TypeId);
+        int wallFields = checked((int)Word(wall.Bytes, wallModule.Wrapper + 8));
+        int filterFields = GameObjectStockReview.Tokens(wall.Bytes, wallFields)[FastHash.GetHashCode("ConnectingObjectFilter")].Offset;
+        grammar.Learn(wall.Bytes, filterFields, wall.Projection.NativeRoot, typeof(ObjectFilter));
+        grammar.QualifyProductionModifier(schemas.Schemas);
         return grammar;
     }
 

@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 public static partial class Marshaler
 {
@@ -38,6 +38,19 @@ public static partial class Marshaler
     public static unsafe void Marshal(Node node,Ep1FormationAssistantTemplate* target,Tracker state)
     {
         if(node is null)return;
+        // Reborn: the EP1 formation factory requires every row to have the same number of cells.
+        var rows = node.GetChildNodes(nameof(Ep1FormationAssistantTemplate.Row));
+        int rowCount = rows?.GetCount() ?? 0;
+        if (rowCount > 1)
+        {
+            int width = rows.GetNextNode().GetChildNodes(nameof(Ep1FormationAssistantRowDefinition.Cell)).GetCount();
+            for (int index = 1; index < rowCount; index++)
+            {
+                int count = rows.GetNextNode().GetChildNodes(nameof(Ep1FormationAssistantRowDefinition.Cell)).GetCount();
+                if (count != width)
+                    throw new System.IO.InvalidDataException($"FormationAssistantTemplate row {index + 1} has {count} cells; expected {width}.");
+            }
+        }
         Marshal(node.GetChildNodes(nameof(Ep1FormationAssistantTemplate.Row)),&target->Row,state);
         Marshal(node,(BaseAssetType*)target,state);
     }

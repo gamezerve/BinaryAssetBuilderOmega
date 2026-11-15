@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using BinaryAssetBuilder.Core.Hashing;
 using Chunk=Relo.Chunk;
+using SageBinaryData;
 
 namespace BinaryAssetBuilder.XmlCompiler;
 
@@ -35,7 +36,7 @@ public static class Ep1ActiveBodyTokenizer
     //-------------------------------------------------------------------------------------------------
     public static Chunk Tokenize(Chunk native)
     {
-        if(native==null || native.InstanceBuffer==null || native.InstanceBuffer.Length<76 || native.InstanceBuffer.Length>844)throw new InvalidDataException("Bounded EP1 ActiveBody chunk required.");
+        if(native==null || native.InstanceBuffer==null || native.InstanceBuffer.Length<76 || native.InstanceBuffer.Length>0x6c+64*12+4)throw new InvalidDataException("Bounded EP1 ActiveBody chunk required.");
         var b=native.InstanceBuffer;uint count=Word(b,64);
         uint concreteType=Word(b,0);
         // Reborn: the derived bodies differ in the intermediate class row and share the ActiveBody fields.
@@ -46,16 +47,31 @@ public static class Ep1ActiveBodyTokenizer
             _ => null
         };
         // Reborn: ImmortalBody and ManagedActiveBody each inherit directly from ActiveBody.
+        bool shield=concreteType==Ep1ShieldBodyModuleData.Wire;
         bool directDerived=concreteType is ImmortalBodyTypeId or ManagedActiveBodyTypeId or HighlanderBodyTypeId;
-        if((concreteType!=0x5A0E3D9B && !directDerived && intermediateClass==null) || count>64 || b.Length!=76+count*12 || Word(b,68)!=(count==0?0:76) || Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0)
+        int header=shield?0x6c:76;
+        if(count>64||b.Length<header)throw new InvalidDataException("EP1 body header or damage-range count differs.");
+        uint armor=shield?Word(b,0x60):0;
+        int afterRanges=header+(int)count*12;
+        if((concreteType!=0x5A0E3D9B && !directDerived && !shield && intermediateClass==null) ||
+            b.Length!=afterRanges+(armor==0?0:4) || Word(b,68)!=(count==0?0:header) ||
+            Word(b,36)!=0 || Word(b,40)!=0 || b[72]>1 || b[73]>1 || b[74]!=0 || b[75]!=0 ||
+            (armor!=0&&(armor!=afterRanges||Word(b,(int)armor)==0)))
             throw new InvalidDataException("Unsupported EP1 ActiveBody class/list/string/boolean layout.");
         var imports=new List<uint>();
         foreach(uint slot in new uint[]{44,48,52,60})if(Word(b,(int)slot)!=0)imports.Add(slot);
-        for(int i=0;i<count;i++)if(Word(b,76+i*12+8)!=0)imports.Add((uint)(76+i*12+8));
-        var relos=count==0?Array.Empty<uint>():new uint[]{68};
+        for(int i=0;i<count;i++)if(Word(b,header+i*12+8)!=0)imports.Add((uint)(header+i*12+8));
+        var relos=new List<uint>();
+        if(count!=0)relos.Add(68);
+        if(shield)
+        {
+            foreach(uint slot in new uint[]{0x4c,0x50,0x54,0x58})
+                if(Word(b,(int)slot)!=0)imports.Add(slot);
+            if(armor!=0){relos.Add(0x60);imports.Add(armor);}
+        }
         CheckSlots(native.RelocationBuffer,relos);CheckSlots(native.ImportsBuffer,imports);
         // Reborn: each fieldless inheritance level adds a base row and terminator while retaining the same native body record.
-        int inherited=intermediateClass!=null?48:directDerived?24:0;
+        int inherited=shield?120:intermediateClass!=null?48:directDerived?24:0;
         int prefix=inherited+324+(int)count*60;
         var result=new Chunk {InstanceBuffer=new byte[prefix+b.Length]};
         b.CopyTo(result.InstanceBuffer,prefix);
@@ -63,7 +79,19 @@ public static class Ep1ActiveBodyTokenizer
         if(intermediateClass!=null)
             Token(12,1,FastHash.GetHashCode(intermediateClass),36);
         if(inherited!=0)
-            Token(inherited-12,1,FastHash.GetHashCode("ActiveBodyModuleData"),(uint)(inherited+12));
+            Token(shield?12:inherited-12,1,FastHash.GetHashCode("ActiveBodyModuleData"),(uint)(inherited+12));
+        if(shield)
+        {
+            // Reborn: these EA rows target four inline FX words, the shield scalars and the optional armor pointee.
+            Token(24,0x6888DC4Au,0x0D1C8E83u,(uint)(prefix+0x4c));
+            Token(36,0x0689F6B3u,0x0D1C8E83u,(uint)(prefix+0x50));
+            Token(48,0x98EEFC18u,0x0D1C8E83u,(uint)(prefix+0x54));
+            Token(60,0x11169D6Au,0x0D1C8E83u,(uint)(prefix+0x58));
+            Token(72,0x1A613B0Bu,0x645864F3u,(uint)(prefix+0x5c));
+            Token(84,0x12EBDD3Cu,0x34E9127Bu,armor==0?0:armor+(uint)prefix);
+            Token(96,0xB5AB995Cu,0x998669E8u,(uint)(prefix+0x64));
+            Token(108,0x3D654E29u,0x15723E0Bu,(uint)(prefix+0x68));
+        }
         BodyToken(12,1,FastHash.GetHashCode("BodyModuleData"),228);
         for(int i=0;i<Fields.Count;i++){var f=Fields[i];BodyToken(24+i*12,FastHash.GetHashCode(f.Name),f.Type,(uint)(prefix+f.Offset));}
         BodyToken(204,FastHash.GetHashCode("DamageRangeModifier"),0x751527B1,312);
@@ -72,14 +100,20 @@ public static class Ep1ActiveBodyTokenizer
         BodyToken(312,0x6C827073,0x5D448FD8,(uint)(prefix+64));
         for(int i=0;i<count;i++)
         {
-            int table=324+(int)count*12+i*48,child=prefix+76+i*12;
+            int table=324+(int)count*12+i*48,child=prefix+header+i*12;
             BodyToken(324+i*12,0xB151A0EB,0,(uint)table);
             BodyToken(table,FastHash.GetHashCode("Min"),0x645864F3,(uint)child);
             BodyToken(table+12,FastHash.GetHashCode("Max"),0x645864F3,(uint)(child+4));
             BodyToken(table+24,FastHash.GetHashCode("AttributeModifier"),0x09DDCFF3,(uint)(child+8));
         }
-        if(count!=0)Put(result.InstanceBuffer,prefix+68,(uint)(prefix+76));
-        result.RelocationBuffer=Pack(relos.Select(s=>s+(uint)prefix));result.ImportsBuffer=Pack(imports.Select(s=>s+(uint)prefix));return result;
+        if(count!=0)Put(result.InstanceBuffer,prefix+68,(uint)(prefix+header));
+        if(armor!=0)Put(result.InstanceBuffer,prefix+0x60,armor+(uint)prefix);
+        // Reborn: preserve the original ordering of verified shield slots when rebasing the metadata wrapper.
+        var relocationSlots=shield?Enumerable.Range(0,relos.Count).Select(i=>Word(native.RelocationBuffer,i*4)):relos;
+        var importSlots=shield?Enumerable.Range(0,imports.Count).Select(i=>Word(native.ImportsBuffer,i*4)):imports;
+        result.RelocationBuffer=Pack(relocationSlots.Select(s=>s+(uint)prefix));
+        result.ImportsBuffer=Pack(importSlots.Select(s=>s+(uint)prefix));
+        return result;
         //-------------------------------------------------------------------------------------------------
         /** Reborn: token metadata never enters native relocation/import streams. */
         //-------------------------------------------------------------------------------------------------

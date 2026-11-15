@@ -20,7 +20,7 @@ internal static class ConscriptWeaponSetContract
     internal static void Normalize(XmlDocument source)
     {
         foreach(XmlElement module in source.GetElementsByTagName("WeaponSetUpdate","uri:ea.com:eala:asset"))
-        foreach(var hp in module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret")){
+        foreach(var hp in module.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "WeaponSlotHardpoint" or "WeaponSlotTurret" or "WeaponSlotContained")){
             // Reborn: report unsigned overflow at the authored hardpoint ID before native allocation loses its source coordinate.
             _=Unsigned(hp,"ID");
             foreach(var node in new[]{hp}.Concat(hp.ChildNodes.OfType<XmlElement>()))foreach(string name in new[]{"AllowInterleavedFiring","AutoChooseWeapon","IsPlayerUpgradePermanent","ConquerMetricsAlwaysCount"})if(node.HasAttribute(name))node.SetAttribute(name,Boolean(node,name,false)?"true":"false");

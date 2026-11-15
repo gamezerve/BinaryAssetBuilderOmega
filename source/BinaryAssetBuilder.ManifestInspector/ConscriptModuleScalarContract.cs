@@ -40,8 +40,16 @@ internal static class ConscriptModuleScalarContract
                     "AI" when element.LocalName=="AnimalAIUpdate"=>typeof(Ep1AnimalAIUpdateModuleData),
                     "AI" when element.LocalName=="JetAIUpdate"=>typeof(Ep1JetAIUpdateModuleData),
                     "AI" when element.LocalName=="AIUpdate"=>typeof(Ep1AIUpdateModuleData),
+                    // Reborn: derived AI aliases use their own header over the EP1 AI fields.
+                    "AI" when element.LocalName=="TransportAIUpdate"=>typeof(Ep1TransportAIUpdateModuleData),
+                    "AI" when element.LocalName=="WanderAIUpdate"=>typeof(Ep1WanderAIUpdateModuleData),
+                    "AI" when element.LocalName=="HordeAIUpdate"=>typeof(Ep1HordeAIUpdateModuleData),
+                    "AI" when element.LocalName=="SupplyTruckAIUpdate"=>typeof(Ep1SupplyTruckAIUpdateModuleData),
                     // Reborn: PropBody has no own scalars but participates in source identities and whole-object validation.
                     "Body" when element.LocalName=="PropBody"=>typeof(PropBodyModuleData),
+                    // Reborn: each of these Body alternatives has its own EP1 native extent.
+                    "Body" when element.LocalName=="InactiveBody"=>typeof(InactiveBodyModuleData),
+                    "Body" when element.LocalName=="ShieldBody"=>typeof(Ep1ShieldBodyModuleData),
                     "Body" when element.LocalName is "ActiveBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"=>typeof(Ep1ActiveBodyModuleData),
                     // Reborn: use the EP1 strong-EVA record for readiness announcements.
                     "ClientUpdates" when element.LocalName=="EvaAnnounceSpecialPowerReadyClientUpdate"=>typeof(Ep1EvaAnnounceSpecialPowerReadyClientUpdateModuleData),

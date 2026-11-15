@@ -6,7 +6,8 @@ namespace SageBinaryData;
 [StructLayout(LayoutKind.Sequential)]
 public struct BoobyTrapUpdateModuleData
 {
-    public AttachUpdateModuleData Base;
+    // Reborn: retain the retail EP1 bone, filter and modifier offsets.
+    public Ep1AttachUpdateModuleData Base;
     public ObjectStatusBitFlags FireWeaponConditionsOnParent;
     public ObjectStatusBitFlags PreventEnteringSetStatusOnParent;
     public AssetReference<WeaponTemplate> SpecialWeapon;

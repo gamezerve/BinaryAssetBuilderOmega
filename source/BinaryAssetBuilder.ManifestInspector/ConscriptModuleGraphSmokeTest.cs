@@ -55,9 +55,9 @@ internal static class ConscriptModuleGraphSmokeTest
             // Reborn: unpack tests combine authored timing/height, optional sound presence and repeated independently named instances.
             modes=modes.Concat(new[]{"unpack-edited","unpack-defaults","unpack-multiple","unpack-empty"}).ToArray();
             // Reborn: production proves every EP1 scalar with edited values, schema defaults and two independently named instances.
-            modes=modes.Concat(new[]{"production-edited","production-defaults","production-multiple"}).ToArray();
+            modes=modes.Concat(new[]{"production-edited","production-defaults","production-multiple","production-quantity","production-modifier"}).ToArray();
             // Reborn: repair proves own scalars and inline percent records with edits, defaults and two instances.
-            modes=modes.Concat(new[]{"repair-edited","repair-defaults","repair-multiple"}).ToArray();
+            modes=modes.Concat(new[]{"repair-edited","repair-defaults","repair-multiple","repair-audio"}).ToArray();
             // Reborn: engineer proves voices, retargeted FX/EVA imports, status masks and source-sized filters, plus defaults and two instances.
             modes=modes.Concat(new[]{"engineer-edited","engineer-defaults","engineer-multiple"}).ToArray();
             // Reborn: assisted placement proves hint masks, snapping distance and an optional source-sized filter.
@@ -98,6 +98,17 @@ internal static class ConscriptModuleGraphSmokeTest
             modes=modes.Concat(new[]{"windows-stock","windows-defaults","windows-edited"}).ToArray();
             // Reborn: one focused batch exercises original defaults, edited SpecialPower values/list storage, and repeated assign-slaves modules.
             modes=modes.Concat(new[]{"assign-defaults","assign-edited","assign-multiple"}).ToArray();
+            // Reborn: run each SquishCollide flag in isolation through the normal EP1 source pipeline.
+            modes = modes.Concat(new[] { "squish-vehicles", "squish-allies" }).ToArray();
+            if (caseFilter == "squish")
+            {
+                modes = modes.Where(mode => mode.StartsWith("squish-", StringComparison.Ordinal)).ToArray();
+                caseFilter = null;
+            }
+            // Reborn: exercise both offsets and native defaults in a complete named environment module.
+            modes = modes.Append("destructible-environment").ToArray();
+            // Reborn: exercise the two named EP1 behaviors independently through ordinary GameObject builds.
+            modes = modes.Concat(new[] { "locomotor-ability", "replace-self-upgrade", "substructure-build", "delayed-weapon-fire", "leech-targeting", "transport-ai", "wander-ai", "emp-update", "weapon-contained", "weapon-scatter", "give-restore-upgrade", "activation-ability", "naval-modifier", "inactive-body", "shield-body", "shield-body-default", "create-enter", "status-ability", "special-power-update", "damage-field", "horde-ai", "supply-truck-ai", "bezier-spline", "sphere-update", "steal-unit", "booby-trap" }).ToArray();
             if(caseFilter=="assign"){modes=modes.Where(m=>m.StartsWith("assign-",StringComparison.Ordinal)).ToArray();caseFilter=null;}
             if(caseFilter=="skirmish"){
                 var captured=GameObjectStockReview.Capture(manifest,"GameObject:SovietRefinery");int rootTable=GameObjectStockReview.Tokens(captured.Bytes,0)[FastHash.GetHashCode("SkirmishAIInformation")].Offset;
@@ -135,7 +146,7 @@ internal static class ConscriptModuleGraphSmokeTest
                 // Reborn: unimplemented weak/list/pointer content and invalid scalar values must be refused at their own source node.
                 foreach(var mutate in new Action<XmlDocument,XmlElement>[]{
                     (d,m)=>m.SetAttribute("BonusForType","SovietMiner"),
-                    (d,m)=>{var q=d.CreateElement("QuantityModifier",SchemaSet.XmlNamespace);q.SetAttribute("Name","SovietMiner");q.SetAttribute("Count","2");m.AppendChild(q);},
+                    (d,m)=>{var modifier=d.CreateElement("ProductionModifier",SchemaSet.XmlNamespace);m.AppendChild(modifier);},
                     (d,m)=>m.SetAttribute("MaxQueueEntries","4294967296"),
                     (d,m)=>m.SetAttribute("Type","SPECIALPOWERS"),
                     (d,m)=>m.SetAttribute("NewObjectFadeInTime","not-a-time"),
@@ -145,7 +156,7 @@ internal static class ConscriptModuleGraphSmokeTest
                     var bad=Copy(baseline);var module=bad.CreateElement("ProductionUpdate",SchemaSet.XmlNamespace);module.SetAttribute("id","RebornProductionBad");((XmlElement)bad.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!).PrependChild(module);mutate(bad,module);
                     Refuse(()=>{ConscriptModuleScalarContract.Validate(bad);ConscriptVariableBehaviorSource.Admit(bad,baseline,official);});
                 }
-                Console.WriteLine("Production source controls: PASS (BonusForType, QuantityModifier, uint overflow, legacy SPECIALPOWERS and invalid Time rejected).");
+                Console.WriteLine("Production source controls: PASS (BonusForType, missing ModifierFilter, uint overflow, legacy SPECIALPOWERS and invalid Time rejected).");
             }
             if(caseFilter=="draws")
             {
@@ -254,9 +265,8 @@ internal static class ConscriptModuleGraphSmokeTest
             }
             if(caseFilter=="repair")
             {
-                // Reborn: populated audio, invalid percent, uint overflow and a missing required record are refused.
+                // Reborn: invalid percent, uint overflow and a missing required record are refused.
                 foreach(var mutate in new Action<XmlDocument,XmlElement>[]{
-                    (d,m)=>((XmlElement)m.LastChild!).SetAttribute("SelfRepairFromDamageLoop","SOV_Conscript_VoiceAttack"),
                     (d,m)=>((XmlElement)m.FirstChild!).SetAttribute("Pristine","abc"),
                     (d,m)=>m.SetAttribute("HealAmountPerSecond","4294967296"),
                     (d,m)=>m.RemoveChild(m.LastChild!)})
@@ -264,11 +274,312 @@ internal static class ConscriptModuleGraphSmokeTest
                     var bad=Copy(baseline);var module=bad.CreateElement("RepairUpdate",SchemaSet.XmlNamespace);module.SetAttribute("id","RebornRepairBad");module.AppendChild(bad.CreateElement("PercentOfBuildCostToRebuildInfo",SchemaSet.XmlNamespace));module.AppendChild(bad.CreateElement("SelfAudio",SchemaSet.XmlNamespace));((XmlElement)bad.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!).PrependChild(module);mutate(bad,module);
                     Refuse(()=>{ConscriptModuleScalarContract.Validate(bad);ConscriptVariableBehaviorSource.Admit(bad,baseline,official);});
                 }
-                Console.WriteLine("Repair source controls: PASS (populated audio, invalid percent, uint overflow and missing SelfAudio rejected).");
+                Console.WriteLine("Repair source controls: PASS (invalid percent, uint overflow and missing SelfAudio rejected).");
             }
             foreach(string mode in caseFilter==null?modes:caseFilter is "combat" or "movement" or "resource" or "sell" or "destruction" or "dock" or "exit" or "spawn" or "unpack" or "production" or "repair" or "engineer" or "placement" or "infiltrator" or "structure" or "lua" or "fx" or "tracker" or "death" or "containers" or "power" or "draws" or "geometry" or "dependency" or "roots" or "skirmish" or "chooser" or "audio" or "crusher" or "windows"?modes.Where(m=>m.StartsWith(caseFilter+"-",StringComparison.Ordinal)):new[]{caseFilter})
             {
                 var source=(XmlDocument)baseline.CloneNode(true);var origins=templates.Keys.ToDictionary(id=>id,id=>id,StringComparer.Ordinal);var behaviors=(XmlElement)source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!;var original=behaviors.ChildNodes.OfType<XmlElement>().ToArray();
+                // Reborn: cover nondefault selectors, ordered references, and a second module with omitted optional fields.
+                if (mode is "locomotor-ability" or "replace-self-upgrade")
+                {
+                    var fragment = source.CreateDocumentFragment();
+                    fragment.InnerXml = mode == "locomotor-ability" ? """
+                        <SwitchLocomotorsSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornSwitchAuthored"
+                            UseUpgradedLocomotor="true" TriggersLanding="false" TriggersFlight="true"
+                            BusyForDuration="2.5s" LandingRange="47.5" LocomotorToSet="FREEFALL"
+                            SpecialPowerTemplate="SpecialPowerParticleCannon" HordeMembersSpecialPowerTemplate="SpecialPowerAlliedFreeTrade"/>
+                        <SwitchLocomotorsSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornSwitchDefault" UseUpgradedLocomotor="false"/>
+                        """ : """
+                        <ReplaceSelfUpgrade xmlns="uri:ea.com:eala:asset" id="RebornReplaceAuthored" NewObjectUnpackTime="3.5s"
+                            Options="COPY_TARGET_OBJECT COPY_UPGRADES CHECK_BUILD_ASSISTANT">
+                            <TriggeredBy>Upgrade_AlliesFaction</TriggeredBy>
+                            <ReplacementTemplate>SovietMiner</ReplacementTemplate>
+                            <ReplacementTemplate>SovietAntiInfantryInfantry</ReplacementTemplate>
+                        </ReplaceSelfUpgrade>
+                        <ReplaceSelfUpgrade xmlns="uri:ea.com:eala:asset" id="RebornReplaceDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: both weak pairs and both signed vectors must survive the named EP1 route in list order.
+                if (mode == "substructure-build")
+                {
+                    var fragment = source.CreateDocumentFragment();
+                    fragment.InnerXml = """
+                        <SubStructureBuild xmlns="uri:ea.com:eala:asset" id="RebornSubStructure">
+                            <AvailableSubStructure><UpgradeTrigger>Upgrade_AlliesFaction</UpgradeTrigger><ObjectTemplate>AlliedCrane</ObjectTemplate></AvailableSubStructure>
+                            <AvailableSubStructure><UpgradeTrigger>Upgrade_JapanFaction</UpgradeTrigger><ObjectTemplate>SovietMiner</ObjectTemplate></AvailableSubStructure>
+                            <StructureOffset ModelCondition="USER_6"><Offset x="4.56" y="-62.211" z="0"/></StructureOffset>
+                            <StructureOffset ModelCondition="USER_7"><Offset x="30.095" y="-12" z="3"/></StructureOffset>
+                        </SubStructureBuild>
+                        <SubStructureBuild xmlns="uri:ea.com:eala:asset" id="RebornSubStructureDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: exercise the real inherited weapon import and both explicit and default fire delays.
+                if (mode == "delayed-weapon-fire")
+                {
+                    var fragment = source.CreateDocumentFragment();
+                    fragment.InnerXml = """
+                        <DelayedWeaponFireSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornDelayedWeapon"
+                            SpecialWeapon="PlayerPowerIrradiateTargetWeapon" FireDelay="4.25s" WhichSpecialWeapon="2"/>
+                        <DelayedWeaponFireSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornDefaultDelay"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: populate the three same-size base fields whose order differs from the legacy Attach model.
+                if (mode == "leech-targeting")
+                {
+                    var fragment = source.CreateDocumentFragment();
+                    fragment.InnerXml = """
+                        <LeechTargetingAttachUpdate xmlns="uri:ea.com:eala:asset" id="RebornLeech" AttachBoneName="BONE_LEECH" Range="10">
+                            <ObjectFilter Rule="ANY" Include="VEHICLE" Relationship="ENEMIES"/>
+                            <ModifierToLeechFromParent>AttributeModifier_Garrisoned</ModifierToLeechFromParent>
+                        </LeechTargetingAttachUpdate>
+                        <LeechTargetingAttachUpdate xmlns="uri:ea.com:eala:asset" id="RebornLeechDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: keep the original populated target chooser while switching its enclosing AI class.
+                if (mode is "transport-ai" or "wander-ai")
+                {
+                    var previous = ConscriptModuleScalarContract.Owners(source).Single(o=>o.Container=="AI").Element;
+                    bool wander = mode == "wander-ai";
+                    var derived = source.CreateElement(wander?"WanderAIUpdate":"TransportAIUpdate",SchemaSet.XmlNamespace);
+                    foreach(XmlAttribute attribute in previous.Attributes)
+                        derived.SetAttribute(attribute.Name,attribute.Value);
+                    foreach(XmlNode child in previous.ChildNodes)
+                        derived.AppendChild(child.CloneNode(true));
+                    derived.SetAttribute("FadeOnPortals","true");
+                    derived.SetAttribute("DefaultLocomotorSet",wander?"WANDER":"FREEFALL");
+                    derived.SetAttribute("SpawnOffsetRadius","17.5");
+                    if(wander)
+                    {
+                        derived.SetAttribute("EntryCondition","USER_6 USER_7");
+                        derived.SetAttribute("WanderDistance","125");
+                        derived.SetAttribute("AttackAll","true");
+                        derived.SetAttribute("Selectable","false");
+                    }
+                    previous.ParentNode!.ReplaceChild(derived,previous);
+                }
+                // Reborn: cover independent RGB allocations, a missing start color and two missing colors.
+                if (mode == "emp-update")
+                {
+                    var fragment = source.CreateDocumentFragment();
+                    fragment.InnerXml = """
+                        <EMPUpdate xmlns="uri:ea.com:eala:asset" id="RebornEmpBoth" Lifetime="2.5s" StartFadeDelay="1s" DisabledDuration="4s">
+                            <StartColor r="0.1" g="0.2" b="0.3"/>
+                            <EndColor r="0.4" g="0.5" b="0.6"/>
+                        </EMPUpdate>
+                        <EMPUpdate xmlns="uri:ea.com:eala:asset" id="RebornEmpEnd"><EndColor r="0.75" g="0.5" b="0.25"/></EMPUpdate>
+                        <EMPUpdate xmlns="uri:ea.com:eala:asset" id="RebornEmpDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: exercise an ordinary mixed hardpoint/contained set and the EA signed scatter boundaries.
+                if(mode is "weapon-contained" or "weapon-scatter")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml=mode=="weapon-contained"?"""
+                        <WeaponSlotContained xmlns="uri:ea.com:eala:asset" ID="31" AutoChooseWeapon="0">
+                            <Weapon Ordering="SECONDARY_WEAPON" Template="SovietAntiInfantryInfantryAK47"/>
+                            <Weapon Ordering="PRIMARY_WEAPON" Template="SovietAntiInfantryInfantryAK47"/>
+                        </WeaponSlotContained>
+                        <WeaponSlotContained xmlns="uri:ea.com:eala:asset" ID="33" AllowInterleavedFiring="true"/>
+                        """:"""
+                        <WeaponScatterEffectUpdate xmlns="uri:ea.com:eala:asset" id="RebornScatterNegative"><ScatterSettings ScatterAmount="-1"/><Filter/></WeaponScatterEffectUpdate>
+                        <WeaponScatterEffectUpdate xmlns="uri:ea.com:eala:asset" id="RebornScatterMax"><ScatterSettings ScatterAmount="255"/><Filter/></WeaponScatterEffectUpdate>
+                        <WeaponScatterEffectUpdate xmlns="uri:ea.com:eala:asset" id="RebornScatterOverflow"><ScatterSettings ScatterAmount="256"/><Filter/></WeaponScatterEffectUpdate>
+                        """;
+                    if(mode=="weapon-contained")original.Single(m=>m.LocalName=="WeaponSetUpdate").AppendChild(fragment);
+                    else behaviors.AppendChild(fragment);
+                }
+                // Reborn: cover the EP1 command string and upgrade import independently of their omitted defaults.
+                if(mode=="give-restore-upgrade")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml="""
+                        <GiveOrRestoreUpgradeSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornGiveUpgrade"
+                            CommandButton="Command_RebornGrant" UpgradeToGive="Upgrade_AlliesFaction"/>
+                        <GiveOrRestoreUpgradeSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornGiveUpgradeDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: use forward/backward local activation targets and an independently resolvable naval modifier.
+                if(mode is "activation-ability" or "naval-modifier")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml=mode=="activation-ability"?"""
+                        <GiveOrRestoreUpgradeSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornFirstRecipient"/>
+                        <ActivateModuleSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornActivation">
+                            <SpecialPowerModules ModuleId="RebornFirstRecipient" TriggerType="SELF_POSITION" TriggerAtTargetPosition="false"/>
+                            <SpecialPowerModules ModuleId="RebornSecondRecipient" TriggerType="TARGET_OBJECT"/>
+                        </ActivateModuleSpecialAbilityUpdate>
+                        <GiveOrRestoreUpgradeSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornSecondRecipient"/>
+                        <ActivateModuleSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornEmptyActivation"/>
+                        """:"""
+                        <AttributeModifierNaval xmlns="uri:ea.com:eala:asset" id="RebornNaval" AttributeModifier="AttributeModifier_Garrisoned"/>
+                        <AttributeModifierNaval xmlns="uri:ea.com:eala:asset" id="RebornNavalDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                    if(mode=="activation-ability")
+                    {
+                        var missing=Copy(source);
+                        ((XmlElement)missing.GetElementsByTagName("SpecialPowerModules",SchemaSet.XmlNamespace)[0]!).SetAttribute("ModuleId","MissingRebornRecipient");
+                        Refuse(()=>ConscriptVariableBehaviorSource.Admit(missing,baseline,official));faults++;
+                    }
+                }
+                // Reborn: exercise the named Body root with and without the shield's independently allocated armor import.
+                if(mode is "inactive-body" or "shield-body" or "shield-body-default")
+                {
+                    var body=ConscriptVariableContainers.Find(source,"Body")!;
+                    body.InnerXml=mode switch
+                    {
+                        "inactive-body" => """<InactiveBody xmlns="uri:ea.com:eala:asset" id="RebornInactive"/>""",
+                        "shield-body" => """
+                            <ShieldBody xmlns="uri:ea.com:eala:asset" id="RebornShield" MaxHealth="750" ShieldAmount="225.5"
+                                ShieldRechargeIdleTime="2.75s" ShieldActiveModelCondition="USER_6" ShieldArmor="SovietAntiInfantryInfantryArmor"
+                                ShieldEnabledFX="FX_SOV_LargeBearBloodImpact">
+                                <DamageRangeModifier Min="10" Max="50" AttributeModifier="AttributeModifier_Garrisoned"/>
+                            </ShieldBody>
+                            """,
+                        _ => """<ShieldBody xmlns="uri:ea.com:eala:asset" id="RebornShieldDefault" MaxHealth="750"/>"""
+                    };
+                }
+                // Reborn: cover authored OCL references and FX position along with independent status masks.
+                if(mode is "create-enter" or "status-ability")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml=mode=="create-enter"?"""
+                        <CreateAndEnterObjectSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornCreateEnter"
+                            SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1" CreateLocation="CREATE_AT_OFFSET_FROM_TARGET"
+                            CreateLocationOffset="17.5">
+                            <UpgradeOCL OCL="OCL_Generic5SecondBeacon"/>
+                            <FXOffset x="1.25" y="-2.5" z="3.75"/>
+                        </CreateAndEnterObjectSpecialPower>
+                        <CreateAndEnterObjectSpecialPower xmlns="uri:ea.com:eala:asset" id="RebornCreateEnterDefault"
+                            SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1"/>
+                        """:"""
+                        <ObjectStatusSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornStatusAbility"
+                            Status1="IMMOBILE" Status2="UNSELECTABLE"/>
+                        <ObjectStatusSpecialAbilityUpdate xmlns="uri:ea.com:eala:asset" id="RebornStatusAbilityDefault"/>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: exercise both optional-record presence and original defaults in the normal GameObject source route.
+                if(mode is "special-power-update" or "damage-field")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml=mode=="special-power-update"?"""
+                        <SpecialPowerUpdate xmlns="uri:ea.com:eala:asset" id="RebornPowerDefault" SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1"/>
+                        <SpecialPowerUpdate xmlns="uri:ea.com:eala:asset" id="RebornPowerEnabled" SpecialPowerTemplate="SpecialPowerChronoRiftTeleportLvl1"
+                            DisabledTypesToIgnore="HELD PARALYZED" StartsPaused="true">
+                            <InitiateSound Sound="SOV_Conscript_VoiceSelectMS" EvaEvent="BuildingRepaired"/>
+                        </SpecialPowerUpdate>
+                        """:"""
+                        <DamageFieldUpdate xmlns="uri:ea.com:eala:asset" id="RebornDamageDefault"/>
+                        <DamageFieldUpdate xmlns="uri:ea.com:eala:asset" id="RebornDamageField"
+                            FireInterval="1.5s" AliveOnly="true" Radius="173" RequiredUpgrade="Upgrade_SovietFaction">
+                            <FireWeaponNugget WeaponName="SovietHeavyAntiVehicleInfantryShortCircuit" FireDelay="2s" OneShot="true">
+                                <Offset x="1.25" y="-2.5" z="3.75"/>
+                            </FireWeaponNugget>
+                            <ObjectStatusValidation ForbiddenStatus="UNSELECTABLE" RequiredStatus="IMMOBILE"/>
+                            <ObjectFilter Rule="ANY" Include="INFANTRY" Exclude="STRUCTURE"/>
+                        </DamageFieldUpdate>
+                        """;
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: keep a real inherited chooser, locomotor selector and import on both authored AI classes.
+                if(mode is "horde-ai" or "supply-truck-ai")
+                {
+                    var previous=ConscriptModuleScalarContract.Owners(source).Single(o=>o.Container=="AI").Element;
+                    var ai=source.CreateElement(mode=="horde-ai"?"HordeAIUpdate":"SupplyTruckAIUpdate",SchemaSet.XmlNamespace);
+                    foreach(XmlAttribute attr in previous.Attributes)ai.SetAttribute(attr.Name,attr.Value);
+                    foreach(XmlNode child in previous.ChildNodes)ai.AppendChild(child.CloneNode(true));
+                    ai.SetAttribute("FadeOnPortals","true");
+                    ai.SetAttribute("StateMachine","TransportHelicopterAIStateMachine");
+                    ai.SetAttribute("DefaultLocomotorSet","FREEFALL");
+                    if(mode=="supply-truck-ai")
+                    {
+                        ai.SetAttribute("MaxBoxes","17");
+                        ai.SetAttribute("SupplyCenterActionDelay","1.25s");
+                        ai.SetAttribute("SupplyWarehouseActionDelay","2.5s");
+                        ai.SetAttribute("SupplyWarehouseScanDistance","39");
+                        ai.SetAttribute("HarvestActivationRange","420");
+                        ai.SetAttribute("HarvestPreparationTime","3.75s");
+                        ai.SetAttribute("HarvestActionTime","4.5s");
+                        ai.SetAttribute("HarvestTrees","true");
+                        ai.SetAttribute("HarvestTiberium","false");
+                        ai.SetAttribute("HarvestsFromRearEnd","true");
+                        ai.SetAttribute("CanPathThroughUnitsWhileDocking","false");
+                    }
+                    previous.ParentNode!.ReplaceChild(ai,previous);
+                }
+                // Reborn: exercise all four named shapes with populated fields that distinguish the EP1 ABI.
+                if(mode is "bezier-spline" or "sphere-update" or "steal-unit" or "booby-trap")
+                {
+                    var fragment=source.CreateDocumentFragment();
+                    fragment.InnerXml=mode switch
+                    {
+                        "bezier-spline" => """
+                            <ProjectileUpdate xmlns="uri:ea.com:eala:asset" id="RebornBezier" StateMachine="BezierSplineProjectile" Flags="TRACK_TARGET">
+                                <Movement><BezierSpline Velocity="22.5" Range="137.5" Gravity="2.25" FlightPathAdjustMaxDistancePerFrame="3.75">
+                                    <Path>ProjectilePath_Foo</Path><Path>ProjectilePath_Foo</Path>
+                                </BezierSpline></Movement>
+                            </ProjectileUpdate>
+                            <ProjectileUpdate xmlns="uri:ea.com:eala:asset" id="RebornBezierDefault" StateMachine="BezierSplineProjectile">
+                                <Movement><BezierSpline Velocity="1" Range="2"><Path>ProjectilePath_Foo</Path></BezierSpline></Movement>
+                            </ProjectileUpdate>
+                            """,
+                        "sphere-update" => """
+                            <SphereModuleUpdate xmlns="uri:ea.com:eala:asset" id="RebornSphere" RadiusMax="54" RadiusMin="12" ScanFrequency="0.75s"
+                                Duration="8.25s" SphereBoneName="Sphere_Anchor" SphereSizeMultiplier="1.5" InitiallyActive="true" DrawDebugCircle="false">
+                                <PositionOffset x="1.25" y="-2.5" z="3.75"/>
+                                <ObjectFilter Rule="ANY" Include="INFANTRY"/>
+                                <IgnoreInsideToInsideCheck Rule="ANY" Include="VEHICLE"/>
+                            </SphereModuleUpdate>
+                            """,
+                        "steal-unit" => """
+                            <StealUnitUpdate xmlns="uri:ea.com:eala:asset" id="RebornSteal" AttachBoneName="EP1_BONE" Range="14">
+                                <ObjectFilter Rule="ANY" Include="VEHICLE"/>
+                                <ModifierToLeechFromParent>AttributeModifier_Garrisoned</ModifierToLeechFromParent>
+                            </StealUnitUpdate>
+                            """,
+                        _ => """
+                            <BoobyTrapUpdate xmlns="uri:ea.com:eala:asset" id="RebornTrap" AttachBoneName="EP1_BONE" Range="14"
+                                FireWeaponConditionsOnParent="IMMOBILE" PreventEnteringSetStatusOnParent="UNSELECTABLE"
+                                SpecialWeapon="SovietHeavyAntiVehicleInfantryShortCircuit" AllowTriggerOnAllies="true">
+                                <ObjectFilter Rule="ANY" Include="VEHICLE"/>
+                                <ModifierToLeechFromParent>AttributeModifier_Garrisoned</ModifierToLeechFromParent>
+                                <PreventEnteringFilter Rule="ANY" Include="INFANTRY"/>
+                            </BoobyTrapUpdate>
+                            """
+                    };
+                    behaviors.AppendChild(fragment);
+                }
+                // Reborn: authored XML omits TypeId and sets exactly one of the retail byte fields.
+                if (mode is "squish-vehicles" or "squish-allies")
+                {
+                    var squish = original.Single(module => module.LocalName == "SquishCollide");
+                    squish.SetAttribute("CrushAnimTime", "2.5s");
+                    squish.SetAttribute("UseVehicleStyleCrush", mode == "squish-vehicles" ? "true" : "false");
+                    squish.SetAttribute("AllowAllyCrush", mode == "squish-allies" ? "true" : "false");
+                }
+                // Reborn: use independently authored rows with nondefault and default vehicle settings.
+                if (mode == "destructible-environment")
+                {
+                    for (int variant = 0; variant < 2; variant++)
+                    {
+                        var environment = source.CreateElement("DestructibleEnvironmentUpdate", SchemaSet.XmlNamespace);
+                        environment.SetAttribute("id", "RebornEnvironment" + variant);
+                        if (variant == 0)
+                        {
+                            environment.SetAttribute("Enabled", "true");
+                            environment.SetAttribute("Size", "HEAVY");
+                        }
+                        environment.InnerXml = "<LeftOffset xmlns='uri:ea.com:eala:asset' x='1' y='2' z='3'/><RightOffset xmlns='uri:ea.com:eala:asset' x='4' y='5' z='6'/>";
+                        behaviors.AppendChild(environment);
+                    }
+                }
                 // Reborn: preserve absent/empty/root-list states while exposing real sound imports and optional projected/shadow fields.
                 // Reborn: BuildingBehavior values are optional subobject strings; no global asset with the name LIGHT_01 is generated or required.
                 if(mode.StartsWith("windows-",StringComparison.Ordinal)){
@@ -513,16 +824,45 @@ internal static class ConscriptModuleGraphSmokeTest
                     }
                     behaviors.PrependChild(module);origins.Add(id,"RebornEngineerTemplate");
                 }
-                // Reborn: author repair scalars and every inline percent; audio stays empty.
-                if(mode.StartsWith("repair-",StringComparison.Ordinal))for(int i=0;i<(mode=="repair-multiple"?2:1);i++){
+                // Reborn: exercise inline percentages, two distinct repair sound imports, and absent sound defaults.
+                if(mode.StartsWith("repair-",StringComparison.Ordinal))for(int i=0;i<(mode is "repair-multiple" or "repair-audio"?2:1);i++){
                     var module=source.CreateElement("RepairUpdate",SchemaSet.XmlNamespace);string id="RebornRepair"+i;module.SetAttribute("id",id);
                     var percent=source.CreateElement("PercentOfBuildCostToRebuildInfo",SchemaSet.XmlNamespace);var audio=source.CreateElement("SelfAudio",SchemaSet.XmlNamespace);
                     if(mode!="repair-defaults"){module.SetAttribute("Toggleable",i==0?"false":"1");module.SetAttribute("RepairableWhenDead","true");module.SetAttribute("RepopThreshold",i==0?"0.75":"0.125");module.SetAttribute("HealAmountPerSecond",i==0?"37":"4294967295");percent.SetAttribute("Pristine","25");percent.SetAttribute("Damaged","75%");percent.SetAttribute("ReallyDamaged",i==0?"100":"10");percent.SetAttribute("Rubble","0");}
+                    if(mode=="repair-audio"&&i==0){
+                        audio.SetAttribute("SelfRepairFromDamageLoop","SOV_ConstructionYard_Select");
+                        audio.SetAttribute("SelfRepairFromRubbleLoop","SOV_ConstructionYard_Die");
+                    }
                     module.AppendChild(percent);module.AppendChild(audio);behaviors.PrependChild(module);origins.Add(id,"RebornRepairTemplate");
                 }
                 // Reborn: author every production scalar, including EP1 WATERCRAFT and NewObjectFadeInTime; nothing is copied from the stock refinery payload.
                 if(mode.StartsWith("production-",StringComparison.Ordinal))for(int i=0;i<(mode=="production-multiple"?2:1);i++){
                     var module=source.CreateElement("ProductionUpdate",SchemaSet.XmlNamespace);string id="RebornProduction"+i;module.SetAttribute("id",id);
+                    // Reborn: exercise weak-template identity, signed counts and order through complete named EP1 source.
+                    if (mode == "production-quantity")
+                    {
+                        foreach (var (name, amount) in new[] { ("SovietMiner", "-3"), ("SovietAntiInfantryInfantry", "7") })
+                        {
+                            var modifier = source.CreateElement("QuantityModifier", SchemaSet.XmlNamespace);
+                            modifier.SetAttribute("Name", name);
+                            modifier.SetAttribute("Count", amount);
+                            module.AppendChild(modifier);
+                        }
+                    }
+                    // Reborn: prove two external upgrade imports, a populated native filter and omitted scalar defaults.
+                    if (mode == "production-modifier")
+                    {
+                        var populated = source.CreateElement("ProductionModifier", SchemaSet.XmlNamespace);
+                        populated.SetAttribute("RequiredUpgrade", "Upgrade_ProductionVeterancy_VETERAN");
+                        populated.SetAttribute("CostMultiplier", "0.75");
+                        populated.SetAttribute("TimeMultiplier", "1.25");
+                        populated.InnerXml = "<ModifierFilter xmlns='uri:ea.com:eala:asset' Rule='ANY' Include='INFANTRY' Exclude='STRUCTURE' StatusBitFlags='IMMOBILE'><IncludeThing>SovietMiner</IncludeThing><ExcludeThing>SovietAntiInfantryInfantry</ExcludeThing></ModifierFilter>";
+                        module.AppendChild(populated);
+                        var defaults = source.CreateElement("ProductionModifier", SchemaSet.XmlNamespace);
+                        defaults.SetAttribute("RequiredUpgrade", "Upgrade_ProductionVeterancy_ELITE");
+                        defaults.InnerXml = "<ModifierFilter xmlns='uri:ea.com:eala:asset'/>";
+                        module.AppendChild(defaults);
+                    }
                     if(mode!="production-defaults"){
                         module.SetAttribute("MaxQueueEntries",i==0?"7":"4294967295");module.SetAttribute("NumDoorAnimations",i==0?"2":"-3");module.SetAttribute("DoorOpeningTime",i==0?"1250ms":"0.25s");module.SetAttribute("DoorWaitOpenTime","3.5s");module.SetAttribute("DoorCloseTime","750ms");
                         module.SetAttribute("ConstructionCompleteDuration","33");module.SetAttribute("UnitInvulnerableTime","500");module.SetAttribute("SpecialPrepModelconditionTime","250");module.SetAttribute("Type",i==0?"WATERCRAFT":"INFANTRY");
@@ -661,7 +1001,8 @@ internal static class ConscriptModuleGraphSmokeTest
                 }
                 var admitted=ConscriptVariableBehaviorSource.Admit(source,baseline,official);
                 // Reborn: the real admission plan supplies leaf templates for new/reordered draw and client identities.
-                if(mode.StartsWith("containers-",StringComparison.Ordinal)||mode.StartsWith("draws-",StringComparison.Ordinal)||mode.StartsWith("audio-",StringComparison.Ordinal))origins=admitted.Origins;
+                // Reborn: use the schema-proved origins for newly authored environment leaves.
+                if(mode is "destructible-environment" or "locomotor-ability" or "replace-self-upgrade" or "substructure-build" or "delayed-weapon-fire" or "leech-targeting" or "transport-ai" or "wander-ai" or "emp-update" or "weapon-contained" or "weapon-scatter" or "give-restore-upgrade" or "activation-ability" or "naval-modifier" or "inactive-body" or "shield-body" or "shield-body-default" or "create-enter" or "status-ability" or "special-power-update" or "damage-field" or "horde-ai" or "supply-truck-ai" or "bezier-spline" or "sphere-update" or "steal-unit" or "booby-trap"||mode.StartsWith("containers-",StringComparison.Ordinal)||mode.StartsWith("draws-",StringComparison.Ordinal)||mode.StartsWith("audio-",StringComparison.Ordinal))origins=admitted.Origins;
                 // Reborn: a new object identity receives a command only from an explicit authored declaration, never from its ID alone.
                 if(mode=="new-id-combined"){if(catalog.Any(a=>a.TypeId==0x942FFF2D&&a.InstanceId==InstanceHandle.GetInstanceId("RebornConscriptTrial")))throw new InvalidDataException("Variable trial ID collides with stock.");source.DocumentElement!.SetAttribute("id","RebornConscriptTrial");}
                 var pair=Build(source);var tokens=Verify(source,pair.Native,pair.Instance,origins);var repeat=Build(source);
@@ -729,6 +1070,464 @@ internal static class ConscriptModuleGraphSmokeTest
                 GameObjectConscriptTrialSmokeTest.Package(Path.Combine(output,mode+"-package"),source,streams,source.DocumentElement!.GetAttribute("id"),prefix);
                 // Reborn: corruption controls target independently owned module identity, container count and auxiliary tables, not just a repeated producer.
                 int address=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,ConscriptModuleScalarContract.Owners(source).First(o=>o.Container=="Behaviors"));
+                // Reborn: check the stock class and both independently authored flag bytes.
+                if (mode is "squish-vehicles" or "squish-allies")
+                {
+                    var owner = ConscriptModuleScalarContract.Owners(source).Single(module => module.Element.LocalName == "SquishCollide");
+                    int offset = ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer, 0, owner);
+                    byte vehicle = (byte)(mode == "squish-vehicles" ? 1 : 0);
+                    byte ally = (byte)(mode == "squish-allies" ? 1 : 0);
+                    if (Word(pair.Native.InstanceBuffer, offset) != 0xB5EB41EDu ||
+                        Word(pair.Native.InstanceBuffer, offset + 8) != BitConverter.SingleToUInt32Bits(2.5f) ||
+                        pair.Native.InstanceBuffer[offset + 12] != vehicle ||
+                        pair.Native.InstanceBuffer[offset + 13] != ally)
+                        throw new InvalidDataException("Named EP1 SquishCollide fields differ from the retail layout.");
+                }
+                // Reborn: verify literal EP1 destinations, import identities, replacement order and default values.
+                if (mode is "locomotor-ability" or "replace-self-upgrade")
+                {
+                    bool locomotor = mode == "locomotor-ability";
+                    var owners = ConscriptModuleScalarContract.Owners(source).Where(module =>
+                        module.Element.LocalName == (locomotor ? "SwitchLocomotorsSpecialAbilityUpdate" : "ReplaceSelfUpgrade")).ToArray();
+                    if (owners.Length != 2)
+                        throw new InvalidDataException("Two named EP1 behavior records are required.");
+                    var bytes = pair.Native.InstanceBuffer;
+                    int authored = ConscriptModuleScalarContract.Address(bytes, 0, owners[0]);
+                    int defaults = ConscriptModuleScalarContract.Address(bytes, 0, owners[1]);
+                    uint wire = locomotor ? 0x14E031A2u : 0x53FBA9B5u;
+                    if (Word(bytes, authored) != wire || Word(bytes, defaults) != wire)
+                        throw new InvalidDataException("EP1 behavior class differs.");
+                    int changedAt;
+                    if (locomotor)
+                    {
+                        int import = authored + 0x104;
+                        if (Word(bytes, authored + 0xfc) != BitConverter.SingleToUInt32Bits(2.5f) ||
+                            Word(bytes, authored + 0x100) != BitConverter.SingleToUInt32Bits(47.5f) ||
+                            !Slots(pair.Native.ImportsBuffer).Contains((uint)import) ||
+                            pair.Instance.ReferencedInstances[(int)Word(bytes, import) - 1].InstanceId != InstanceHandle.GetInstanceId("SpecialPowerAlliedFreeTrade") ||
+                            Word(bytes, authored + 0x108) != 2u || Word(bytes, authored + 0x10c) != 0x00010001u ||
+                            Enumerable.Range(0, 5).Any(word => Word(bytes, defaults + 0xfc + 4 * word) != 0))
+                            throw new InvalidDataException("EP1 locomotor tail, strong import or default differs.");
+                        changedAt = authored + 0x108;
+                    }
+                    else
+                    {
+                        int list = (int)Word(bytes, authored + 0x30);
+                        if (Word(bytes, authored + 0x24) != BitConverter.SingleToUInt32Bits(3.5f) ||
+                            Word(bytes, authored + 0x28) != 0x15u || Word(bytes, authored + 0x2c) != 2u ||
+                            !Slots(pair.Native.RelocationBuffer).Contains((uint)(authored + 0x30)) ||
+                            Word(bytes, list) != InstanceHandle.GetInstanceId("SovietMiner") ||
+                            Word(bytes, list + 4) != InstanceHandle.GetInstanceId("SovietAntiInfantryInfantry") ||
+                            Word(bytes, defaults + 0x24) != 0 || Word(bytes, defaults + 0x28) != 8u ||
+                            Word(bytes, defaults + 0x2c) != 0 || Word(bytes, defaults + 0x30) != 0)
+                            throw new InvalidDataException("EP1 replacement options, weak list or default differs.");
+                        changedAt = authored + 0x28;
+                    }
+                    var bad = Clone(pair.Native);
+                    bad.InstanceBuffer[changedAt] ^= 1;
+                    Refuse(() => Verify(source, bad, pair.Instance, origins));
+                    faults++;
+                    int metadataList = GameObjectStockReview.Tokens(tokens.InstanceBuffer, 0)[FastHash.GetHashCode("Behaviors")].Offset;
+                    int wrapper = (int)Word(tokens.InstanceBuffer, metadataList + 12 + owners[0].Index * 12 + 8);
+                    var badMetadata = Clone(tokens);
+                    badMetadata.InstanceBuffer[wrapper + 4] ^= 1;
+                    Refuse(() => Verify(source, pair.Native, pair.Instance, origins, badMetadata));
+                    metadataFaults++;
+                }
+                // Reborn: check the explicit reader offsets, native array strides and bare-list defaults.
+                if (mode == "substructure-build")
+                {
+                    var owners = ConscriptModuleScalarContract.Owners(source).Where(o => o.Element.LocalName == "SubStructureBuild").ToArray();
+                    var bytes = pair.Native.InstanceBuffer;
+                    int at = ConscriptModuleScalarContract.Address(bytes, 0, owners[0]);
+                    int defaults = ConscriptModuleScalarContract.Address(bytes, 0, owners[1]);
+                    int pairs = (int)Word(bytes, at + 0x28);
+                    int offsets = (int)Word(bytes, at + 0x30);
+                    if (Word(bytes, at) != 0x3176B098u || Word(bytes, at + 0x24) != 2 || Word(bytes, at + 0x2c) != 2 ||
+                        Word(bytes, pairs) != InstanceHandle.GetInstanceId("Upgrade_AlliesFaction") ||
+                        Word(bytes, pairs + 4) != InstanceHandle.GetInstanceId("AlliedCrane") ||
+                        Word(bytes, pairs + 8) != InstanceHandle.GetInstanceId("Upgrade_JapanFaction") ||
+                        Word(bytes, pairs + 12) != InstanceHandle.GetInstanceId("SovietMiner") ||
+                        Word(bytes, offsets + 64) != BitConverter.SingleToUInt32Bits(-62.211f) ||
+                        Word(bytes, offsets + 72 + 68) != BitConverter.SingleToUInt32Bits(3f) ||
+                        Enumerable.Range(0, 4).Any(i => Word(bytes, defaults + 0x24 + i * 4) != 0))
+                        throw new InvalidDataException("EP1 substructure count, weak pair or vector destinations differ.");
+                    var bad = Clone(pair.Native);
+                    bad.InstanceBuffer[offsets + 72 + 68] ^= 1;
+                    Refuse(() => Verify(source, bad, pair.Instance, origins));
+                    faults++;
+                }
+                // Reborn: check the original concrete class, inherited weapon slot and scheduler's delay source.
+                if (mode == "delayed-weapon-fire")
+                {
+                    var owners = ConscriptModuleScalarContract.Owners(source).Where(o => o.Element.LocalName == "DelayedWeaponFireSpecialAbilityUpdate").ToArray();
+                    var bytes = pair.Native.InstanceBuffer;
+                    int at = ConscriptModuleScalarContract.Address(bytes, 0, owners[0]);
+                    int defaults = ConscriptModuleScalarContract.Address(bytes, 0, owners[1]);
+                    int weapon = at + 0xfc;
+                    if (Word(bytes, at) != 0x368F2215u || Word(bytes, at + 0x100) != 2u ||
+                        Word(bytes, at + 0x11c) != BitConverter.SingleToUInt32Bits(4.25f) || Word(bytes, defaults + 0x11c) != 0 ||
+                        !Slots(pair.Native.ImportsBuffer).Contains((uint)weapon) ||
+                        pair.Instance.ReferencedInstances[(int)Word(bytes, weapon) - 1].InstanceId != InstanceHandle.GetInstanceId("PlayerPowerIrradiateTargetWeapon"))
+                        throw new InvalidDataException("EP1 delayed WeaponFire import or time differs.");
+                    var bad = Clone(pair.Native);
+                    bad.InstanceBuffer[at + 0x11c] ^= 1;
+                    Refuse(() => Verify(source, bad, pair.Instance, origins));
+                    faults++;
+                }
+                // Reborn: prove EP1 attachment string, filter relocation, modifier import and empty defaults independently.
+                if (mode == "leech-targeting")
+                {
+                    var owners = ConscriptModuleScalarContract.Owners(source).Where(o => o.Element.LocalName == "LeechTargetingAttachUpdate").ToArray();
+                    var bytes = pair.Native.InstanceBuffer;
+                    int at = ConscriptModuleScalarContract.Address(bytes, 0, owners[0]);
+                    int defaults = ConscriptModuleScalarContract.Address(bytes, 0, owners[1]);
+                    var relocations = Slots(pair.Native.RelocationBuffer);
+                    int bone = (int)Word(bytes, at + 352);
+                    int modifier = (int)Word(bytes, at + 364);
+                    if (Word(bytes, at) != 0xCA6038A6u || Word(bytes, at + 348) != 10u ||
+                        System.Text.Encoding.ASCII.GetString(bytes, bone, 10) != "BONE_LEECH" ||
+                        !relocations.Contains((uint)(at + 352)) || !relocations.Contains((uint)(at + 356)) ||
+                        !relocations.Contains((uint)(at + 364)) || Word(bytes, at + 360) != 1u ||
+                        !Slots(pair.Native.ImportsBuffer).Contains((uint)modifier) ||
+                        pair.Instance.ReferencedInstances[(int)Word(bytes, modifier) - 1].InstanceId != InstanceHandle.GetInstanceId("AttributeModifier_Garrisoned") ||
+                        Word(bytes, defaults + 348) != 0u || Word(bytes, defaults + 356) != 0u || Word(bytes, defaults + 360) != 0u)
+                        throw new InvalidDataException("EP1 Leech Attach header, filter, modifier or defaults differ.");
+                    var bad = Clone(pair.Native);
+                    bad.InstanceBuffer[bone] ^= 1;
+                    Refuse(() => Verify(source, bad, pair.Instance, origins));
+                    faults++;
+                }
+                // Reborn: pin the concrete AI selector, shared field destinations and optional chooser relocation.
+                if (mode is "transport-ai" or "wander-ai")
+                {
+                    var owner = ConscriptModuleScalarContract.Owners(source).Single(o=>o.Container=="AI");
+                    var bytes = pair.Native.InstanceBuffer;
+                    int at = ConscriptModuleScalarContract.Address(bytes,0,owner);
+                    bool wander = mode == "wander-ai";
+                    if(Word(bytes,at)!=(wander?0xD813AF2Au:0xBE9CD6FEu) ||
+                        Word(bytes,at+56)!=BitConverter.SingleToUInt32Bits(17.5f) ||
+                        Word(bytes,at+64)!=(wander?3u:2u) || bytes[at+0x49]!=1 ||
+                        !Slots(pair.Native.RelocationBuffer).Contains((uint)(at+68)) || Word(bytes,at+68)==0 ||
+                        wander && (Word(bytes,at+0x88)!=125 || Word(bytes,at+0x8c)!=1 ||
+                            bytes.AsSpan(at+0x4c,60).IndexOfAnyExcept((byte)0)<0))
+                        throw new InvalidDataException("Derived EP1 AI header, mask or chooser differs.");
+                    var bad=Clone(pair.Native);
+                    bad.InstanceBuffer[at+(wander?0x88:0x49)]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                    var metadata=Clone(tokens);
+                    int ai=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("AI")].Offset;
+                    int wrapper=(int)Word(tokens.InstanceBuffer,ai+20);
+                    metadata.InstanceBuffer[wrapper+16]^=1;
+                    Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,metadata));metadataFaults++;
+                }
+                // Reborn: independently verify the color relocations and their six component destinations.
+                if (mode == "emp-update")
+                {
+                    var owners=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="EMPUpdate").ToArray();
+                    var bytes=pair.Native.InstanceBuffer;
+                    int both=ConscriptModuleScalarContract.Address(bytes,0,owners[0]);
+                    int endOnly=ConscriptModuleScalarContract.Address(bytes,0,owners[1]);
+                    int defaults=ConscriptModuleScalarContract.Address(bytes,0,owners[2]);
+                    int start=(int)Word(bytes,both+0x20), end=(int)Word(bytes,both+0x24);
+                    var relocations=Slots(pair.Native.RelocationBuffer);
+                    if(Word(bytes,both)!=0xD3302D7Eu || Word(bytes,both+8)!=BitConverter.SingleToUInt32Bits(2.5f) ||
+                        !relocations.Contains((uint)(both+0x20)) || !relocations.Contains((uint)(both+0x24)) ||
+                        start==end || Word(bytes,endOnly+0x20)!=0 || Word(bytes,endOnly+0x24)==0 ||
+                        Word(bytes,defaults+0x20)!=0 || Word(bytes,defaults+0x24)!=0)
+                        throw new InvalidDataException("EP1 EMP color pointer layout differs.");
+                    foreach(var (position, expected) in new[]{(start,new[]{0.1f,0.2f,0.3f}),(end,new[]{0.4f,0.5f,0.6f})})
+                    for(int i=0;i<3;i++)
+                        if(Word(bytes,position+i*4)!=BitConverter.SingleToUInt32Bits(expected[i]))
+                            throw new InvalidDataException("EP1 EMP color differs.");
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[start+4]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: confirm contained slot ordering, stride, and the nested weapon reference.
+                if(mode=="weapon-contained")
+                {
+                    var owner=ConscriptModuleScalarContract.Owners(source).Single(o=>o.Element.LocalName=="WeaponSetUpdate");
+                    var bytes=pair.Native.InstanceBuffer;
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owner);
+                    int slots=(int)Word(bytes,at+0x28), weapon=(int)Word(bytes,slots+20), import=weapon+4;
+                    if(Word(bytes,at)!=0x431722A9u || Word(bytes,at+12)==0 || Word(bytes,at+0x24)!=2 ||
+                        Word(bytes,slots)!=0 || Word(bytes,slots+4)!=31 || Word(bytes,slots+28+4)!=33 ||
+                        bytes[slots+28+24]!=1 || bytes[slots+25]!=0 || Word(bytes,slots+16)!=2 ||
+                        Word(bytes,weapon)!=0 || Word(bytes,weapon+80)!=1 ||
+                        !Slots(pair.Native.ImportsBuffer).Contains((uint)import) ||
+                        !Slots(pair.Native.ImportsBuffer).Contains((uint)(import+80)) ||
+                        pair.Instance.ReferencedInstances[(int)Word(bytes,import)-1].InstanceId!=InstanceHandle.GetInstanceId("SovietAntiInfantryInfantryAK47"))
+                        throw new InvalidDataException("Contained weapon stride or import differs.");
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[slots+28+4]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: preserve all signed bits, independently checking the retail consumer's low-byte result.
+                if(mode=="weapon-scatter")
+                {
+                    var actual=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="WeaponScatterEffectUpdate")
+                        .Select(o=>Word(pair.Native.InstanceBuffer,ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,o)+0x0c)).ToArray();
+                    if(!actual.SequenceEqual(new[]{0xFFFFFFFFu,255u,256u}) ||
+                        !actual.Select(v=>(byte)v).SequenceEqual(new byte[]{255,255,0}))
+                        throw new InvalidDataException("EP1 signed ScatterAmount differs from the original serializer.");
+                }
+                // Reborn: pin the command text and import to the original EP1 field coordinates.
+                if(mode=="give-restore-upgrade")
+                {
+                    var owners=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="GiveOrRestoreUpgradeSpecialPower").ToArray();
+                    var bytes=pair.Native.InstanceBuffer;
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owners[0]);
+                    int defaults=ConscriptModuleScalarContract.Address(bytes,0,owners[1]);
+                    int command=(int)Word(bytes,at+0x100), upgrade=(int)Word(bytes,at+0x104);
+                    if(Word(bytes,at)!=0x0453E648u || Word(bytes,at+0xfc)!=19 ||
+                        System.Text.Encoding.ASCII.GetString(bytes,command,19)!="Command_RebornGrant" ||
+                        !Slots(pair.Native.RelocationBuffer).Contains((uint)(at+0x100)) ||
+                        !Slots(pair.Native.ImportsBuffer).Contains((uint)(at+0x104)) ||
+                        pair.Instance.ReferencedInstances[upgrade-1].InstanceId!=InstanceHandle.GetInstanceId("Upgrade_AlliesFaction") ||
+                        Word(bytes,defaults+0xfc)!=0 || Word(bytes,defaults+0x100)!=0 || Word(bytes,defaults+0x104)!=0)
+                        throw new InvalidDataException("EP1 give/restore command string or upgrade import differs.");
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[command]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: check the concrete class and distinguish local activation identities from global imports.
+                if(mode is "activation-ability" or "naval-modifier")
+                {
+                    bool activation=mode=="activation-ability";
+                    var owners=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName==
+                        (activation?"ActivateModuleSpecialAbilityUpdate":"AttributeModifierNaval")).ToArray();
+                    var bytes=pair.Native.InstanceBuffer;
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owners[0]);
+                    int empty=ConscriptModuleScalarContract.Address(bytes,0,owners[1]);
+                    int corrupt;
+                    if(activation)
+                    {
+                        int list=(int)Word(bytes,at+0x100);
+                        if(Word(bytes,at)!=0xCD33BCEEu || Word(bytes,at+0xfc)!=2 ||
+                            !Slots(pair.Native.RelocationBuffer).Contains((uint)(at+0x100)) ||
+                            Word(bytes,list)!=FastHash.GetHashCode("rebornfirstrecipient") ||
+                            Word(bytes,list+4)!=0 || bytes[list+8]!=0 ||
+                            Word(bytes,list+12)!=FastHash.GetHashCode("rebornsecondrecipient") ||
+                            Word(bytes,list+16)!=2 || bytes[list+20]!=1 ||
+                            Word(bytes,empty+0xfc)!=0 || Word(bytes,empty+0x100)!=0)
+                            throw new InvalidDataException("EP1 activation list identity, trigger or defaults differ.");
+                        corrupt=list+12;
+                    }
+                    else
+                    {
+                        int import=(int)Word(bytes,at+8);
+                        if(Word(bytes,at)!=0xA34CED5Cu || Word(bytes,empty+8)!=0 ||
+                            !Slots(pair.Native.ImportsBuffer).Contains((uint)(at+8)) ||
+                            pair.Instance.ReferencedInstances[import-1].InstanceId!=InstanceHandle.GetInstanceId("AttributeModifier_Garrisoned"))
+                            throw new InvalidDataException("EP1 naval modifier reference differs.");
+                        corrupt=at+8;
+                    }
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[corrupt]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: compare the complete EP1 headers and typed reference targets against distinct authored values.
+                if(mode is "special-power-update" or "damage-field" or "horde-ai" or "supply-truck-ai")
+                {
+                    var owners=ConscriptModuleScalarContract.Owners(source);
+                    var bytes=pair.Native.InstanceBuffer;
+                    var relos=Slots(pair.Native.RelocationBuffer);
+                    var imports=Slots(pair.Native.ImportsBuffer);
+                    int corrupt;
+                    if(mode is "special-power-update" or "damage-field")
+                    {
+                        bool power=mode=="special-power-update";
+                        var modules=owners.Where(o=>o.Element.LocalName==(power?"SpecialPowerUpdate":"DamageFieldUpdate")).ToArray();
+                        int empty=ConscriptModuleScalarContract.Address(bytes,0,modules[0]);
+                        int at=ConscriptModuleScalarContract.Address(bytes,0,modules[1]);
+                        if(power)
+                        {
+                            int sound=(int)Word(bytes,at+0x10);
+                            if(Word(bytes,at)!=0xB9B2A9B3 || Word(bytes,at+0x0c)!=0x18 || bytes[at+0x14]!=1 ||
+                                Word(bytes,empty+0x0c)!=8 || Word(bytes,empty+0x10)!=0 || bytes[empty+0x14]!=0 ||
+                                sound==0 || !relos.Contains((uint)(at+0x10)) || !relos.Contains((uint)sound) ||
+                                !NamesImport(at+8,"SpecialPowerChronoRiftTeleportLvl1") ||
+                                !NamesImport((int)Word(bytes,sound),"SOV_Conscript_VoiceSelectMS") ||
+                                !NamesImport(sound+4,"BuildingRepaired"))
+                                throw new InvalidDataException("EP1 power mask, paused flag or InitiateSound imports differ.");
+                            corrupt=at+0x0c;
+                        }
+                        else
+                        {
+                            int nugget=(int)Word(bytes,at+0x14);
+                            if(Word(bytes,at)!=0xF3B802D5 || Word(bytes,at+0x08)!=BitConverter.SingleToUInt32Bits(1.5f) ||
+                                Word(bytes,at+0x10)!=1 || bytes[at+0x1c]!=1 || Word(bytes,at+0x20)!=173 ||
+                                Word(bytes,empty+0x10)!=0 || Word(bytes,empty+0x28)!=0 ||
+                                !relos.Contains((uint)(at+0x14)) || !relos.Contains((uint)(at+0x18)) ||
+                                !relos.Contains((uint)(at+0x28)) || !NamesImport(at+0x24,"Upgrade_SovietFaction") ||
+                                !NamesImport(nugget,"SovietHeavyAntiVehicleInfantryShortCircuit"))
+                                throw new InvalidDataException("EP1 damage field interval, nugget, status, upgrade or filter differs.");
+                            corrupt=at+0x20;
+                        }
+                    }
+                    else
+                    {
+                        bool truck=mode=="supply-truck-ai";
+                        int at=ConscriptModuleScalarContract.Address(bytes,0,owners.Single(o=>o.Container=="AI"));
+                        int chooser=(int)Word(bytes,at+0x44);
+                        if(Word(bytes,at)!=(truck?0x9AB8094Du:0x55D77703u) || Word(bytes,at+0x3c)!=13 ||
+                            Word(bytes,at+0x40)!=2 || bytes[at+0x49]!=1 || chooser==0 ||
+                            !relos.Contains((uint)(at+0x44)) || !NamesImport(chooser+0x24,"DefaultTargetingCompareList") ||
+                            truck && (Word(bytes,at+0x4c)!=17 ||
+                                Word(bytes,at+0x50)!=BitConverter.SingleToUInt32Bits(1.25f) ||
+                                Word(bytes,at+0x54)!=BitConverter.SingleToUInt32Bits(2.5f) ||
+                                Word(bytes,at+0x5c)!=BitConverter.SingleToUInt32Bits(2000f) ||
+                                !bytes.AsSpan(at+0x6c,5).SequenceEqual(new byte[]{1,0,1,0,1})))
+                            throw new InvalidDataException("EP1 Horde/truck inherited data, chooser or truck tail differs.");
+                        corrupt=at+(truck?0x6f:0x49);
+                    }
+                    var bad=Clone(pair.Native);
+                    bad.InstanceBuffer[corrupt]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+
+                    // Reborn: inspect the occurrence table as well as the native import word.
+                    bool NamesImport(int slot,string id)=>imports.Contains((uint)slot) &&
+                        Word(bytes,slot)>0 && pair.Instance.ReferencedInstances[(int)Word(bytes,slot)-1].InstanceId==InstanceHandle.GetInstanceId(id);
+                }
+                // Reborn: check the Body pointer, shield-specific native offsets, and optional import.
+                if(mode is "inactive-body" or "shield-body" or "shield-body-default")
+                {
+                    var owner=ConscriptModuleScalarContract.Owners(source).Single(o=>o.Container=="Body");
+                    var bytes=pair.Native.InstanceBuffer;
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owner);
+                    bool inactive=mode=="inactive-body",shield=mode=="shield-body";
+                    if(!Slots(pair.Native.RelocationBuffer).Contains(488u) ||
+                        Word(bytes,at)!=(inactive?0x29234E6Eu:0xD3565857u))
+                        throw new InvalidDataException("Concrete EP1 Body identity differs.");
+                    if(!inactive)
+                    {
+                        int armor=(int)Word(bytes,at+0x60);
+                        if(Word(bytes,at+8)!=BitConverter.SingleToUInt32Bits(750f) ||
+                            Word(bytes,at+0x5c)!=(shield?BitConverter.SingleToUInt32Bits(225.5f):0u) ||
+                            Word(bytes,at+0x64)!=(shield?BitConverter.SingleToUInt32Bits(2.75f):0u) ||
+                            Word(bytes,at+0x68)!=(shield?0x120u:uint.MaxValue) ||
+                            shield&&(armor==0||!Slots(pair.Native.RelocationBuffer).Contains((uint)(at+0x60))||
+                                !Slots(pair.Native.ImportsBuffer).Contains((uint)(at+0x4c))||
+                                pair.Instance.ReferencedInstances[(int)Word(bytes,at+0x4c)-1].InstanceId!=InstanceHandle.GetInstanceId("FX_SOV_LargeBearBloodImpact")||
+                                !Slots(pair.Native.ImportsBuffer).Contains((uint)armor)||
+                                pair.Instance.ReferencedInstances[(int)Word(bytes,armor)-1].InstanceId!=InstanceHandle.GetInstanceId("SovietAntiInfantryInfantryArmor")) ||
+                            !shield&&armor!=0)
+                            throw new InvalidDataException("EP1 ShieldBody field or armor import differs.");
+                    }
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[at+(inactive?4:0x5c)]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: pin the original derived tail coordinates and their independent linked storage.
+                if(mode is "create-enter" or "status-ability")
+                {
+                    bool create=mode=="create-enter";
+                    var owners=ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName==
+                        (create?"CreateAndEnterObjectSpecialPower":"ObjectStatusSpecialAbilityUpdate")).ToArray();
+                    var bytes=pair.Native.InstanceBuffer;
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owners[0]);
+                    int empty=ConscriptModuleScalarContract.Address(bytes,0,owners[1]);
+                    int corrupt;
+                    if(create)
+                    {
+                        int vector=(int)Word(bytes,at+0x20c);
+                        int upgradeCount=System.Runtime.InteropServices.Marshal.OffsetOf<Ep1OCLSpecialPowerModuleData>(nameof(Ep1OCLSpecialPowerModuleData.UpgradeOCL)).ToInt32();
+                        int import=(int)Word(bytes,at+upgradeCount+4);
+                        if(Word(bytes,at)!=0x38C496D8u || Word(bytes,empty+0x20c)!=0 ||
+                            !Slots(pair.Native.RelocationBuffer).Contains((uint)(at+0x20c)) ||
+                            Word(bytes,vector)!=BitConverter.SingleToUInt32Bits(1.25f) ||
+                            Word(bytes,vector+4)!=BitConverter.SingleToUInt32Bits(-2.5f) ||
+                            Word(bytes,vector+8)!=BitConverter.SingleToUInt32Bits(3.75f) ||
+                            Word(bytes,at+upgradeCount)!=1 || !Slots(pair.Native.ImportsBuffer).Contains((uint)import) ||
+                            pair.Instance.ReferencedInstances[(int)Word(bytes,import)-1].InstanceId!=InstanceHandle.GetInstanceId("OCL_Generic5SecondBeacon"))
+                            throw new InvalidDataException("EP1 CreateAndEnter FX or upgrade OCL differs.");
+                        corrupt=vector+4;
+                    }
+                    else
+                    {
+                        var first=bytes.AsSpan(at+0xfc,32);
+                        var second=bytes.AsSpan(at+0x11c,32);
+                        if(Word(bytes,at)!=0x079B6EADu || first.SequenceEqual(second) ||
+                            first.IndexOfAnyExcept((byte)0)<0 || second.IndexOfAnyExcept((byte)0)<0 ||
+                            bytes.AsSpan(empty+0xfc,64).IndexOfAnyExcept((byte)0)>=0)
+                            throw new InvalidDataException("EP1 ability status masks differ.");
+                        corrupt=at+0x11c;
+                    }
+                    var bad=Clone(pair.Native);bad.InstanceBuffer[corrupt]^=1;
+                    Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;
+                }
+                // Reborn: pin the retail native coordinates and reject a deliberate corruption through the same package verifier.
+                if(mode is "bezier-spline" or "sphere-update" or "steal-unit" or "booby-trap")
+                {
+                    uint wire=mode switch
+                    {
+                        "bezier-spline"=>0xB38F4984u,
+                        "sphere-update"=>0x9D74F07Au,
+                        "steal-unit"=>0x21068FF6u,
+                        _=>0xE502295Eu
+                    };
+                    var bytes=pair.Native.InstanceBuffer;
+                    var owners=ConscriptModuleScalarContract.Owners(source);
+                    string id=mode switch
+                    {
+                        "bezier-spline"=>"RebornBezier",
+                        "sphere-update"=>"RebornSphere",
+                        "steal-unit"=>"RebornSteal",
+                        _=>"RebornTrap"
+                    };
+                    int at=ConscriptModuleScalarContract.Address(bytes,0,owners.Single(o=>o.Element.GetAttribute("id")==id));
+                    int nativeAt=mode=="bezier-spline"?(int)Word(bytes,at+0x18):at;
+                    var relos=Slots(pair.Native.RelocationBuffer);
+                    var imports=Slots(pair.Native.ImportsBuffer);
+                    if(Word(bytes,nativeAt)!=wire)
+                        throw new InvalidDataException("Named EP1 concrete class differs.");
+                    if(mode=="bezier-spline")
+                    {
+                        int list=(int)Word(bytes,nativeAt+0x18);
+                        int empty=ConscriptModuleScalarContract.Address(bytes,0,owners.Single(o=>o.Element.GetAttribute("id")=="RebornBezierDefault"));
+                        empty=(int)Word(bytes,empty+0x18);
+                        if(Word(bytes,at+8)!=3 || Word(bytes,nativeAt+0x10)!=BitConverter.SingleToUInt32Bits(3.75f) ||
+                            Word(bytes,nativeAt+0x14)!=2 || !relos.Contains((uint)(nativeAt+0x18)) ||
+                            !imports.Contains((uint)list) || !imports.Contains((uint)(list+4)) ||
+                            Word(bytes,list)==Word(bytes,list+4) || Word(bytes,empty+0x0c)!=0x3f800000 ||
+                            Word(bytes,empty+0x10)!=0 || Word(bytes,empty+0x14)!=1)
+                            throw new InvalidDataException("EP1 Bezier adjustment, defaults or path list differs.");
+                    }
+                    else if(mode=="sphere-update")
+                    {
+                        if(Word(bytes,at+0x1c)!=BitConverter.SingleToUInt32Bits(8.25f) ||
+                            !relos.Contains((uint)(at+0x24)) || !relos.Contains((uint)(at+0x2c)) ||
+                            !relos.Contains((uint)(at+0xa8)) || bytes[at+0xac]!=1 || bytes[at+0xad]!=0)
+                            throw new InvalidDataException("Direct Sphere header or relocations differ.");
+                    }
+                    else
+                    {
+                        if(!relos.Contains((uint)(at+0x160)) || Word(bytes,at+0x15c)!=8 ||
+                            mode=="booby-trap" && (!imports.Contains((uint)(at+0x1b0)) ||
+                                !relos.Contains((uint)(at+0x1b4)) || bytes[at+0x1b8]!=1))
+                            throw new InvalidDataException("Attachment EP1 bone or derived trap tail differs.");
+                    }
+                    var corrupt=Clone(pair.Native);
+                    corrupt.InstanceBuffer[nativeAt]^=1;
+                    Refuse(()=>Verify(source,corrupt,pair.Instance,origins));faults++;
+                }
+                // Reborn: confirm concrete identity, exact vector destinations and EP1 enum/default encoding.
+                if (mode == "destructible-environment")
+                {
+                    var owners = ConscriptModuleScalarContract.Owners(source)
+                        .Where(module => module.Element.LocalName == "DestructibleEnvironmentUpdate").ToArray();
+                    if (owners.Length != 2)
+                        throw new InvalidDataException("Two authored environment records are required.");
+
+                    for (int index = 0; index < owners.Length; index++)
+                    {
+                        int offset = ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer, 0, owners[index]);
+                        var bytes = pair.Native.InstanceBuffer;
+                        if (Word(bytes, offset) != 0x75FE8D90u ||
+                            Word(bytes, offset + 8) != (index == 0 ? 2u : 0u) ||
+                            bytes[offset + 0x24] != (index == 0 ? 1 : 0))
+                            throw new InvalidDataException("Environment class or native enum/default differs.");
+                        for (int component = 0; component < 6; component++)
+                            if (Word(bytes, offset + 0x0c + component * 4) != BitConverter.SingleToUInt32Bits(component + 1))
+                                throw new InvalidDataException("Environment inline offsets differ.");
+                    }
+                }
                 // Reborn: sample all death header words plus optional masks/list references and literal inheritance/field targets.
                 if(mode.StartsWith("death-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>DeathBehaviorContract.Supports(o.NativeType)&&o.Element.GetAttribute("id").StartsWith("RebornDeath",StringComparison.Ordinal))){
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner),header=owner.Element.LocalName=="CreateObjectDie"?72:52;var offsets=Enumerable.Range(0,header/4).Select(i=>i*4).ToList();
@@ -827,6 +1626,27 @@ internal static class ConscriptModuleGraphSmokeTest
                     foreach(int offset in new[]{4,8,20,28,32,64,92,104,140,188,236,256,268}.Concat(filterAt!=0?new[]{296,308,320,392,404,416,428}:Array.Empty<int>())){var bad=Clone(tokens);bad.InstanceBuffer[wrapper+offset]^=1;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,bad));metadataFaults++;}
                 }
                 // Reborn: mutate every repair byte, including padding, and representative own/base/inline metadata rows.
+                // Reborn: the two source sound identities must occupy their own live import slots in the package.
+                if (mode == "repair-audio")
+                {
+                    var owner = ConscriptModuleScalarContract.Owners(source).Single(o => o.Element.GetAttribute("id") == "RebornRepair0");
+                    var bytes = pair.Native.InstanceBuffer;
+                    int at = ConscriptModuleScalarContract.Address(bytes, 0, owner);
+                    var imports = Slots(pair.Native.ImportsBuffer);
+                    foreach (var (offset, sound) in new[] { (32, "SOV_ConstructionYard_Select"), (36, "SOV_ConstructionYard_Die") })
+                    {
+                        int selector = (int)Word(bytes, at + offset);
+                        if (!imports.Contains((uint)(at + offset)) || selector == 0 ||
+                            pair.Instance.ReferencedInstances[selector - 1].InstanceId != InstanceHandle.GetInstanceId(sound))
+                            throw new InvalidDataException("EP1 repair sound import differs: " + sound);
+                    }
+                    // Reborn: a populated but unresolved sound must still fail the independent reference contract.
+                    var missing = Copy(source);
+                    var missingOwner = ConscriptModuleScalarContract.Owners(missing).Single(o => o.Element.GetAttribute("id") == "RebornRepair0").Element;
+                    ((XmlElement)missingOwner.LastChild!).SetAttribute("SelfRepairFromDamageLoop", "RebornMissingRepairCue");
+                    Refuse(() => Verify(missing, pair.Native, pair.Instance, origins));
+                    faults++;
+                }
                 if(mode.StartsWith("repair-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="RepairUpdate")){
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);for(int offset=0;offset<RepairUpdateContract.NativeSize;offset++){var bad=Clone(pair.Native);bad.InstanceBuffer[at+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                     int list=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset;int wrapper=(int)Word(tokens.InstanceBuffer,list+12+owner.Index*12+8);foreach(int offset in new[]{4,8,20,28,32,56,64,76,80,92,116,188,200,224,236,260,284,296}){var bad=Clone(tokens);bad.InstanceBuffer[wrapper+offset]^=1;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,bad));metadataFaults++;}
@@ -834,6 +1654,31 @@ internal static class ConscriptModuleGraphSmokeTest
                 // Reborn: corrupt the entire production header, optional list storage and every actual translation import independently.
                 if(mode.StartsWith("production-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="ProductionUpdate")){
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);for(int offset=0;offset<ProductionUpdateContract.NativeSize;offset++){var bad=Clone(pair.Native);bad.InstanceBuffer[at+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                    // Reborn: check the independent EP1 row stride, filter words, nullable defaults and exact IMP slots.
+                    if (mode == "production-modifier")
+                    {
+                        var bytes = pair.Native.InstanceBuffer;
+                        int rows = checked((int)Word(bytes, at + 0x48));
+                        uint second = checked((uint)(rows + 0x84));
+                        var imports = Slots(pair.Native.ImportsBuffer);
+                        var relocations = Slots(pair.Native.RelocationBuffer);
+                        if (Word(bytes, at + 0x44) != 2 || !relocations.Contains((uint)(at + 0x48)) ||
+                            !imports.Contains((uint)rows) || !imports.Contains(second) ||
+                            Word(bytes, rows + 4) != BitConverter.SingleToUInt32Bits(0.75f) ||
+                            Word(bytes, rows + 8) != BitConverter.SingleToUInt32Bits(1.25f) ||
+                            Word(bytes, rows + 0x10) != 2 ||
+                            Word(bytes, (int)second + 4) != BitConverter.SingleToUInt32Bits(1f) ||
+                            Word(bytes, (int)second + 8) != BitConverter.SingleToUInt32Bits(1f) ||
+                            Word(bytes, (int)second + 0x10) != 3)
+                            throw new InvalidDataException("ProductionModifier external imports, native row stride or filter defaults differ.");
+                        foreach (int slot in new[] { rows, rows + 4, rows + 8, rows + 0x10, rows + 0x6c, rows + 0x78, (int)second })
+                        {
+                            var bad = Clone(pair.Native);
+                            bad.InstanceBuffer[slot] ^= 1;
+                            Refuse(() => Verify(source, bad, pair.Instance, origins));
+                            faults++;
+                        }
+                    }
                     int give=(int)Word(pair.Native.InstanceBuffer,at+76);if(give!=0){int translationCount=(int)Word(pair.Native.InstanceBuffer,give),items=(int)Word(pair.Native.InstanceBuffer,give+4);foreach(int slot in new[]{give,give+4}.Concat(Enumerable.Range(0,translationCount*2).Select(i=>items+i*4))){var bad=Clone(pair.Native);BinaryPrimitives.WriteUInt32LittleEndian(bad.InstanceBuffer.AsSpan(slot),uint.MaxValue);Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}}
                     int list=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset;int wrapper=(int)Word(tokens.InstanceBuffer,list+12+owner.Index*12+8);foreach(int offset in new[]{4,8,20,28,32,112,116,128,188,224,236,248,260,280,356,392,404}){var bad=Clone(tokens);bad.InstanceBuffer[wrapper+offset]^=1;Refuse(()=>Verify(source,pair.Native,pair.Instance,origins,bad));metadataFaults++;}
                 }

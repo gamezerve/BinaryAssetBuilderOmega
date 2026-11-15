@@ -63,7 +63,9 @@ public static class Ep1GameObjectStringTokens
             {
                 0x5A0E3D9Bu => 76,
                 Ep1ActiveBodyTokenizer.ImmortalBodyTypeId or Ep1ActiveBodyTokenizer.ManagerBodyTypeId or Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId or Ep1ActiveBodyTokenizer.ManagedImmortalBodyTypeId or Ep1ActiveBodyTokenizer.HighlanderBodyTypeId when reviewedBehaviors => 76,
-                0xFF88404Bu when reviewedBehaviors => 8,
+                // Reborn: InactiveBody is identity-only, while ShieldBody has its own extended header.
+                0xFF88404Bu or 0x29234E6Eu when reviewedBehaviors => 8,
+                SageBinaryData.Ep1ShieldBodyModuleData.Wire when reviewedBehaviors => 0x6c,
                 _ => throw new InvalidDataException("Unreviewed concrete Body native class.")
             };
             if(body>b.Length-bodySize)throw new InvalidDataException("Concrete Body header is truncated.");

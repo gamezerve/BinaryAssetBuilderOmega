@@ -1,4 +1,4 @@
-﻿using Relo;
+using Relo;
 using SageBinaryData;
 
 public static partial class Marshaler
@@ -1449,7 +1449,11 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Ep1StockUIMouseTacticalLookAt.KeyScrollFactor),"100%"),&target->KeyScrollFactor,state);
         Marshal(node.GetAttributeValue(nameof(Ep1StockUIMouseTacticalLookAt.MouseDragScrollFactor),"100%"),&target->MouseDragScrollFactor,state);
         Marshal(node.GetAttributeValue(nameof(Ep1StockUIMouseTacticalLookAt.MouseEdgeScrollFactor),"100%"),&target->MouseEdgeScrollFactor,state);
-        Marshal(node.GetChildNodes(nameof(Ep1StockUIMouseTacticalLookAt.ViewBookmark)),&target->ViewBookmark,state);
+        // Reborn: the EP1 LookAt initializer binds at most eight bookmark rows.
+        var bookmarks = node.GetChildNodes(nameof(Ep1StockUIMouseTacticalLookAt.ViewBookmark));
+        if (bookmarks?.GetCount() > 8)
+            throw new System.IO.InvalidDataException("UIMouseTacticalLookAt supports at most eight ViewBookmark entries.");
+        Marshal(bookmarks,&target->ViewBookmark,state);
         Marshal(node,(BaseAssetType*)target,state);
     }
 

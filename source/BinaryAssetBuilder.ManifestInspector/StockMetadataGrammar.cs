@@ -332,8 +332,293 @@ internal sealed class StockMetadataGrammar
         rows.Kinds=new[]{new HashSet<Kind>{Kind.Table},new HashSet<Kind>{Kind.Native}};
     }
 
-    // Reborn: only the implemented original falling and straight-line movement classes select concrete metadata grammar.
-    private static Type MovementType(uint wire)=>wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Unsupported projectile movement metadata class: "+wire.ToString("X8"))};
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: register the fieldless schema and metadata row reproduced by the independent EA compiler. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyBalloonProjectile(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        var type = typeof(SageBinaryData.BalloonProjectileMoveToGroundData);
+        var name = new System.Xml.XmlQualifiedName(type.Name, "uri:ea.com:eala:asset");
+        var shape = schemas.GlobalTypes[name] as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        if (extension?.BaseTypeName.Name != "ProjectileMoveBase" ||
+            extension.Attributes.Count != 0 || extension.Particle != null ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 4)
+            throw new InvalidDataException("Balloon projectile schema or native extent differs.");
+        var rows = Get(type);
+        rows.Class = SageBinaryData.BalloonProjectileMoveToGroundData.WireTypeId;
+        rows.Fields = new[] { (1u, 0xABD1B08Au) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Table } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the EA two-row QuantityModifier witness against the EP1 source schema and x86 extent. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyQuantityModifier(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        var type = typeof(SageBinaryData.QuantityModifier);
+        var name = new System.Xml.XmlQualifiedName(type.Name, "uri:ea.com:eala:asset");
+        var shape = schemas.GlobalTypes[name] as System.Xml.Schema.XmlSchemaComplexType;
+        if (shape?.AttributeUses.Count != 2 ||
+            shape.AttributeUses[new System.Xml.XmlQualifiedName("Name")] is not System.Xml.Schema.XmlSchemaAttribute template ||
+            template.AttributeSchemaType?.QualifiedName.Name != "GameObjectWeakRef" ||
+            shape.AttributeUses[new System.Xml.XmlQualifiedName("Count")] is not System.Xml.Schema.XmlSchemaAttribute count ||
+            count.AttributeSchemaType?.QualifiedName.Name != "SageInt" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 8)
+            throw new InvalidDataException("Production quantity modifier schema or native extent differs.");
+        var rows = Get(type);
+        rows.Fields = new[] { (0x597DB3C4u, 0x148ED75Du), (0x6C827073u, 0x23E650B8u) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Native }, new HashSet<Kind> { Kind.Native } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the EA modifier's outer rows with the EP1 row and shared inline filter ABI. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyProductionModifier(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        var type = typeof(SageBinaryData.Ep1ProductionModifier);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName("ProductionModifier", ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var sequence = shape?.ContentTypeParticle as System.Xml.Schema.XmlSchemaSequence;
+        if (shape?.AttributeUses.Count != 3 ||
+            shape.AttributeUses[new System.Xml.XmlQualifiedName("RequiredUpgrade")] is not System.Xml.Schema.XmlSchemaAttribute upgrade ||
+            upgrade.AttributeSchemaType?.QualifiedName.Name != "UpgradeTemplateRef" ||
+            sequence?.Items.Count != 1 || sequence.Items[0] is not System.Xml.Schema.XmlSchemaElement filter ||
+            filter.Name != "ModifierFilter" || filter.ElementSchemaType?.Name != "ObjectFilter" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 0x84 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "ModifierFilter").ToInt32() != 0x0c ||
+            !grammar.ContainsKey(typeof(SageBinaryData.ObjectFilter)))
+            throw new InvalidDataException("Production modifier source or native filter layout differs.");
+
+        var rows = Get(type);
+        rows.Fields = new[] { (0x7F719729u, 0x4ABA1F29u), (0x5213E2BCu, 0x645864F3u),
+            (0xC777C7F3u, 0x645864F3u), (0x9FBE9B1Au, 0xE46EA3B2u) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Native }, new HashSet<Kind> { Kind.Native },
+            new HashSet<Kind> { Kind.Native }, new HashSet<Kind> { Kind.Table } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compare the EA environment row and its field destinations with the EP1 schema and x86 model. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyDestructibleEnvironment(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        var type = typeof(SageBinaryData.DestructibleEnvironmentUpdateModuleData);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName(type.Name, ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        if (extension?.BaseTypeName.Name != "UpdateModuleData" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 0x28 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "Size").ToInt32() != 0x08 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "LeftOffset").ToInt32() != 0x0c ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "RightOffset").ToInt32() != 0x18 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "Enabled").ToInt32() != 0x24)
+            throw new InvalidDataException("DestructibleEnvironmentUpdate schema or native layout differs.");
+
+        var rows = Get(type);
+        rows.Class = SageBinaryData.DestructibleEnvironmentUpdateModuleData.WireTypeId;
+        rows.Fields = new[] { (1u, 0xF1002505u), (0x19C90A51u, 0x77E3F4F7u),
+            (0x1B50459Du, 0x37DA54ABu), (0xF09B55EFu, 0x29368077u), (0xFA0AEC90u, 0x29368077u) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Table }, new HashSet<Kind> { Kind.Native },
+            new HashSet<Kind> { Kind.Native }, new HashSet<Kind> { Kind.Native }, new HashSet<Kind> { Kind.Native } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: check the two EA-authored field tables against the EP1 schema and native reader destinations. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyLocomotorOrReplacement(System.Xml.Schema.XmlSchemaSet schemas, Type type, uint wire, int size)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        bool locomotor = type == typeof(SageBinaryData.Ep1SwitchLocomotorsSpecialAbilityUpdateModuleData);
+        string parent = locomotor ? "SpecialAbilityUpdateModuleData" : "UpgradeModuleData";
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName(type.Name.Substring(3), ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        (string Name, uint Tag, int Offset, Kind Kind)[] fields = locomotor ? new[]
+        {
+            ("UseUpgradedLocomotor",0x77E3F4F7u,0x10c,Kind.Native),
+            ("TriggersLanding",0x77E3F4F7u,0x10d,Kind.Native),
+            ("TriggersFlight",0x77E3F4F7u,0x10e,Kind.Native),
+            ("BusyForDuration",0x998669E8u,0xfc,Kind.Native),
+            ("LandingRange",0x645864F3u,0x100,Kind.Native),
+            ("HordeMembersSpecialPowerTemplate",0xAEE83888u,0x104,Kind.Native),
+            ("LocomotorToSet",0x845D12B2u,0x108,Kind.Native)
+        } : new[]
+        {
+            ("NewObjectUnpackTime",0x998669E8u,0x24,Kind.Native),
+            ("Options",0xD0708290u,0x28,Kind.Native),
+            ("ReplacementTemplate",0x148ED75Du,0x2c,Kind.Table)
+        };
+        if (extension?.BaseTypeName.Name != parent || Base(type).Name != parent ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != size ||
+            fields.Any(field => System.Runtime.InteropServices.Marshal.OffsetOf(type, field.Name).ToInt32() != field.Offset))
+            throw new InvalidDataException(type.Name+" schema or native layout differs.");
+
+        var rows = Get(type);
+        rows.Class = wire;
+        rows.Fields = new[] { (1u, FastHash.GetHashCode(parent)) }
+            .Concat(fields.Select(field => (FastHash.GetHashCode(field.Name), field.Tag))).ToArray();
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Table } }
+            .Concat(fields.Select(field => new HashSet<Kind> { field.Kind })).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify the EA row identities and original EP1 repeated-record strides and destinations. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifySubStructureBuild(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        var type = typeof(SageBinaryData.Ep1SubStructureBuildUpgradeModuleData);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName("SubStructureBuildUpgradeModuleData", ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        if (extension?.BaseTypeName.Name != "UpgradeModuleData" || Base(type).Name != "UpgradeModuleData")
+            throw new InvalidDataException("SubStructureBuild Upgrade base differs.");
+        Qualify(type, 0x34, SageBinaryData.Ep1SubStructureBuildUpgradeModuleData.WireTypeId,
+            ("AvailableSubStructure",0xB3873AC3u,0x24,Kind.Table), ("StructureOffset",0x645FAA23u,0x2c,Kind.Table));
+        Qualify(typeof(SageBinaryData.Ep1AvailableSubStructure), 8, null,
+            ("UpgradeTrigger",0x26FACFC7u,0,Kind.Native), ("ObjectTemplate",0x148ED75Du,4,Kind.Native));
+        Qualify(typeof(SageBinaryData.Ep1SubStructureOffset), 72, null,
+            ("ModelCondition",0x67DBBFC9u,0,Kind.Native), ("Offset",0x29368077u,60,Kind.Native));
+
+        // Reborn: only the concrete upgrade owns the inherited table.
+        void Qualify(Type native, int size, uint? wire, params (string Name,uint Tag,int At,Kind Kind)[] fields)
+        {
+            if (System.Runtime.InteropServices.Marshal.SizeOf(native) != size ||
+                fields.Any(field => System.Runtime.InteropServices.Marshal.OffsetOf(native, field.Name).ToInt32() != field.At))
+                throw new InvalidDataException(native.Name+" layout differs.");
+            var rows = Get(native);
+            rows.Class = wire;
+            var prefix = wire.HasValue ? new[] { (1u,0xAE60AE98u) } : Array.Empty<(uint,uint)>();
+            rows.Fields = prefix.Concat(fields.Select(field => (FastHash.GetHashCode(field.Name), field.Tag))).ToArray();
+            rows.Kinds = Enumerable.Repeat(new HashSet<Kind> { Kind.Table }, prefix.Length)
+                .Concat(fields.Select(field => new HashSet<Kind> { field.Kind })).ToArray();
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the EA delay row at the EP1 scheduler's +0x11c destination. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyDelayedWeaponFire(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        const string name = "DelayedWeaponFireSpecialAbilityUpdateModuleData";
+        var type = typeof(SageBinaryData.Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName(name, ns)] as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        var attribute = extension?.Attributes.OfType<System.Xml.Schema.XmlSchemaAttribute>().SingleOrDefault();
+        if (extension?.BaseTypeName.Name != "WeaponFireSpecialAbilityUpdateModuleData" ||
+            attribute?.Name != "FireDelay" || attribute.SchemaTypeName.Name != "Time" || attribute.DefaultValue != "0s" ||
+            Base(type) != typeof(SageBinaryData.Ep1WeaponFireSpecialAbilityUpdateModuleData) ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 0x120 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type, "FireDelay").ToInt32() != 0x11c)
+            throw new InvalidDataException("DelayedWeaponFireSpecialAbilityUpdate schema or native layout differs.");
+        var rows = Get(type);
+        rows.Class = SageBinaryData.Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData.WireTypeId;
+        rows.Fields = new[] { (1u,0x1E45A393u), (0x1287BF23u,0x998669E8u) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Table }, new HashSet<Kind> { Kind.Native } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: accept the original EA base-only Leech row and the EP1 factory's 0x170-byte allocation. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyLeechTargeting(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        var type = typeof(SageBinaryData.Ep1LeechTargetingAttachUpdateModuleData);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName("LeechTargetingAttachUpdateModuleData", ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        if (extension?.BaseTypeName.Name != "AttachUpdateModuleData" || extension.Attributes.Count != 0 ||
+            extension.Particle is not System.Xml.Schema.XmlSchemaSequence { Items.Count: 0 } ||
+            Base(type) != typeof(SageBinaryData.Ep1AttachUpdateModuleData) ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type) != 0x170)
+            throw new InvalidDataException("LeechTargetingAttachUpdate schema or native layout differs.");
+        var rows = Get(type);
+        rows.Class = SageBinaryData.Ep1LeechTargetingAttachUpdateModuleData.WireTypeId;
+        rows.Fields = new[] { (1u,0xE9FD14C9u) };
+        rows.Kinds = new[] { new HashSet<Kind> { Kind.Table } };
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify the original EMP field order and each optional color pointee. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyEMP(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns = "uri:ea.com:eala:asset";
+        var model = typeof(SageBinaryData.Ep1EMPUpdateModuleData);
+        var shape = schemas.GlobalTypes[new System.Xml.XmlQualifiedName("EMPUpdateModuleData", ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension = (shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        var names = new[] { "Lifetime","StartFadeDelay","DisabledDuration","StartScale","TargetScaleMin","TargetScaleMax","StartColor","EndColor" };
+        if (extension?.BaseTypeName.Name != "UpdateModuleData" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(model) != 0x28 ||
+            System.Runtime.InteropServices.Marshal.SizeOf<SageBinaryData.Color3f>() != 12 ||
+            names.Where((name,index)=>System.Runtime.InteropServices.Marshal.OffsetOf(model,name).ToInt32()!=8+index*4).Any())
+            throw new InvalidDataException("EMP update schema or color layout differs.");
+        var rule = Get(model);
+        rule.Class = SageBinaryData.Ep1EMPUpdateModuleData.Wire;
+        rule.Fields = new[] { (1u,0xF1002505u) }.Concat(names.Select((name,index) =>
+            (FastHash.GetHashCode(name),index<3?0x998669E8u:index<6?0x645864F3u:0x028426A3u))).ToArray();
+        rule.Kinds = new[]{ new HashSet<Kind>{Kind.Table} }.Concat(names.Select((_,index)=>
+            index<6?new HashSet<Kind>{Kind.Native}:new HashSet<Kind>{Kind.Null,Kind.Table})).ToArray();
+        var color = Get(typeof(SageBinaryData.Color3f));
+        color.Fields = new[] { (0x21DEADB2u,0x645864F3u),(0x620CC514u,0x645864F3u),(0x51AE1A99u,0x645864F3u) };
+        color.Kinds = Enumerable.Range(0,3).Select(_=>new HashSet<Kind>{Kind.Native}).ToArray();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify the EA grant table and the original EP1 loader's +0xfc/+0x104 destinations. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyGiveOrRestoreUpgrade(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        const string ns="uri:ea.com:eala:asset";
+        var model=typeof(SageBinaryData.Ep1GiveOrRestoreUpgradeSpecialPowerModuleData);
+        var shape=schemas.GlobalTypes[new System.Xml.XmlQualifiedName("GiveOrRestoreUpgradeSpecialPowerModuleData",ns)]
+            as System.Xml.Schema.XmlSchemaComplexType;
+        var extension=(shape?.ContentModel as System.Xml.Schema.XmlSchemaComplexContent)?.Content
+            as System.Xml.Schema.XmlSchemaComplexContentExtension;
+        var attributes=extension?.Attributes.OfType<System.Xml.Schema.XmlSchemaAttribute>().ToArray();
+        if(extension?.BaseTypeName.Name!="SpecialAbilityUpdateModuleData" || attributes?.Length!=2 ||
+            attributes[0].Name!="CommandButton" || attributes[0].SchemaTypeName.Name!="string" ||
+            attributes[1].Name!="UpgradeToGive" || attributes[1].SchemaTypeName.Name!="UpgradeTemplateRef" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(model)!=0x108 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(model,"CommandButton").ToInt32()!=0xfc ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(model,"UpgradeToGive").ToInt32()!=0x104)
+            throw new InvalidDataException("EP1 GiveOrRestoreUpgrade schema or native layout differs.");
+        var rows=Get(model);
+        rows.Class=SageBinaryData.Ep1GiveOrRestoreUpgradeSpecialPowerModuleData.Wire;
+        rows.Fields=new[]{(1u,0xAC598F82u),(0x755398FCu,0x1A2933AAu),(0xCB41A471u,0x4ABA1F29u)};
+        rows.Kinds=new[]{new HashSet<Kind>{Kind.Table},new HashSet<Kind>{Kind.Native},new HashSet<Kind>{Kind.Native}};
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: combine EA's serialized path grammar with the exact additional field read by retail 1.1. */
+    //-------------------------------------------------------------------------------------------------
+    internal void QualifyBezierProjectile(System.Xml.Schema.XmlSchemaSet schemas)
+    {
+        var type=typeof(SageBinaryData.BezierSplineProjectileData);
+        var schema=schemas.GlobalTypes[new System.Xml.XmlQualifiedName(type.Name,"uri:ea.com:eala:asset")] as System.Xml.Schema.XmlSchemaComplexType;
+        if(schema?.BaseXmlSchemaType?.QualifiedName.Name!="ProjectileMoveBase" ||
+            System.Runtime.InteropServices.Marshal.SizeOf(type)!=0x1c ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type,"FlightPathAdjustMaxDistancePerFrame").ToInt32()!=0x10 ||
+            System.Runtime.InteropServices.Marshal.OffsetOf(type,"Path").ToInt32()!=0x14)
+            throw new InvalidDataException("EP1 Bezier movement layout differs.");
+        var rows=Get(type);
+        rows.Class=SageBinaryData.BezierSplineProjectileData.WireTypeId;
+        rows.Fields=new[] { (0x00000001u,0xABD1B08Au), (0x7A76C60Eu,0x645864F3u), (0xCC37CEA6u,0x645864F3u), (0xCE398055u,0x645864F3u), (0x90F269E4u,0x645864F3u), (0x163EB803u,0x2CCBA11Cu) };
+        rows.Kinds=new[] { new HashSet<Kind>{Kind.Table}, new HashSet<Kind>{Kind.Native}, new HashSet<Kind>{Kind.Native}, new HashSet<Kind>{Kind.Native}, new HashSet<Kind>{Kind.Native}, new HashSet<Kind>{Kind.Table} };
+    }
+
+    // Reborn: select only independently qualified concrete classes for projectile movement metadata.
+    private static Type MovementType(uint wire)=>wire switch{0x87767DF6u=>typeof(SageBinaryData.ProjectileMoveToGroundData),0x858CBFDCu=>typeof(SageBinaryData.ProjectileMoveInStraightLineData),SageBinaryData.BalloonProjectileMoveToGroundData.WireTypeId=>typeof(SageBinaryData.BalloonProjectileMoveToGroundData),SageBinaryData.BezierSplineProjectileData.WireTypeId=>typeof(SageBinaryData.BezierSplineProjectileData),_=>throw new InvalidDataException("Unsupported projectile movement metadata class: "+wire.ToString("X8"))};
     private Rows Get(Type type){if(!grammar.TryGetValue(type,out var rows))grammar[type]=rows=new Rows();return rows;}
     private static Type Base(Type type)=>type.GetField("Base")?.FieldType??throw new InvalidDataException("Stock grammar base model missing: "+type.Name);
     // Reborn: the movement-base runtime class word has a captured metadata name distinct from its managed TypeId field.

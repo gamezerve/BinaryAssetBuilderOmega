@@ -339,7 +339,11 @@ public static partial class Marshaler
                 MarshalPolymorphicType<OilSpillUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xF3B802D5u:
-                MarshalPolymorphicType<DamageFieldUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: allocate the verified EP1 DamageFieldUpdate rather than the legacy layout.
+                using (state.Push((void**)objT,(uint)sizeof(Ep1DamageFieldUpdateModuleData),1u))
+                    Marshal(node,(Ep1DamageFieldUpdateModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
                 break;
             case 0x6BE00745u:
                 MarshalPolymorphicType<FlammableUpdateModuleData, BehaviorModuleData>(node, objT, state);
@@ -377,6 +381,10 @@ public static partial class Marshaler
             case 0x2027962Au: MarshalPolymorphicType<Ep1CrateCollideModuleData, BehaviorModuleData>(node,objT,state);uint rebornCrateCollideModuleData=0x2027962Au;state.InplaceEndianToPlatform(&rebornCrateCollideModuleData);*(uint*)*objT=rebornCrateCollideModuleData;break;
             // Reborn: energy sharing retains the actual original PC concrete class ID.
             case 0x0EF819D2u:MarshalPolymorphicType<DistributeEnergyToAlliesBehaviorModuleData,BehaviorModuleData>(node,objT,state);break;
+            // Reborn: retain the original concrete 0x75FE8D90 environment class.
+            case DestructibleEnvironmentUpdateModuleData.WireTypeId:
+                MarshalPolymorphicType<DestructibleEnvironmentUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0x4950FD10u:
                 MarshalPolymorphicType<BombardAreaUpdateModuleData, BehaviorModuleData>(node,objT,state);break;
             case 0x1E95EE57u:
@@ -596,7 +604,11 @@ public static partial class Marshaler
                 MarshalPolymorphicType<SpecialPowerDispatchSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0xB9B2A9B3u:
-                MarshalPolymorphicType<SpecialPowerUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: allocate the verified EP1 SpecialPowerUpdate rather than the legacy layout.
+                using (state.Push((void**)objT,(uint)sizeof(Ep1SpecialPowerUpdateModuleData),1u))
+                    Marshal(node,(Ep1SpecialPowerUpdateModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
                 break;
             case 0x74569AAAu:
                 // Reborn: preserve the original wire ID while allocating the separate Uprising detector record.
@@ -643,8 +655,28 @@ public static partial class Marshaler
             case 0x22ED33D8u:
                 MarshalPolymorphicType<AudioLoopUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;
+            // Reborn: the two EA-named classes retain their wire IDs over isolated EP1 records.
+            case Ep1ActivateModuleSpecialAbilityUpdateModuleData.Wire:
+                using (state.Push((void**)objT,(uint)sizeof(Ep1ActivateModuleSpecialAbilityUpdateModuleData),1u))
+                    Marshal(node,(Ep1ActivateModuleSpecialAbilityUpdateModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
+                break;
+            case Ep1ObjectStatusSpecialAbilityUpdateModuleData.Wire:
+                using (state.Push((void**)objT,(uint)sizeof(Ep1ObjectStatusSpecialAbilityUpdateModuleData),1u))
+                    Marshal(node,(Ep1ObjectStatusSpecialAbilityUpdateModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
+                break;
+            case Ep1AttributeModifierNavalModuleData.Wire:
+                using (state.Push((void**)objT,(uint)sizeof(Ep1AttributeModifierNavalModuleData),1u))
+                    Marshal(node,(Ep1AttributeModifierNavalModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
+                break;
             case 0x431722A9u:
-                MarshalPolymorphicType<WeaponSetUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: both generic and reviewed GameObject paths use the same EP1 weapon set ABI.
+                MarshalEp1WeaponSet(node, objT, state);
                 break;
             case 0xA0AA07E1u:
                 // Reborn: retain the original EP1 wire identity after allocating its isolated native record.
@@ -917,6 +949,10 @@ public static partial class Marshaler
                 using(var context=state.Push((void**)objT,(uint)sizeof(Ep1AttachUpdateModuleData),1u))Marshal(node,(Ep1AttachUpdateModuleData*)*objT,state);
                 *(uint*)*objT=0xE9FD14C9u;
                 break;
+            case 0x9D74F07Au:
+                // Reborn: select the retail concrete Sphere class through the same layout as its derived shields.
+                MarshalPolymorphicType<SphereModuleUpdateModuleData, BehaviorModuleData>(node, objT, state);
+                break;
             case 0xE502295Eu:
                 MarshalPolymorphicType<BoobyTrapUpdateModuleData, BehaviorModuleData>(node, objT, state);
                 break;
@@ -938,7 +974,11 @@ public static partial class Marshaler
                 MarshalPolymorphicType<PowerUpgradeModuleData, BehaviorModuleData>(node, objT, state);
                 break;
             case 0x38C496D8u:
-                MarshalPolymorphicType<CreateAndEnterObjectSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);
+                // Reborn: the EP1 OCL base puts the detached vector pointer at +0x20c.
+                using (state.Push((void**)objT,(uint)sizeof(Ep1CreateAndEnterObjectSpecialPowerModuleData),1u))
+                    Marshal(node,(Ep1CreateAndEnterObjectSpecialPowerModuleData*)*objT,state);
+                state.InplaceEndianToPlatform(&typeId);
+                *(uint*)*objT=typeId;
                 break;
             case 0xAC7E2A4Au:
                 MarshalPolymorphicType<MoveToPositionAndEvacuateSpecialPowerModuleData, BehaviorModuleData>(node, objT, state);

@@ -14,6 +14,7 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(BoobyTrapUpdateModuleData.AllowTriggerOnAllies), "false"), &objT->AllowTriggerOnAllies, state);
         Marshal(node.GetAttributeValue(nameof(BoobyTrapUpdateModuleData.SpecialWeapon), null), &objT->SpecialWeapon, state);
         Marshal(node.GetChildNode(nameof(BoobyTrapUpdateModuleData.PreventEnteringFilter), null), &objT->PreventEnteringFilter, state);
-        Marshal(node, (AttachUpdateModuleData*)objT, state);
+        // Reborn: keep the derived class over the already qualified EP1 attachment record.
+        Marshal(node, &objT->Base, state);
     }
 }

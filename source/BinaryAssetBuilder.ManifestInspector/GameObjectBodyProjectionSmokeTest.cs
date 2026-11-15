@@ -119,6 +119,9 @@ internal static class GameObjectBodyProjectionSmokeTest
         uint bodyType=reviewedBehaviors ? body.LocalName switch
         {
             "PropBody" => 0xFF88404Bu,
+            // Reborn: these reviewed variants select their concrete Body allocators.
+            "InactiveBody" => 0x29234E6Eu,
+            "ShieldBody" => Ep1ShieldBodyModuleData.Wire,
             // Reborn: the stock control-point target keeps its ImmortalBody wire identity.
             // Reborn: the legacy marker shares the complete EP1 ActiveBody allocator while retaining its own class ID.
             "HighlanderBody" => Ep1ActiveBodyTokenizer.HighlanderBodyTypeId,
@@ -131,7 +134,7 @@ internal static class GameObjectBodyProjectionSmokeTest
         } : 0x5A0E3D9Bu;
         body.SetAttribute("TypeId",bodyType.ToString(System.Globalization.CultureInfo.InvariantCulture));
         // Reborn: selected common AI receives only the reviewed internal class identity after raw validation, on the same root Tracker.
-        if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){ai.SetAttribute("TypeId",(ai.LocalName switch{"AnimalAIUpdate"=>0xCD56659Bu,"AIUpdate"=>0x08DBC00Eu,"JetAIUpdate"=>0x4486CF48u,_=>throw SdkXmlDiagnostics.At(new InvalidDataException("Unreviewed AI class: "+ai.LocalName),ai)}).ToString(System.Globalization.CultureInfo.InvariantCulture));}
+        if(selectedBehaviors)foreach(XmlElement ai in d.GetElementsByTagName("AI",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>())){ai.SetAttribute("TypeId",(ai.LocalName switch{"AnimalAIUpdate"=>0xCD56659Bu,"AIUpdate"=>0x08DBC00Eu,"JetAIUpdate"=>0x4486CF48u,"TransportAIUpdate"=>Ep1TransportAIUpdateModuleData.Wire,"WanderAIUpdate"=>Ep1WanderAIUpdateModuleData.Wire,"HordeAIUpdate"=>Ep1HordeAIUpdateModuleData.Wire,"SupplyTruckAIUpdate"=>Ep1SupplyTruckAIUpdateModuleData.Wire,_=>throw SdkXmlDiagnostics.At(new InvalidDataException("Unreviewed AI class: "+ai.LocalName),ai)}).ToString(System.Globalization.CultureInfo.InvariantCulture));}
         // Reborn: selected Draw classes use the actual dispatcher on the same root Tracker after source validation; no separate compiled fragment is appended.
         if(selectedBehaviors)foreach(XmlElement draw in d.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).Cast<XmlElement>().SelectMany(e=>e.ChildNodes.OfType<XmlElement>()))draw.SetAttribute("TypeId",(draw.LocalName switch{"PropDraw"=>0x148AA464u,"ScriptedModelDraw"=>0x4ECF2A4Bu,"TracerModelDraw"=>0x54018E60u,"StreamDraw"=>0x60020441u,"LaserDraw"=>0x2FDDEC4Du,"TruckDraw"=>0xA44C2999u, "TankDraw" => 0x8A811D3Eu, "DynamicsDraw" => 0x9BE6ADBBu, _ => throw new InvalidDataException("Unreviewed selected Draw dispatch class.") }).ToString(System.Globalization.CultureInfo.InvariantCulture));
         // Reborn: the source-validated private copy selects EP1 prop storage without exposing synthetic flags to authors.
@@ -168,7 +171,7 @@ internal static class GameObjectBodyProjectionSmokeTest
         if(reviewedBehaviors && behaviors!=null)Marshaler.MarshalEp1ReviewedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         else if(selectedBehaviors && behaviors!=null)Marshaler.MarshalEp1SelectedBehaviors(new Node(behaviors.CreateNavigator()!,ns),&root->Behaviors,tracker);
         // Reborn: EVA-create support must not allocate ActiveBody health fields for an existing PropBody source.
-        if(reviewedBehaviors&&body.LocalName=="PropBody")Marshaler.Marshal(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
+        if(reviewedBehaviors&&body.LocalName is ("PropBody" or "InactiveBody" or "ShieldBody"))Marshaler.Marshal(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         else Marshaler.MarshalEp1ActiveBody(new Node(body.CreateNavigator()!,ns),&root->Body,tracker);
         // Reborn: no copied native bytes or second Tracker are appended to compose the geometry tail.
         if(geometry!=null)Marshaler.MarshalEp1Geometry(new Node(geometry.CreateNavigator()!,ns),&root->Geometry,tracker);

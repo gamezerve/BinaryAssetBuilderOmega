@@ -72,6 +72,33 @@ internal static class ConscriptSourceInput
         // Reborn: official boolean lexical forms/default omissions are semantic input, while bad primitive types and overflow still fail.
         variant.DocumentElement.SetAttribute("IsTrainable","1");variant.DocumentElement.RemoveAttribute("BuildTime");Admit(variant,Read(fixture),schemas);if(variant.DocumentElement.GetAttribute("IsTrainable")!="true")throw new InvalidDataException("XML boolean was not canonicalized.");
         foreach(var badValue in new[]{("Scale","NaN"),("TransportSlotCount","256"),("IsTrainable","2"),("EnergyProduction","2147483648")}){var invalid=(XmlDocument)source.Game.CloneNode(true);invalid.DocumentElement!.SetAttribute(badValue.Item1,badValue.Item2);refused=false;try{Admit(invalid,Read(fixture),schemas);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Invalid scalar accepted: "+badValue.Item1);}
+        // Reborn: a schema-valid subtype must never silently compile through a different concrete writer.
+        foreach(var (name,typeName) in new[]{("SpecialPowerUpdate","DeflectSpecialPowerModuleData"),
+            ("SpecialAbilityUpdate","ToggleHiddenSpecialAbilityUpdateModuleData"),("AIUpdate","DozerAIUpdateModuleData"),
+            ("SpecialAbilityUpdate","ToggleMountedSpecialAbilityUpdateModuleData"),("SpecialAbilityUpdate","ToggleDeploySpecialAbilityUpdateModuleData"),
+            ("SpecialAbilityUpdate","FlingPassengerSpecialAbilityUpdateModuleData"),("SpecialAbilityUpdate","EvacuateGarrisonSpecialPowerModuleData"),
+            ("SpecialPowerUpdate","WeaponModeSpecialPowerUpdateModuleData")})
+        {
+            var invalid=(XmlDocument)source.Game.CloneNode(true);
+            string group=name=="AIUpdate"?"AI":"Behaviors";
+            var owner=invalid.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName==group);
+            var module=invalid.CreateElement(name,Ea);
+            module.SetAttribute("id","RebornDerivedCheck");
+            var type=invalid.CreateAttribute("xsi","type","http://www.w3.org/2001/XMLSchema-instance");
+            type.Value=typeName;
+            module.Attributes.Append(type);
+            if(group=="AI")owner.RemoveAll();
+            owner.AppendChild(module);
+            try
+            {
+                Admit(invalid,Read(fixture),schemas);
+                throw new InvalidOperationException("Unsupported module xsi:type was admitted: "+typeName);
+            }
+            catch(InvalidDataException error) when(error.Message.Contains("has no supported concrete writer",StringComparison.Ordinal))
+            {
+                // Reborn: the failure must come from the subtype guard, not an unrelated source error.
+            }
+        }
         Directory.CreateDirectory(output);string single=Path.Combine(output,"object-only.xml");File.WriteAllText(single,"<?xml version='1.0'?><!-- Reborn: explicit object-only source must not acquire a generated command. --><AssetDeclaration xmlns='"+Ea+"'><Tags/><Includes/>"+source.Game.DocumentElement.OuterXml+"</AssetDeclaration>");
         var objectOnly=Load(single);if(objectOnly.Command!=null || objectOnly.Sources.Length!=1)throw new InvalidDataException("A hidden command was generated.");
         string cycle=Path.Combine(output,"cycle.xml");File.WriteAllText(cycle,"<!-- Reborn: confined include-cycle refusal control. --><AssetDeclaration xmlns='"+Ea+"'><Includes><Include type='all' source='cycle.xml'/></Includes></AssetDeclaration>");refused=false;try{Load(cycle);}catch(InvalidDataException){refused=true;}if(!refused)throw new InvalidDataException("Include cycle accepted.");

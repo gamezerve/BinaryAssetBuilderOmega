@@ -21,14 +21,36 @@ public static partial class Marshaler
         if(count==0)return;
         var ids=new HashSet<uint>();
         using var items=state.Push((void**)&(*objT)->Items,(uint)sizeof(BehaviorModuleData*),(uint)count);
-        for(int i=0;i<count;i++){var child=children.GetNextNode();string id=child.GetAttributeValue("id",null)?.GetText();if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())) || !uint.TryParse(child.GetAttributeValue("TypeId",null)?.GetText(),out uint type))throw new System.IO.InvalidDataException("Reviewed behavior class/identity required.");BinaryAssetBuilder.XmlCompiler.Ep1BehaviorMetadataTokenizer.ReviewedNativeType(type);if(type==0x431722A9)MarshalEp1WeaponSet(child,&(*objT)->Items[i],state);else if(type is 0xB5EB41ED or 0x79BFEDCB or 0x59D12990 or 0x786C9458 or 0x3B68B768 or 0x90CEB49C)MarshalEp1InfantryBehavior(child,&(*objT)->Items[i],state,type);else if(type==0xB1A54585u)MarshalEp1MoneyGainAttachUpdate(child,&(*objT)->Items[i],state);else Marshal(child,&(*objT)->Items[i],state);}
+        for(int i=0;i<count;i++){var child=children.GetNextNode();string id=child.GetAttributeValue("id",null)?.GetText();if(string.IsNullOrWhiteSpace(id) || !ids.Add(FastHash.GetHashCode(id.ToLowerInvariant())) || !uint.TryParse(child.GetAttributeValue("TypeId",null)?.GetText(),out uint type))throw new System.IO.InvalidDataException("Reviewed behavior class/identity required.");BinaryAssetBuilder.XmlCompiler.Ep1BehaviorMetadataTokenizer.ReviewedNativeType(type);if(type is 0xB5EB41ED or 0x79BFEDCB or 0x59D12990 or 0x786C9458 or 0x3B68B768 or 0x90CEB49C)MarshalEp1InfantryBehavior(child,&(*objT)->Items[i],state,type);else if(type==0xB1A54585u)MarshalEp1MoneyGainAttachUpdate(child,&(*objT)->Items[i],state);else if(type is Ep1SwitchLocomotorsSpecialAbilityUpdateModuleData.WireTypeId or Ep1ReplaceSelfUpgradeModuleData.WireTypeId)MarshalEp1LocomotorOrReplacement(child,&(*objT)->Items[i],state,type);else if(type==Ep1SubStructureBuildUpgradeModuleData.WireTypeId)MarshalEp1SubStructureBuild(child,&(*objT)->Items[i],state);else if(type==Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData.WireTypeId)MarshalEp1DelayedWeaponFire(child,&(*objT)->Items[i],state);else if(type==Ep1LeechTargetingAttachUpdateModuleData.WireTypeId)MarshalEp1LeechTargeting(child,&(*objT)->Items[i],state);else if(type==Ep1EMPUpdateModuleData.Wire)MarshalEp1EMPUpdate(child,&(*objT)->Items[i],state);else if(type==Ep1GiveOrRestoreUpgradeSpecialPowerModuleData.Wire)MarshalEp1GiveOrRestoreUpgrade(child,&(*objT)->Items[i],state);else Marshal(child,&(*objT)->Items[i],state);}
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: allocate each EP1 leaf at its verified size and retain the original concrete wire identity. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalEp1LocomotorOrReplacement(Node node, BehaviorModuleData** objT, Tracker state, uint type)
+    {
+        if (type == Ep1SwitchLocomotorsSpecialAbilityUpdateModuleData.WireTypeId)
+        {
+            using var context = state.Push((void**)objT, (uint)sizeof(Ep1SwitchLocomotorsSpecialAbilityUpdateModuleData), 1u);
+            Marshal(node, (Ep1SwitchLocomotorsSpecialAbilityUpdateModuleData*)*objT, state);
+        }
+        else
+        {
+            using var context = state.Push((void**)objT, (uint)sizeof(Ep1ReplaceSelfUpgradeModuleData), 1u);
+            Marshal(node, (Ep1ReplaceSelfUpgradeModuleData*)*objT, state);
+        }
+        state.InplaceEndianToPlatform(&type);
+        *(uint*)*objT = type;
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: explicit EP1 weapon allocation preserves the original wire ID instead of hashing the separate C# model's name. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void MarshalEp1WeaponSet(Node node,BehaviorModuleData** objT,Tracker state)
     {
-        if(node is null || node.GetAttributeValue("TypeId",null)?.GetText()!="1125589673")throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Explicit EP1 WeaponSetUpdate ID required.");
+        // Reborn: accept the same decimal or hexadecimal class spelling as the generic numeric dispatcher.
+        uint wire=0;
+        if(node is not null)Marshal(node.GetAttributeValue("TypeId","0"),&wire,Tracker.NullTracker);
+        if(wire!=0x431722A9u)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Explicit EP1 WeaponSetUpdate ID required.");
         using(var context=state.Push((void**)objT,(uint)sizeof(Ep1WeaponSetUpdateModuleData),1u))Marshal(node,(Ep1WeaponSetUpdateModuleData*)*objT,state);
         uint type=0x431722A9;state.InplaceEndianToPlatform(&type);*(uint*)*objT=type;
     }

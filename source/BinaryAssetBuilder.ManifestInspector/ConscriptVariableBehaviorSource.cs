@@ -82,7 +82,7 @@ internal static class ConscriptVariableBehaviorSource
         {
             // Reborn: the assign-slaves leaf is source/schema-proved, not restricted to the original building's values, local ID or nested shape.
             // Reborn: populated turret lists use the complete source/native EP1 turret contract rather than infantry hardpoint shape matching.
-            if(owner.NativeType==typeof(SageBinaryData.Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName is "WeaponSlotTurret" or "WeaponSlotHierarchicalTurret")){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
+            if(owner.NativeType==typeof(SageBinaryData.Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName is "WeaponSlotTurret" or "WeaponSlotHierarchicalTurret" or "WeaponSlotContained")){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             if(owner.NativeType==typeof(SageBinaryData.AssignSlavesTargetObjectSpecialPowerModuleData)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
             // Reborn: recall and parking accept schema-valid authored values and optional records, with independent EP1 source/native proofs.
             if(AirfieldBehaviorContract.Supports(owner.NativeType)){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);selected.Add(owner);continue;}
@@ -266,7 +266,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: only the comparison copy restores baseline containers; actual source/native proof retains every authored module.
         ConscriptVariableContainers.Restore(copy,comparison);
         // Reborn: restore only the comparison body; authored PropBody is independently proved during native composition.
-        if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName is "PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
+        if(ConscriptVariableContainers.Find(source,"Body")?.ChildNodes.OfType<XmlElement>().SingleOrDefault()?.LocalName is "PropBody" or "InactiveBody" or "ShieldBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"){var body=ConscriptVariableContainers.Find(copy,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(comparison,"Body")!.ChildNodes)body.AppendChild(copy.ImportNode(child,true));}
         // Reborn: VisionInfo presence is source-owned; only the structural comparison restores the baseline record.
         VisionInfoContract.MaskComparison(copy,comparison);
         copy.DocumentElement!.SetAttribute("id",comparison.DocumentElement!.GetAttribute("id"));
@@ -303,7 +303,7 @@ internal static class ConscriptVariableBehaviorSource
         foreach(var owner in owners.Where(o=>o.Container!="Behaviors"&&!ConscriptVariableContainers.Supports(o.Container)))
         {
             // Reborn: PropBody has an independent source/schema contract rather than the Conscript ActiveBody template.
-            if(owner.Container=="Body"&&owner.Element.LocalName is "PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
+            if(owner.Container=="Body"&&owner.Element.LocalName is "PropBody" or "InactiveBody" or "ShieldBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             // Reborn: each supported AI leaf is verified from its own source, independently of the baseline AI cardinality.
             if(owner.Container=="AI"){origins.Add(owner.Element.GetAttribute("id"),SchemaNativeContract.Origin);continue;}
             var original=originals.Single(o=>o.Container==owner.Container&&o.Index==owner.Index);origins.Add(owner.Element.GetAttribute("id"),original.Element.GetAttribute("id"));
@@ -323,7 +323,7 @@ internal static class ConscriptVariableBehaviorSource
         // Reborn: flexible upgrade children do not have to match the template's occurrence count during source-order alignment.
         var upgradeIds=owners.Where(o=>ConscriptUpgradeStructure.Supports(o.NativeType)).Select(o=>o.Element.GetAttribute("id")).ToHashSet(StringComparer.Ordinal);
         // Reborn: a prop body has no strong references to align with the ActiveBody comparison template.
-        if(owners.Any(o=>o.Container=="Body"&&o.Element.LocalName is "PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody")){var body=ConscriptVariableContainers.Find(aligned,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(source,"Body")!.ChildNodes)body.AppendChild(aligned.ImportNode(child,true));}
+        if(owners.Any(o=>o.Container=="Body"&&o.Element.LocalName is "PropBody" or "InactiveBody" or "ShieldBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody")){var body=ConscriptVariableContainers.Find(aligned,"Body")!;body.RemoveAll();foreach(XmlNode child in ConscriptVariableContainers.Find(source,"Body")!.ChildNodes)body.AppendChild(aligned.ImportNode(child,true));}
         Align(source.DocumentElement!,aligned.DocumentElement!,upgradeIds);
         return new(origins,behaviors.Length);
 
@@ -497,7 +497,8 @@ internal static class ConscriptVariableBehaviorSource
         bool TrackerSkip(XmlElement e)=>actual.LocalName=="SecondaryDamageTracker"&&e.LocalName is "Color" or "EffectInfo" or "ObjectStatusValidation";
         // Reborn: strong death-upgrade occurrences keep authored order; source-sized lists cannot align to a fixed sample count.
         // Reborn: translation rows retain authored reference order without aligning their count to an empty stock template.
-        bool DeathSkip(XmlElement e)=>(actual.LocalName is "CreateObjectDie" or "DestroyDie")&&(e.LocalName is "DieMuxData" or "UpgradeRequired" or "UpgradeForbidden")||actual.LocalName=="ProductionUpdate"&&e.LocalName=="GiveUpgradeToProduced";
+        // Reborn: authored production lists are independently source-proved and may differ from the refinery baseline.
+        bool DeathSkip(XmlElement e)=>(actual.LocalName is "CreateObjectDie" or "DestroyDie")&&(e.LocalName is "DieMuxData" or "UpgradeRequired" or "UpgradeForbidden")||actual.LocalName=="ProductionUpdate"&&(e.LocalName is "GiveUpgradeToProduced" or "QuantityModifier" or "ProductionModifier");
         var children=actual.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)&&!SpawnSkip(e)&&!FxSkip(e)&&!TrackerSkip(e)&&!DeathSkip(e)).ToArray();var models=model.ChildNodes.OfType<XmlElement>().Where(e=>!Skip(e)&&!SpawnSkip(e)&&!FxSkip(e)&&!TrackerSkip(e)&&!DeathSkip(e)).ToArray();if(children.Length!=models.Length)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child structure."),actual);
         for(int i=0;i<children.Length;i++){if(children[i].LocalName!=models[i].LocalName)throw SdkXmlDiagnostics.At(new InvalidDataException("Unsupported variable source child order."),children[i]);Align(children[i],models[i],upgradeIds);}
     }

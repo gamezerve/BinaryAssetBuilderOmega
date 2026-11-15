@@ -158,6 +158,21 @@ public static partial class Marshaler
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain both inline offset triplets and the original vehicle-size and enabled defaults. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, DestructibleEnvironmentUpdateModuleData* target, Tracker state)
+    {
+        if (node is null)
+            return;
+
+        Marshal(node.GetAttributeValue(nameof(DestructibleEnvironmentUpdateModuleData.Size), "LIGHT"), &target->Size, state);
+        Marshal(node.GetAttributeValue(nameof(DestructibleEnvironmentUpdateModuleData.Enabled), "false"), &target->Enabled, state);
+        Marshal(node.GetChildNode(nameof(DestructibleEnvironmentUpdateModuleData.LeftOffset), null), &target->LeftOffset, state);
+        Marshal(node.GetChildNode(nameof(DestructibleEnvironmentUpdateModuleData.RightOffset), null), &target->RightOffset, state);
+        Marshal(node, (UpdateModuleData*)target, state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: retain complete capture inheritance and the original ally energy sharing ratio. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,DistributeEnergyToAlliesBehaviorModuleData* target,Tracker state)

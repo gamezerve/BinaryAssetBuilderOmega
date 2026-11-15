@@ -57,6 +57,21 @@ internal static class Ep1AIUpdateSmokeTest
             // Reborn: every admitted official boolean spelling must preserve all eight packed AI/chooser bits, including numeric zero/one.
             foreach(string literal in new[]{"true","True","1","false","False","0"}){var b=Compile("<AIUpdate id='Boolean' StandGround='"+literal+"' FadeOnPortals='"+literal+"'><UnitAITargetChooserData "+string.Join(" ",new[]{"CheckVisionRange","CanPickDynamicTargets","RotateToTargetWhenAiming","CanAutoAcquireNonAutoAcquirable","CanChaseAttack","CanOnlyAttackTargetsInFront"}.Select(n=>n+"='"+literal+"'"))+"/></AIUpdate>").Native.InstanceBuffer;byte expected=literal is "true" or "True" or "1"?(byte)1:(byte)0;int chooser=(int)Word(b,68);if(b[72]!=expected || b[73]!=expected || b.AsSpan(chooser+28,6).ToArray().Any(v=>v!=expected))throw new InvalidDataException("AI numeric/named boolean spelling differs.");}
             InlineRoot();int failures=0;
+            // Reborn: guard the crashing runtime selector only at real generic GameObject dispatch.
+            string runtimeSelector="<AIProbe xmlns='"+SchemaSet.XmlNamespace+"'><AIUpdate id='RuntimeAI' StateMachine='OreRefineryStateMachine'/></AIProbe>";
+            try
+            {
+                _=Root(Xml(runtimeSelector).DocumentElement!);
+                throw new InvalidOperationException("Generic AI root accepted an unsupported OreRefineryStateMachine.");
+            }
+            catch(Exception error) when(error.Message.Contains("does not construct a state machine",StringComparison.Ordinal))
+            {
+                failures++;
+            }
+            var helicopter=Root(Xml(runtimeSelector.Replace("OreRefineryStateMachine","TransportHelicopterAIStateMachine",StringComparison.Ordinal)).DocumentElement!);
+            int helicopterModule=(int)Word(helicopter.InstanceBuffer,(int)Word(helicopter.InstanceBuffer,484));
+            if(Word(helicopter.InstanceBuffer,helicopterModule+60)!=0x0d)
+                throw new InvalidDataException("Generic AI root helicopter selector differs.");
             foreach(string bad in new[]{"<AIUpdate id='Bad' UnknownAIField='1'/>","<AIUpdate id='Bad' StateMachine='UNKNOWN'/>","<AIUpdate id='Bad' StateMachine='7'/>","<AIUpdate id='Bad' DefaultLocomotorSet='UNKNOWN'/>","<AIUpdate id='Bad' AutoAcquireEnemiesWhenIdle='32'/>","<AIUpdate id='Bad' MaxCombineChildren='1.5'/>","<AIUpdate id='Bad' MaxCombineChildren='4294967296'/>","<AIUpdate id='Bad'><UnitAITargetChooserData CanPickDynamicTargetType='UNKNOWN'/></AIUpdate>","<AIUpdate id='Bad'><UnitAITargetChooserData TargetingCompareList='MissingRebornCompare'/></AIUpdate>","<AIUpdate id='Bad'><UnitAITargetChooserData TargetingCompareList='WeaponTemplate:WrongType'/></AIUpdate>","<AIUpdate id='Bad'><UnitAITargetChooserData><ObjectVisionRange><Filter/></ObjectVisionRange></UnitAITargetChooserData></AIUpdate>"}){Refuse(()=>Compile(bad));failures++;}
             Refuse(()=>Compile("<AIUpdate id='Bad'><UnitAITargetChooserData/></AIUpdate>",catalog.Where(a=>a!=target).ToArray()));failures++;Refuse(()=>Compile("<AIUpdate id='Bad'><UnitAITargetChooserData/></AIUpdate>",catalog.Append(target).ToArray()));failures++;
             // Reborn: schema-legal exponents can overflow float32; native admission must reject them after normalization too.

@@ -17,6 +17,10 @@ public static partial class Marshaler
             case 0xFF88404Bu:
                 MarshalPolymorphicType<PropBodyModuleData,BodyModuleData>(node,objT,state);
                 break;
+            // Reborn: the identity-only InactiveBody is a concrete Body child, with an eight-byte record.
+            case 0x29234E6Eu:
+                MarshalPolymorphicType<InactiveBodyModuleData,BodyModuleData>(node,objT,state);
+                break;
             case 0x6F0F9F52u:
                 MarshalPolymorphicType<HighlanderBodyModuleData, BodyModuleData>(node, objT, state);
                 break;
@@ -30,7 +34,7 @@ public static partial class Marshaler
                 MarshalPolymorphicType<ImmortalBodyModuleData, BodyModuleData>(node, objT, state);
                 break;
             case 0xD3565857u:
-                MarshalPolymorphicType<ShieldBodyModuleData, BodyModuleData>(node, objT, state);
+                MarshalEp1ShieldBody(node,objT,state);
                 break;
             case 0x5A0E3D9Bu:
                 MarshalPolymorphicType<ActiveBodyModuleData, BodyModuleData>(node, objT, state);

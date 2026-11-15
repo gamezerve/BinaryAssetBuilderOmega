@@ -28,22 +28,71 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue("ForwardVelocityDamping","100%"),&objT->ForwardVelocityDamping,state);
     }
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: serialize the retail Bezier movement scalars and preserve the authored path order. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void Marshal(Node node,BezierSplineProjectileData* value,Tracker state)
+    {
+        uint wire=BezierSplineProjectileData.WireTypeId;
+        state.InplaceEndianToPlatform(&wire);
+        value->Base.TypeId=wire;
+        Marshal(node.GetAttributeValue("Velocity",null),&value->Velocity,state);
+        Marshal(node.GetAttributeValue("Range",null),&value->Range,state);
+        Marshal(node.GetAttributeValue("Gravity","1.0"),&value->Gravity,state);
+        Marshal(node.GetAttributeValue("FlightPathAdjustMaxDistancePerFrame","0.0"),&value->FlightPathAdjustMaxDistancePerFrame,state);
+        var paths=node.GetChildNodes("Path");
+        if(paths==null || paths.GetCount()==0)
+            throw new System.IO.InvalidDataException("BezierSpline requires at least one ProjectilePath.");
+        Marshal(paths,&value->Path,state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: retain the real 28-byte projectile header and require the reviewed state-machine/movement pairing. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,ProjectileUpdateModuleData* objT,Tracker state)
     {
         if(node is null)return;
         // Reborn: each implemented state machine requires its own concrete movement allocation, never the falling record's stride.
-        string machine=node.GetAttributeValue("StateMachine","BombProjectile")!.GetText();bool straight=machine=="StraightLineProjectile";
-        if(machine is not ("BombProjectile" or "StraightLineProjectile"))throw new System.IO.InvalidDataException("ProjectileUpdate movement mode is not implemented: "+machine);
-        var movement=node.GetChildNode("Movement",null)?.GetChildNode(straight?"MoveInStraightLine":"MoveToGround",null)??throw new System.IO.InvalidDataException("ProjectileUpdate requires the matching Movement for "+machine+".");
+        string machine = node.GetAttributeValue("StateMachine", "BombProjectile")!.GetText();
+        string movementName = machine switch
+        {
+            "BombProjectile" => "MoveToGround",
+            "StraightLineProjectile" => "MoveInStraightLine",
+            "BalloonProjectile" => "BalloonMoveToGround",
+            "BezierSplineProjectile" => "BezierSpline",
+            _ => throw new System.IO.InvalidDataException("ProjectileUpdate movement mode is not implemented: " + machine)
+        };
+        uint movementSize = machine switch
+        {
+            "BombProjectile" => (uint)sizeof(ProjectileMoveToGroundData),
+            "StraightLineProjectile" => (uint)sizeof(ProjectileMoveInStraightLineData),
+            "BezierSplineProjectile" => (uint)sizeof(BezierSplineProjectileData),
+            _ => (uint)sizeof(BalloonProjectileMoveToGroundData)
+        };
+
+        var movement=node.GetChildNode("Movement",null)?.GetChildNode(movementName,null)??throw new System.IO.InvalidDataException("ProjectileUpdate requires the matching Movement for "+machine+".");
         Marshal(node,(UpdateModuleData*)objT,state);
         Ep1ToggleEnum(node.GetAttributeValue("StateMachine","BombProjectile"),(uint*)&objT->StateMachine,state,typeof(ProjectileStateMachineType),false);
         Marshal(node.GetAttributeValue("MinDetonationHeight",null),&objT->MinDetonationHeight,state);
         Marshal(node.GetAttributeValue("MinTargetDistance",null),&objT->MinTargetDistance,state);
         Ep1ToggleEnum(node.GetAttributeValue("Flags",null),&objT->Flags,state,typeof(ProjectileUpdateOptions),true);
-        using(var context=state.Push((void**)&objT->Movement,(uint)(straight?sizeof(ProjectileMoveInStraightLineData):sizeof(ProjectileMoveToGroundData)),1u)){
-            if(straight)Marshal(movement,(ProjectileMoveInStraightLineData*)objT->Movement,state);else Marshal(movement,(ProjectileMoveToGroundData*)objT->Movement,state);
+        using var context = state.Push((void**)&objT->Movement, movementSize, 1u);
+        switch (machine)
+        {
+            case "BombProjectile":
+                Marshal(movement, (ProjectileMoveToGroundData*)objT->Movement, state);
+                break;
+            case "StraightLineProjectile":
+                Marshal(movement, (ProjectileMoveInStraightLineData*)objT->Movement, state);
+                break;
+            case "BezierSplineProjectile":
+                Marshal(movement,(BezierSplineProjectileData*)objT->Movement,state);
+                break;
+            case "BalloonProjectile":
+                // Reborn: write the verified fieldless balloon payload with no child imports or relocations.
+                uint wire = BalloonProjectileMoveToGroundData.WireTypeId;
+                state.InplaceEndianToPlatform(&wire);
+                objT->Movement->TypeId = wire;
+                break;
         }
     }
     //-------------------------------------------------------------------------------------------------

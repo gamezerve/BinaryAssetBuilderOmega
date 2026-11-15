@@ -12,6 +12,18 @@ internal static class PropBodyContract
     internal static readonly uint TypeId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(Wire);
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: compose the original EA InactiveBody row over the verified retail Body parent. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyInactive(StockMetadataGrammar propBody)
+    {
+        if(Marshal.SizeOf<InactiveBodyModuleData>()!=8)
+            throw new InvalidDataException("EP1 InactiveBody allocation differs.");
+        var rule=new StockMetadataGrammar.Rule(typeof(InactiveBodyModuleData).FullName!,0x29234E6Eu,
+            new StockMetadataGrammar.RuleField[]{new(1,0xF49198C2u,2)});
+        return StockMetadataGrammar.Import(propBody.Export().Where(r=>r.Class==null).Append(rule));
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: independently qualify the identity-only prop body module against original PlayerSpellBook record. */
     //-------------------------------------------------------------------------------------------------
     internal static StockMetadataGrammar Qualify(string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)

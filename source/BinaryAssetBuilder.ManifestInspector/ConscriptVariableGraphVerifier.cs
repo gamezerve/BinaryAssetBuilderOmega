@@ -81,6 +81,8 @@ internal sealed class ConscriptVariableGraphVerifier
     // Reborn: optional vision has a separately proved native record and root metadata owner.
     private readonly Lazy<StockMetadataGrammar> visionInfo;
     private readonly Lazy<StockMetadataGrammar> propBody;
+    // Reborn: InactiveBody shares the independently learned Body parent, with a separate concrete row.
+    private readonly Lazy<StockMetadataGrammar> inactiveBody;
     private readonly Lazy<StockMetadataGrammar> storeTemplate;
     private readonly Lazy<StockMetadataGrammar> playerUpgrade;
     private readonly Lazy<StockMetadataGrammar> oclPower;
@@ -213,6 +215,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> weaponTurret;
     // Reborn: hierarchical turret qualification is lazy and independent of ordinary turret-only builds.
     private readonly Lazy<StockMetadataGrammar> hierarchicalTurrets;
+    // Reborn: compose the EA contained row once for each existing stock parent grammar.
+    private readonly Lazy<StockMetadataGrammar> containedWeaponSlots, containedHierarchicalSlots;
     // Reborn: schema-proved draw leaves need the generic proof qualified on stock Conscript draws and a metadata grammar from stock draws.
     private readonly Dictionary<Type,Lazy<StockMetadataGrammar>> schemaFamilies=new();
     // Reborn: Geometry is a nonmodule owner with independently qualified source/native and stock metadata grammar.
@@ -223,6 +227,8 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> dependencyGrammar;
     // Reborn: optional chooser ownership is qualified on independent infantry/building AI witnesses, not fixed Conscript child presence.
     private readonly Lazy<StockMetadataGrammar> aiGrammar;
+    // Reborn: concrete inherited AI rules are qualified independently from the plain AI class.
+    private readonly Lazy<StockMetadataGrammar> transportAiGrammar, wanderAiGrammar, hordeAiGrammar, supplyTruckAiGrammar;
     // Reborn: emit the legacy fieldless-body qualification warning once per native build.
     private bool highlanderBodyQualified;
     // Reborn: qualify original civilian animal metadata only for authored animal AI.
@@ -273,9 +279,12 @@ internal sealed class ConscriptVariableGraphVerifier
         assignSlaves=MetadataRules.Deferred(nameof(assignSlaves),()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         weaponTurret=MetadataRules.Deferred(nameof(weaponTurret),()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         hierarchicalTurrets=MetadataRules.Deferred(nameof(hierarchicalTurrets),()=>{var grammar=weaponTurret.Value.Copy();WeaponTurretContract.QualifyHierarchical(grammar,manifest,baseline,referenceSchemas,catalog);return grammar;});
+        containedWeaponSlots=new(()=>WeaponTurretContract.QualifyContained(weaponTurret.Value));
+        containedHierarchicalSlots=new(()=>WeaponTurretContract.QualifyContained(hierarchicalTurrets.Value));
         weaponFireAbility=MetadataRules.Deferred(nameof(weaponFireAbility),()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         visionInfo=MetadataRules.Deferred(nameof(visionInfo),()=>VisionInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         propBody=MetadataRules.Deferred(nameof(propBody),()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        inactiveBody=MetadataRules.Deferred(nameof(inactiveBody),()=>PropBodyContract.QualifyInactive(propBody.Value));
         storeTemplate=MetadataRules.Deferred(nameof(storeTemplate),()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         playerUpgrade=MetadataRules.Deferred(nameof(playerUpgrade),()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         oclPower=MetadataRules.Deferred(nameof(oclPower),()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
@@ -377,6 +386,11 @@ internal sealed class ConscriptVariableGraphVerifier
         dependencyGrammar=MetadataRules.Deferred(nameof(dependencyGrammar),()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         jetAiGrammar=MetadataRules.Deferred(nameof(jetAiGrammar),()=>JetAIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         aiGrammar=MetadataRules.Deferred(nameof(aiGrammar),()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        transportAiGrammar=MetadataRules.Deferred(nameof(transportAiGrammar),()=>AIUpdateContract.QualifyDerived(aiGrammar.Value,false));
+        wanderAiGrammar=MetadataRules.Deferred(nameof(wanderAiGrammar),()=>AIUpdateContract.QualifyDerived(aiGrammar.Value,true));
+        // Reborn: select separate EA concrete tables over the independently reviewed common AI metadata.
+        hordeAiGrammar=MetadataRules.Deferred(nameof(hordeAiGrammar),()=>AIUpdateContract.QualifyHordeOrTruck(aiGrammar.Value,false));
+        supplyTruckAiGrammar=MetadataRules.Deferred(nameof(supplyTruckAiGrammar),()=>AIUpdateContract.QualifyHordeOrTruck(aiGrammar.Value,true));
         animalAiGrammar=MetadataRules.Deferred(nameof(animalAiGrammar),()=>AnimalAIUpdateContract.Qualify(baseline,referenceSchemas,catalog));
         foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,MetadataRules.Deferred(nameof(extendedRoots)+"."+name,()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
         powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
@@ -586,7 +600,7 @@ internal sealed class ConscriptVariableGraphVerifier
             {
                 int start=ConscriptModuleScalarContract.Address(b,0,owner),stop=owner.Index+1<owners.Length?ConscriptModuleScalarContract.Address(b,0,owners[owner.Index+1]):end;
                 // Reborn: prove the derived body's health, references and damage ranges independently of the comparison ActiveBody.
-                if(owner.Container=="Body"&&owner.Element.LocalName is "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody")
+                if(owner.Container=="Body"&&owner.Element.LocalName is "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody" or "ShieldBody")
                 {
                     var bodyNative=Extract(native,start,stop);
                     resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
@@ -595,6 +609,7 @@ internal sealed class ConscriptVariableGraphVerifier
                     uint bodyType=element.LocalName switch
                     {
                         "HighlanderBody" => Ep1ActiveBodyTokenizer.HighlanderBodyTypeId,
+                        "ShieldBody" => Ep1ShieldBodyModuleData.Wire,
                         "ImmortalBody" => Ep1ActiveBodyTokenizer.ImmortalBodyTypeId,
                         "ManagerBody" => Ep1ActiveBodyTokenizer.ManagerBodyTypeId,
                         "ManagedActiveBody" => Ep1ActiveBodyTokenizer.ManagedActiveBodyTypeId,
@@ -609,10 +624,12 @@ internal sealed class ConscriptVariableGraphVerifier
                     independentBodyPiece=(metadata,metadata.InstanceBuffer.Length-bodyNative.InstanceBuffer.Length,start,stop);
                     continue;
                 }
-                // Reborn: PropBody is an eight-byte Body leaf with source/native proof and a complete root metadata splice.
-                if(owner.NativeType==typeof(PropBodyModuleData)){
-                    var grammar=propBody.Value;var bodyNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="Body").Element;
-                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,PropBodyContract.TypeId,bodyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.TokenizePropBody(bodyNative,official);int size=grammar.Verify(metadata,bodyNative,owner.NativeType,proof.Records);Own(bodyNative,start,stop);independentBodyPiece=(metadata,size,start,stop);continue;
+                // Reborn: the identity-only bodies use separate class rows over the same eight-byte Body parent.
+                if(owner.NativeType==typeof(PropBodyModuleData)||owner.NativeType==typeof(InactiveBodyModuleData)){
+                    bool inactive=owner.NativeType==typeof(InactiveBodyModuleData);
+                    var grammar=inactive?inactiveBody.Value:propBody.Value;
+                    var bodyNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="Body").Element;
+                    var proof=SchemaNativeContract.Verify(element,owner.NativeType,inactive?0x29234E6Eu:PropBodyContract.TypeId,bodyNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.TokenizeIdentityBody(bodyNative,official);int size=grammar.Verify(metadata,bodyNative,owner.NativeType,proof.Records);Own(bodyNative,start,stop);independentBodyPiece=(metadata,size,start,stop);continue;
                 }
                 // Reborn: own every authored assign-slaves field, import and allocation through the shared schema proof, then check metadata against stock.
                 if(owner.NativeType==typeof(AssignSlavesTargetObjectSpecialPowerModuleData)){
@@ -630,9 +647,18 @@ internal sealed class ConscriptVariableGraphVerifier
                 // Reborn: production-info markers are source-owned module identities, including authored IDs and multiple instances.
                 // Reborn: self-replacement preserves authored target lists, flags, timing and inherited ability fields through complete-object composition.
                 // Reborn: wall builders preserve all source-owned fields, filter lists and relocated status masks during complete-object composition.
-                // Reborn: source-sized turret weapons retain every nested AI, selector and strong import during object composition.
-                if(owner.NativeType==typeof(Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName is "WeaponSlotTurret" or "WeaponSlotHierarchicalTurret")){
-                    var grammar=owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName=="WeaponSlotHierarchicalTurret")?hierarchicalTurrets.Value:weaponTurret.Value;var turretNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                // Reborn: non-hardpoint weapon slots retain distinct inherited tables and strong imports.
+                if(owner.NativeType==typeof(Ep1WeaponSetUpdateModuleData)&&owner.Element.ChildNodes.OfType<XmlElement>().Any(e=>e.LocalName is "WeaponSlotTurret" or "WeaponSlotHierarchicalTurret" or "WeaponSlotContained")){
+                    var slots=owner.Element.ChildNodes.OfType<XmlElement>().Select(e=>e.LocalName).ToHashSet();
+                    bool contained=slots.Contains("WeaponSlotContained"), hierarchical=slots.Contains("WeaponSlotHierarchicalTurret");
+                    var grammar=(contained,hierarchical) switch
+                    {
+                        (true,true)=>containedHierarchicalSlots.Value,
+                        (true,false)=>containedWeaponSlots.Value,
+                        (false,true)=>hierarchicalTurrets.Value,
+                        _=>weaponTurret.Value
+                    };
+                    var turretNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
                     var proof=SchemaNativeContract.Verify(element,owner.NativeType,WeaponTurretContract.TypeId,turretNative,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(turretNative,official,WeaponTurretContract.Wire,owner.NativeType);int size=grammar.Verify(metadata,turretNative,owner.NativeType,proof.Records);Own(turretNative,start,stop);Splice(owner,metadata,start,size);continue;
                 }
                 // Reborn: preserve authored timer-monitor imports and flags through complete GameObject composition.
@@ -1094,8 +1120,17 @@ internal sealed class ConscriptVariableGraphVerifier
                     var references=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();
                     var proof=animal?AnimalAIUpdateContract.Verify(element,aiNative,references):jet?JetAIUpdateContract.Verify(element,aiNative,references):AIUpdateContract.Verify(element,aiNative,references);
                     var aiTokens=animal?Ep1AnimalAIUpdateTokenizer.Tokenize(aiNative):jet?Ep1JetAIUpdateTokenizer.Tokenize(aiNative):Ep1AIUpdateTokenizer.Tokenize(aiNative);
-                    Type proofType=animal?typeof(AnimalAIUpdateContract.Native):jet?typeof(JetAIUpdateContract.Native):typeof(AIUpdateContract.Native);
-                    int size=(animal?animalAiGrammar:jet?jetAiGrammar:aiGrammar).Value.Verify(aiTokens,aiNative,proofType,proof.Records);Own(aiNative,start,stop);
+                    var (proofType, grammar) = element.LocalName switch
+                    {
+                        "AnimalAIUpdate" => (typeof(AnimalAIUpdateContract.Native), animalAiGrammar),
+                        "JetAIUpdate" => (typeof(JetAIUpdateContract.Native), jetAiGrammar),
+                        "TransportAIUpdate" => (typeof(AIUpdateContract.Transport), transportAiGrammar),
+                        "WanderAIUpdate" => (typeof(AIUpdateContract.Wander), wanderAiGrammar),
+                        "HordeAIUpdate" => (typeof(AIUpdateContract.Horde), hordeAiGrammar),
+                        "SupplyTruckAIUpdate" => (typeof(AIUpdateContract.SupplyTruck), supplyTruckAiGrammar),
+                        _ => (typeof(AIUpdateContract.Native), aiGrammar)
+                    };
+                    int size=grammar.Value.Verify(aiTokens,aiNative,proofType,proof.Records);Own(aiNative,start,stop);
                     int marker=aiAt+12+owner.Index*12;if(Word(tokens.InstanceBuffer,marker)!=0xB151A0EB||Word(tokens.InstanceBuffer,marker+4)!=0||Word(tokens.InstanceBuffer,marker+8)!=aiNext)throw new InvalidDataException("AI metadata source order differs.");
                     for(int offset=0;offset<size;offset+=12){uint target=Word(aiTokens.InstanceBuffer,offset+8);uint expected=target==0?0:target<size?target+(uint)aiNext:target-(uint)size+(uint)(prefix+start);if(Word(tokens.InstanceBuffer,aiNext+offset)!=Word(aiTokens.InstanceBuffer,offset)||Word(tokens.InstanceBuffer,aiNext+offset+4)!=Word(aiTokens.InstanceBuffer,offset+4)||Word(tokens.InstanceBuffer,aiNext+offset+8)!=expected)throw new InvalidDataException("AI metadata splice differs.");}aiNext+=size;continue;
                 }
@@ -1156,7 +1191,14 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
                 // Reborn: repair is wholly inline; scalars, inline percents, empty audio and literal metadata are independently proved.
                 if(owner.NativeType==typeof(Ep1RepairUpdateModuleData)){
-                    _=repair.Value;var repaired=Extract(native,start,stop);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(repaired,official,"RepairUpdateModuleData",owner.NativeType);RepairUpdateContract.Verify(owner.Element,repaired,metadata);Own(repaired,start,stop);Splice(owner,metadata,start,RepairUpdateContract.MetadataSize);continue;
+                    _=repair.Value;
+                    var repaired=Extract(native,start,stop);
+                    // Reborn: resolve against the actual stream catalog before proving both optional sound import words.
+                    resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);
+                    var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container==owner.Container&&o.Index==owner.Index).Element;
+                    var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(repaired,official,"RepairUpdateModuleData",owner.NativeType);
+                    RepairUpdateContract.Verify(element,repaired,metadata,instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray());
+                    Own(repaired,start,stop);Splice(owner,metadata,start,RepairUpdateContract.MetadataSize);continue;
                 }
                 // Reborn: Spawn's full source-bound graph includes weak lists, Die/status allocations and inherited upgrade storage.
                 if(owner.NativeType==typeof(Ep1SpawnBehaviorModuleData)){
@@ -1485,7 +1527,7 @@ internal sealed class ConscriptVariableGraphVerifier
             ConscriptVariableContainers.Restore(document,baseline);
             // Reborn: independently proved derived-body imports do not occupy stock comparison reference slots.
             var body=ConscriptVariableContainers.Find(document,"Body")!;
-            if(body.ChildNodes.OfType<XmlElement>().Single().LocalName is "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody")
+            if(body.ChildNodes.OfType<XmlElement>().Single().LocalName is "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody" or "ShieldBody")
                 body.ParentNode!.ReplaceChild(document.ImportNode(ConscriptVariableContainers.Find(baseline,"Body")!,true),body);
             // Reborn: new root strong references have their own source/native proof; untouched stock owners keep stock occurrence coordinates.
             GameObjectExtendedRootContract.Mask(document,baseline);

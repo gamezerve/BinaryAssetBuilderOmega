@@ -1,12 +1,52 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
 internal static class UprisingLayoutSmokeTest
 {
-    public static void Run()
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: verify the serialized index against independently measured retail x86 regression coordinates. */
+    //-------------------------------------------------------------------------------------------------
+    private static void TestRetailLayoutIndex()
+    {
+        var cases=new (string Name,int Size,(string Name,int Offset,int Size)[] Fields)[]
+        {
+            ("EncloseBehaviorModuleData",0x94,new[]{("ScaledBoneName",0x10,8),("EnclosureRadius",0x18,4),("Filter",0x1c,0x78)}),
+            ("Ep1SpecialPowerTemplate",0x248,new[]{("TargetType",0x14,4),("Flags",0x1c,4)}),
+            ("Ep1SpecialPowerTemplateBitFlag",4,new[]{("Value",0,4)}),
+            ("WeaponTemplate",0x154,new[]{("ClipSize",0x78,4),("RestrictedHeightRange",0xb0,4),
+                ("IncompatibleAttributeModifier",0x124,8),("ScaleAttackRangeByAmmoRemaining",0x130,1),("UseCenterForRangeCheck",0x14f,1)}),
+            ("Ep1Shape",0x30,new[]{("Name",8,8),("Other",0x18,8),("MajorRadius",0x10,4),("Height",0x20,4),("Active",0x2c,1)}),
+            ("ProjectedBuildabilityInfo",0x74,new[]{("BuildPlacementTypes",8,4),("StatusToReject",0xc,32),
+                ("ModelConditionsToReject",0x2c,60),("AllowedBuildabilityHeightVariation",0x68,4),("AllowedObjectFilter",0x6c,4),("PrimaryBuidability",0x70,1)}),
+            ("FXParticleSysBoneNugget",0x54,new[]{("Bone",0x2c,8),("TriggerType",0x34,4),("HoldBetweenStateID",0x38,4),
+                ("ActionType",0x3c,4),("Particle",0x40,4),("Offset",0x44,12),("RequireFrequentUpdate",0x50,1)}),
+            ("FXListAtBonePosFXNugget",0x38,new[]{("FX",0x2c,4),("Bone",0x30,8)})
+        };
+        using var json=System.Text.Json.JsonDocument.Parse(CurrentLayoutProbe.Index(cases.Select(witness=>witness.Name)));
+        if(json.RootElement.GetProperty("pointerSize").GetInt32()!=4)
+            throw new InvalidDataException("The EP1 layout index did not report x86 pointers.");
+        var records=json.RootElement.GetProperty("records").EnumerateArray()
+            .ToDictionary(record=>record.GetProperty("name").GetString()!);
+        foreach(var (name,size,expectedFields) in cases)
+        {
+            var record=records["SageBinaryData."+name];
+            if(record.GetProperty("size").GetInt32()!=size)
+                throw new InvalidDataException("The EP1 layout index size differs for "+name);
+            var fields=record.GetProperty("fields").EnumerateArray().ToDictionary(field=>field.GetProperty("name").GetString()!);
+            foreach(var (fieldName,offset,fieldSize) in expectedFields)
+            {
+                var field=fields[fieldName];
+                if(field.GetProperty("offset").GetInt32()!=offset || field.GetProperty("size").GetInt32()!=fieldSize)
+                    throw new InvalidDataException("The EP1 layout index offset or size differs for "+name+"."+fieldName);
+            }
+        }
+    }
+
+        public static void Run()
     {
         TestPatchManifestTotals();
+        TestRetailLayoutIndex();
         // Reborn: lock stock-backed tracker/effect/freefall field packing independently of marshalling.
         ExpectSize<SageBinaryData.EffectInfoType>(16);
         ExpectOffset<SageBinaryData.EffectInfoType>(nameof(SageBinaryData.EffectInfoType.Options), 8);
@@ -163,7 +203,9 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.ReverseMoveSpeed), 208);
         ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.SpeedBasedHeightOffset), 340);
         ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.JetLocomotorData), 364);
-        ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.IgnoreLowSpeedAngleMultiplier), 393);
+        // Reborn: the stock EP1 locomotor record places these independent flags in this order.
+        ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.IgnoreLowSpeedAngleMultiplier), 392);
+        ExpectOffset<SageBinaryData.LocomotorTemplate>(nameof(SageBinaryData.LocomotorTemplate.EasingTakeOffAndLanding), 393);
         Expect(SageBinaryData.LocomotorSurfaceBitFlags.Count == 11, "LocomotorSurfaceBitFlags.Count", 11, SageBinaryData.LocomotorSurfaceBitFlags.Count);
 
         ExpectSize<SageBinaryData.WeaponAiHintInfo>(12);
@@ -315,15 +357,15 @@ internal static class UprisingLayoutSmokeTest
         ExpectOffset<SageBinaryData.AudioEventOverridable>(nameof(SageBinaryData.AudioEventOverridable.Base), 0);
         ExpectSize<SageBinaryData.MultisoundOverridable>(16);
         ExpectOffset<SageBinaryData.MultisoundOverridable>(nameof(SageBinaryData.MultisoundOverridable.Base), 0);
-        // Reborn: Pin the EP1 movie-archive hierarchy and the three-list component root.
-        ExpectSize<SageBinaryData.GeneralArchiveMovie>(36);
-        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.PreviewImage), 8);
-        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.Icon), 28);
-        ExpectSize<SageBinaryData.ScenarioArchiveMovie>(40);
-        ExpectOffset<SageBinaryData.ScenarioArchiveMovie>(nameof(SageBinaryData.ScenarioArchiveMovie.UnlockRequirement), 36);
-        ExpectSize<SageBinaryData.CampaignArchiveMovie>(44);
-        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.Faction), 36);
-        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.ProgressLock), 40);
+        // Reborn: retail DynamicUIConfigList stores a zero base word before the archive row fields.
+        ExpectSize<SageBinaryData.GeneralArchiveMovie>(40);
+        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.PreviewImage), 12);
+        ExpectOffset<SageBinaryData.GeneralArchiveMovie>(nameof(SageBinaryData.GeneralArchiveMovie.Icon), 32);
+        ExpectSize<SageBinaryData.ScenarioArchiveMovie>(44);
+        ExpectOffset<SageBinaryData.ScenarioArchiveMovie>(nameof(SageBinaryData.ScenarioArchiveMovie.UnlockRequirement), 40);
+        ExpectSize<SageBinaryData.CampaignArchiveMovie>(48);
+        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.Faction), 40);
+        ExpectOffset<SageBinaryData.CampaignArchiveMovie>(nameof(SageBinaryData.CampaignArchiveMovie.ProgressLock), 44);
         ExpectSize<SageBinaryData.UIComponentMovieArchive>(32);
         ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.GeneralMovie), 8);
         ExpectOffset<SageBinaryData.UIComponentMovieArchive>(nameof(SageBinaryData.UIComponentMovieArchive.ScenarioMovie), 16);

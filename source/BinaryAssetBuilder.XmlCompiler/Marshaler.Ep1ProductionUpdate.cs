@@ -4,14 +4,15 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: marshal EP1 production scalars and stock-qualified upgrade translations; other populated modifier families remain explicit errors. */
+    /** Reborn: marshal EP1 production scalars, both modifier lists and strong upgrade translations. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1ProductionUpdateModuleData* objT,Tracker state)
     {
         if(node is null)return;
-        // Reborn: populated quantity/production modifier lists still need their own stock-qualified item ABI.
-        foreach(string child in new[]{"QuantityModifier","ProductionModifier"})
-            if(node.GetChildNode(child,null)!=null)throw new System.IO.InvalidDataException("EP1 ProductionUpdate "+child+" is not implemented yet; remove it or wait for its native layout support.");
+
+        // Reborn: preserve the independent EA fixture's source order, weak template IDs and signed counts.
+        Marshal(node.GetChildNodes("QuantityModifier"), &objT->QuantityModifier, state);
+        Marshal(node.GetChildNodes("ProductionModifier"), &objT->ProductionModifier, state);
         if(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.BonusForType),null)!=null)throw new System.IO.InvalidDataException("EP1 ProductionUpdate BonusForType is not implemented yet.");
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.MaxQueueEntries),"99"),&objT->MaxQueueEntries,state);
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.NumDoorAnimations),"0"),&objT->NumDoorAnimations,state);
@@ -32,6 +33,20 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.SecondaryQueue),"false"),&objT->SecondaryQueue,state);
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.IgnorePreReqs),"false"),&objT->IgnorePreReqs,state);
         Marshal(node,(UpdateModuleData*)objT,state);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: marshal a 0x84-byte modifier with an upgrade import and the inline EP1 ObjectFilter. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node, Ep1ProductionModifier* objT, Tracker state)
+    {
+        if (node is null)
+            return;
+
+        Marshal(node.GetAttributeValue(nameof(Ep1ProductionModifier.RequiredUpgrade), null), &objT->RequiredUpgrade, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1ProductionModifier.CostMultiplier), "1.0"), &objT->CostMultiplier, state);
+        Marshal(node.GetAttributeValue(nameof(Ep1ProductionModifier.TimeMultiplier), "1.0"), &objT->TimeMultiplier, state);
+        Marshal(node.GetChildNode(nameof(Ep1ProductionModifier.ModifierFilter), null), &objT->ModifierFilter, state);
     }
 
     //-------------------------------------------------------------------------------------------------

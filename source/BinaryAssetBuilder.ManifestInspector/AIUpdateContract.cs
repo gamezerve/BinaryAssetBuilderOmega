@@ -44,6 +44,39 @@ internal static class AIUpdateContract
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: expose derived AI records to the schema verifier using the typed common proof view. */
+    //-------------------------------------------------------------------------------------------------
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct Transport { public Native Base; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct Wander
+    {
+        public Native Base;
+        public ModelConditionBitFlags EntryCondition;
+        public uint WanderDistance;
+        public SageBool AttackAll, Selectable;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: retain the existing typed chooser proof in the concrete Horde and truck records. */
+    //-------------------------------------------------------------------------------------------------
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct Horde { public Native Base; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SupplyTruck
+    {
+        public Native Base;
+        public uint MaxBoxes;
+        public Time SupplyCenterActionDelay, SupplyWarehouseActionDelay;
+        public float SupplyWarehouseScanDistance, DepletedAnnounceDistance, HarvestActivationRange;
+        public Time HarvestPreparationTime, HarvestActionTime;
+        public SageBool HarvestTrees, HarvestTiberium, HarvestsFromRearEnd;
+        public SageBool CanPathThroughUnitsWhileDocking, CanPathThroughUnitsWhileHarvesting;
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: restore only comparison AI leaves; actual source, native values, chooser presence and typed references are proved separately. */
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlDocument source,XmlDocument baseline)
@@ -61,7 +94,70 @@ internal static class AIUpdateContract
     internal static SchemaNativeContract.Result Verify(XmlElement source,Relo.Chunk native,IReadOnlyList<AssetId> references)
     {
         if(source.HasAttribute("SpecialContactPoints")&&!string.IsNullOrWhiteSpace(source.GetAttribute("SpecialContactPoints")))throw SdkXmlDiagnostics.At(new InvalidDataException("AIUpdate SpecialContactPoints item metadata is not implemented."),source.GetAttributeNode("SpecialContactPoints"));
-        return SchemaNativeContract.Verify(source,typeof(Native),0x08DBC00Eu,native,references);
+        var (type, wire) = source.LocalName switch
+        {
+            "TransportAIUpdate" => (typeof(Transport), Ep1TransportAIUpdateModuleData.Wire),
+            "WanderAIUpdate" => (typeof(Wander), Ep1WanderAIUpdateModuleData.Wire),
+            "HordeAIUpdate" => (typeof(Horde), Ep1HordeAIUpdateModuleData.Wire),
+            "SupplyTruckAIUpdate" => (typeof(SupplyTruck), Ep1SupplyTruckAIUpdateModuleData.Wire),
+            _ => (typeof(Native), 0x08DBC00Eu)
+        };
+        return SchemaNativeContract.Verify(source,type,wire,native,references);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: preserve the stock AI rule while giving each EA-derived class its own parent-only or extended table. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyDerived(StockMetadataGrammar common, bool wander)
+    {
+        if (Marshal.SizeOf<Transport>() != 76 || Marshal.SizeOf<Ep1TransportAIUpdateModuleData>() != 76 ||
+            Marshal.SizeOf<Wander>() != 0x90 || Marshal.SizeOf<Ep1WanderAIUpdateModuleData>() != 0x90 ||
+            Marshal.OffsetOf<Wander>(nameof(Wander.EntryCondition)).ToInt32() != 0x4c ||
+            Marshal.OffsetOf<Wander>(nameof(Wander.WanderDistance)).ToInt32() != 0x88 ||
+            Marshal.OffsetOf<Wander>(nameof(Wander.AttackAll)).ToInt32() != 0x8c ||
+            Marshal.OffsetOf<Wander>(nameof(Wander.Selectable)).ToInt32() != 0x8d)
+            throw new InvalidDataException("Derived EP1 AI layout differs.");
+        var fields = new List<StockMetadataGrammar.RuleField> { new(1,0x08DBC00E,2) };
+        if (wander)
+            fields.AddRange(new StockMetadataGrammar.RuleField[]
+            {
+                new(0x65B2AA1E,0x77E3F4F7,4), new(0x4859EEC6,0x67DBBFC9,4),
+                new(0x9E8FEAE3,0x77E3F4F7,4), new(0x6CA763A8,0x763177A4,4)
+            });
+        var rule = new StockMetadataGrammar.Rule((wander?typeof(Wander):typeof(Transport)).FullName!,
+            wander?Ep1WanderAIUpdateModuleData.Wire:Ep1TransportAIUpdateModuleData.Wire, fields.ToArray());
+        return StockMetadataGrammar.Import(common.Export().Select(parent=>parent with { Class=null }).Append(rule));
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify named Horde and truck inheritance and the EA truck tail. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyHordeOrTruck(StockMetadataGrammar common,bool supplyTruck)
+    {
+        if(Marshal.SizeOf<Horde>()!=0x4c || Marshal.SizeOf<Ep1HordeAIUpdateModuleData>()!=0x4c ||
+            Marshal.SizeOf<SupplyTruck>()!=0x74 || Marshal.SizeOf<Ep1SupplyTruckAIUpdateModuleData>()!=0x74 ||
+            Marshal.OffsetOf<Ep1SupplyTruckAIUpdateModuleData>("MaxBoxes").ToInt32()!=0x4c ||
+            Marshal.OffsetOf<Ep1SupplyTruckAIUpdateModuleData>("SupplyCenterActionDelay").ToInt32()!=0x50 ||
+            Marshal.OffsetOf<Ep1SupplyTruckAIUpdateModuleData>("SupplyWarehouseActionDelay").ToInt32()!=0x54 ||
+            Marshal.OffsetOf<Ep1SupplyTruckAIUpdateModuleData>("CanPathThroughUnitsWhileDocking").ToInt32()!=0x6f ||
+            Marshal.OffsetOf<Ep1SupplyTruckAIUpdateModuleData>("CanPathThroughUnitsWhileHarvesting").ToInt32()!=0x70)
+            throw new InvalidDataException("EP1 Horde or Supply Truck AI ABI differs.");
+        var fields=new List<StockMetadataGrammar.RuleField>{new(1,0x08DBC00Eu,2)};
+        if(supplyTruck)
+            fields.AddRange(new StockMetadataGrammar.RuleField[]
+            {
+                new(0x6F9636D9u,0x763177A4u,4),new(0xD2904A75u,0x998669E8u,4),
+                new(0x565C0BE6u,0x998669E8u,4),new(0x763CC923u,0x645864F3u,4),
+                new(0x8213E2BBu,0x645864F3u,4),new(0xE1146E25u,0x77E3F4F7u,4),
+                new(0x81693423u,0x77E3F4F7u,4),new(0xCD2C3B18u,0x645864F3u,4),
+                new(0xBFDEC31Au,0x998669E8u,4),new(0x7C9E6832u,0x998669E8u,4),
+                new(0x8D9DAEB8u,0x77E3F4F7u,4),new(0xA99A1E4Au,0x77E3F4F7u,4),
+                new(0xB14635F6u,0x77E3F4F7u,4)
+            });
+        var type=supplyTruck?typeof(SupplyTruck):typeof(Horde);
+        var wire=supplyTruck?Ep1SupplyTruckAIUpdateModuleData.Wire:Ep1HordeAIUpdateModuleData.Wire;
+        return StockMetadataGrammar.Import(common.Export().Select(row=>row with { Class=null })
+            .Append(new(type.FullName!,wire,fields.ToArray())));
     }
 
     //-------------------------------------------------------------------------------------------------

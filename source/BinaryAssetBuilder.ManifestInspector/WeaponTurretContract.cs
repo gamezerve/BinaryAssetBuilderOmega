@@ -30,6 +30,19 @@ internal static class WeaponTurretContract
         SdkBuildTests.MetadataProgress("WeaponSetUpdate",$"Reborn: WeaponSetUpdate EP1 native/metadata qualification: PASS ({count} original retail records; header={Marshal.SizeOf<Ep1WeaponSetUpdateModuleData>()}).",count+" stock records");return grammar;
     }
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: add the EA-contained slot inheritance row to the independently verified hardpoint grammar. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar QualifyContained(StockMetadataGrammar grammar)
+    {
+        if(Marshal.SizeOf<Ep1WeaponSlotContained>()!=0x1c ||
+            Marshal.OffsetOf<Ep1WeaponSetUpdateModuleData>(nameof(Ep1WeaponSetUpdateModuleData.WeaponSlotContained)).ToInt32()!=0x24)
+            throw new InvalidDataException("EP1 contained weapon slot layout differs.");
+        var rule=new StockMetadataGrammar.Rule(typeof(Ep1WeaponSlotContained).FullName!,null,
+            new StockMetadataGrammar.RuleField[]{new(1,0xCE5853D7u,2)});
+        return StockMetadataGrammar.Import(grammar.Export().Append(rule));
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: load the WorldBuilder hierarchy witness only when authored hierarchical turrets actually require it. */
     //-------------------------------------------------------------------------------------------------
     internal static void QualifyHierarchical(StockMetadataGrammar grammar,string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)

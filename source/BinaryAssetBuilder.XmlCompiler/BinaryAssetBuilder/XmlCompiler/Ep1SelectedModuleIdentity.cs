@@ -33,13 +33,14 @@ public static class Ep1SelectedModuleIdentity
         // Reborn: the wider behavior path is explicit; the existing three-class/default profile remains unchanged.
         // Reborn: the complete behavior compiler uses actual allocation bounds, not the former 64-module trial quota.
         // Reborn: the reviewed complete route supports PropBody as well as ActiveBody in the same local identity scope.
-        if((!reviewedBehaviors && (modules.Length is <1 or >3)) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName is not ("PropBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"))) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
+        if((!reviewedBehaviors && (modules.Length is <1 or >3)) || body.Length!=1 || (body[0].LocalName!="ActiveBody"&&(!reviewedBehaviors||body[0].LocalName is not ("PropBody" or "InactiveBody" or "ShieldBody" or "ImmortalBody" or "ManagerBody" or "ManagedActiveBody" or "ManagedImmortalBody" or "HighlanderBody"))) || body[0].NamespaceURI!=ns || modules.Any(e=>e.NamespaceURI!=ns || (!reviewedBehaviors && e.LocalName is not ("BuildingDestructionBehavior" or "WeaponSetUpdate" or "ObjectSMCHelper"))))throw new InvalidDataException("Unimplemented selected identity container/class.");
         if(reviewedBehaviors)foreach(var module in modules)Ep1BehaviorMetadataTokenizer.ReviewedWireName(module.LocalName);
         // Reborn: selected common AI shares the same local identity scope; client/other concrete AI families remain unadmitted.
         var aiContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="AI" && e.NamespaceURI==ns).ToArray();
         if(aiContainers.Length>1)throw new InvalidDataException("Selected identity permits at most one AI container.");var ai=aiContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
-        // Reborn: the complete route accepts independently reviewed EP1 jets in the same local identity scope.
-        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName is not ("JetAIUpdate" or "AnimalAIUpdate")))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
+        // Reborn: the complete route accepts independently reviewed EP1 AI variants in the same local identity scope.
+        // Reborn: the reviewed Horde and Supply Truck classes use the same local AI identity scope.
+        if(ai.Length>2 || ai.Any(e=>e.NamespaceURI!=ns || (e.LocalName!="AIUpdate"&&(!reviewedBehaviors||e.LocalName is not ("JetAIUpdate" or "AnimalAIUpdate" or "TransportAIUpdate" or "WanderAIUpdate" or "HordeAIUpdate" or "SupplyTruckAIUpdate")))))throw new InvalidDataException("Unreviewed selected AI identity class/count.");
         // Reborn: selected complete scripted/tracer/stream Draws share the same local scope, including cross-class Body/AI/behavior collisions and forward links.
         var drawContainers=root.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="Draws" && e.NamespaceURI==ns).ToArray();
         var draws=drawContainers.SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).ToArray();
@@ -60,6 +61,14 @@ public static class Ep1SelectedModuleIdentity
             // Reborn: preserve the original anonymous Spy EVA selector's zero Poid; it remains unique in the local scope.
             bool anonymous=reviewedBehaviors&&module.LocalName=="ModelConditionEvaEventSelectorClientBehavior"&&!module.HasAttribute("id");
             if(string.IsNullOrWhiteSpace(id)&&!anonymous || !ids.Add(anonymous?0u:FastHash.GetHashCode(id.ToLowerInvariant())))throw new InvalidDataException("Selected Body/behavior/AI/Draw module IDs must be nonempty and hash-distinct in this object.");
+        }
+        // Reborn: an explicit activation target must resolve to a Poid on the same GameObject.
+        foreach(var row in modules.Where(e=>e.LocalName=="ActivateModuleSpecialAbilityUpdate")
+            .SelectMany(e=>e.ChildNodes.OfType<XmlElement>()).Where(e=>e.LocalName=="SpecialPowerModules"&&e.HasAttribute("ModuleId")))
+        {
+            string target=row.GetAttribute("ModuleId");
+            if(string.IsNullOrWhiteSpace(target)||!ids.Contains(FastHash.GetHashCode(target.ToLowerInvariant())))
+                throw new InvalidDataException("SpecialPowerModules.ModuleId does not resolve inside the selected GameObject: "+target);
         }
         foreach(var module in modules.Where(e=>e.LocalName=="BuildingDestructionBehavior" && e.HasAttribute("AssociatedModule")))
         {

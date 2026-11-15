@@ -21,23 +21,23 @@ public static partial class Marshaler
                 MarshalEp1AnimalAIUpdate(node,objT,state);
                 break;
             case 0xD813AF2Au:
-                MarshalPolymorphicType<WanderAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                MarshalEp1WanderAIUpdate(node, objT, state);
                 break;
             case 0xA9936C0Du:
                 MarshalPolymorphicType<TransportHelicopterAIUpdateModuleData, UpdateModuleData>(node, objT, state);
                 break;
             case 0x9AB8094Du:
-                MarshalPolymorphicType<SupplyTruckAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                MarshalEp1SupplyTruckAIUpdate(node,objT,state);
                 break;
             case 0x4486CF48u:
                 // Reborn: this port retains legacy build symbols, but the active jet wire route must use the separately qualified EP1 model.
                 MarshalEp1JetAIUpdate(node,objT,state);
                 break;
             case 0x55D77703u:
-                MarshalPolymorphicType<HordeAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                MarshalEp1HordeAIUpdate(node,objT,state);
                 break;
             case 0xBE9CD6FEu:
-                MarshalPolymorphicType<TransportAIUpdateModuleData, UpdateModuleData>(node, objT, state);
+                MarshalEp1TransportAIUpdate(node, objT, state);
                 break;
             case 0xEE30DFD4u:
                 MarshalPolymorphicType<DeployStyleAIUpdateModuleData, UpdateModuleData>(node, objT, state);

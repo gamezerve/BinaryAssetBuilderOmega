@@ -9,6 +9,7 @@ public static partial class Marshaler
         {
             return;
         }
-        Marshal(node, (AttachUpdateModuleData*)objT, state);
+        // Reborn: keep the derived class over the already qualified EP1 attachment record.
+        Marshal(node, &objT->Base, state);
     }
 }

@@ -1812,7 +1812,7 @@ internal static class Program
                 return 0;
             }
             // Reborn: expose focused schema-to-import validation with optional real EP1 manifests.
-            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash" or "find-assets"))
+            if ((args.Length < 2 && args.FirstOrDefault() is not ("layout-self-test" or "compiler-self-test")) || args.FirstOrDefault() is not ("inspect" or "verify" or "compare" or "schema-diff" or "writer-self-test" or "utility-verify" or "assembly-fields" or "assembly-methods" or "assembly-il" or "assembly-size-diff" or "current-layout" or "current-layout-index" or "layout-self-test" or "compiler-self-test" or "reference-self-test" or "external-link-self-test" or "asset-bytes" or "hash" or "find-assets"))
             {
                 PrintUsage();
                 return 2;
@@ -1878,6 +1878,13 @@ internal static class Program
                     return 2;
                 }
                 IlDisassembler.Print(args[1], args[2]);
+                return 0;
+            }
+
+            // Reborn: expose an x86 compiler-measured index for external layout consumers.
+            if (command == "current-layout-index")
+            {
+                Console.WriteLine(CurrentLayoutProbe.Index(args.Skip(1)));
                 return 0;
             }
 
@@ -2711,6 +2718,7 @@ internal static class Program
         Console.WriteLine("  assembly-il <managed-assembly> <method-token>");
         Console.WriteLine("  assembly-size-diff <reference-tokenizer-assembly> [--top <count>]");
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
+        Console.WriteLine("  current-layout-index <SageBinaryData-type-name> [additional-type-name ...]");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
         // Reborn: optional manifests add bounded sound goldens without registering audio processors.

@@ -18,3 +18,15 @@ public struct EMPUpdateModuleData
     public unsafe Color3f* StartColor;
     public unsafe Color3f* EndColor;
 }
+
+// Reborn: the EP1 reader takes two separate color pointers directly after the six scalar fields.
+[StructLayout(LayoutKind.Sequential)]
+public unsafe struct Ep1EMPUpdateModuleData
+{
+    public const uint Wire = 0xD3302D7Eu;
+    public UpdateModuleData Base;
+    public Time Lifetime, StartFadeDelay, DisabledDuration;
+    public float StartScale, TargetScaleMin, TargetScaleMax;
+    public Color3f* StartColor;
+    public Color3f* EndColor;
+}

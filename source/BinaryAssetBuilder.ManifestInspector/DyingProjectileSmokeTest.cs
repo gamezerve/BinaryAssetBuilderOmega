@@ -29,7 +29,7 @@ internal static class DyingProjectileSmokeTest
             var catalog=new[]{manifest,global}.SelectMany(p=>ManifestReader.Read(SdkEnvironmentPreflight.Read(p,64*1048576)).Assets).ToArray();var baseline=SdkXmlDiagnostics.Parse(File.ReadAllBytes(Path.Combine(fixtures,"live-alpha/ConscriptBuildTime1/data/mod.xml")));
             baseline.DocumentElement!.SetAttribute("BuildTime","4");
             var grammar=DyingProjectileContract.Qualify(manifest,baseline,schemas,catalog);int checks=0;
-            for(int variant=0;variant<6;variant++){
+            for(int variant=0;variant<7;variant++){
                 var source=(XmlDocument)baseline.CloneNode(true);var behaviors=source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();behaviors.RemoveAll();
                 foreach(var family in DyingProjectileContract.Families){var owner=(XmlElement)source.ImportNode(GameObjectExtendedRootContract.Original("Soviet/Props/SovietBomberAircraft_Dying.xml",family.Source).Single(),true);ConscriptVariableBehaviorSource.DropLeafFormatting(owner);behaviors.AppendChild(owner);
                     // Reborn: authored/default records are independent of the captured original IDs and values.
@@ -44,14 +44,29 @@ internal static class DyingProjectileSmokeTest
                         owner.SetAttribute("DestructionDelay","15s");owner.SetAttribute("Fade","true");owner.SetAttribute("FadeTime","2s");owner.InnerXml="<FX xmlns='uri:ea.com:eala:asset' Type='FINAL'><FX>FX_NONE</FX></FX><DieMuxData xmlns='uri:ea.com:eala:asset' DeathTypes='ALL'/>";
                     }
                     // Reborn: original-equivalent, omitted-default and freely edited straight-line fields use the same real dispatcher and metadata proof.
-                    if(variant>=3&&family.Source=="ProjectileUpdate"){
+                    if(variant is >=3 and <=5 && family.Source=="ProjectileUpdate"){
                         owner.SetAttribute("StateMachine","StraightLineProjectile");if(variant==3)owner.SetAttribute("MinTargetDistance","5");
                         owner.InnerXml="<Movement xmlns='uri:ea.com:eala:asset'><MoveInStraightLine "+(variant==3?"MuzzleVelocity='40'":variant==5?"MuzzleVelocity='50' Acceleration='0.25' TerminalVelocity='100'":"")+"/></Movement>";
                     }
 
                 }
 
-                _=ConscriptVariableBehaviorSource.Admit(source,baseline,official);var resolved=SchemaNativeContract.Resolve(source,schemas,catalog);var instance=ReferencePipelineSmokeTest.Normalize(schemas,resolved.OuterXml);var normalized=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));var refs=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();
+                // Reborn: exercise the authored balloon choice and its complete production EP1 metadata path.
+                if (variant == 6)
+                {
+                    var update = behaviors.ChildNodes.OfType<XmlElement>().Single(e => e.LocalName == "ProjectileUpdate");
+                    update.SetAttribute("StateMachine", "BalloonProjectile");
+                    update.InnerXml = "<Movement xmlns='uri:ea.com:eala:asset'><BalloonMoveToGround/></Movement>";
+                }
+
+                var authoredPlan = ConscriptVariableBehaviorSource.Admit(source,baseline,official);var resolved=SchemaNativeContract.Resolve(source,schemas,catalog);var instance=ReferencePipelineSmokeTest.Normalize(schemas,resolved.OuterXml);var normalized=SdkXmlDiagnostics.Parse(Encoding.UTF8.GetBytes(instance.XmlNode.OuterXml));var refs=instance.ReferencedInstances.Select(r=>new AssetId(r.TypeId,r.InstanceId)).ToArray();
+                if (variant == 6)
+                {
+                    var fullBalloon = GameObjectBodyProjectionSmokeTest.Compile(normalized, true, true, true);
+                    var balloonVerifier = new ConscriptVariableGraphVerifier(official, manifest, baseline, schemas, catalog);
+                    _ = balloonVerifier.Verify(source, fullBalloon, instance, authoredPlan.Origins);
+                    checks++;
+                }
                 foreach(var family in DyingProjectileContract.Families){uint typeId=BinaryAssetBuilder.Core.Hashing.FastHash.GetHashCode(family.Wire);var native=ConscriptBehaviorSurvey.Compile(normalized.GetElementsByTagName(family.Source,SchemaSet.XmlNamespace).OfType<XmlElement>().Single(),typeId);var element=resolved.GetElementsByTagName(family.Source,SchemaSet.XmlNamespace).OfType<XmlElement>().Single();var proof=SchemaNativeContract.Verify(element,family.Type,typeId,native,refs);var metadata=Ep1BehaviorMetadataTokenizer.Tokenize(native,official,family.Wire,family.Type);_=grammar.Verify(metadata,native,family.Type,proof.Records);checks++;
                     // Reborn: changing a proved flag/threshold word must fail without relying on the producer writer.
                     var corrupt=new Chunk{InstanceBuffer=native.InstanceBuffer.ToArray(),RelocationBuffer=native.RelocationBuffer,ImportsBuffer=native.ImportsBuffer};corrupt.InstanceBuffer[8]^=1;
@@ -74,7 +89,7 @@ internal static class DyingProjectileSmokeTest
             var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,catalog);_=verifier.Verify(absent,full,instanceAbsent,plan.Origins);checks++;
             var dangling=new Chunk{InstanceBuffer=full.InstanceBuffer.ToArray(),RelocationBuffer=full.RelocationBuffer,ImportsBuffer=full.ImportsBuffer};System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(dangling.InstanceBuffer.AsSpan(500),600u);
             try{_=verifier.Verify(absent,dangling,instanceAbsent,plan.Origins);throw new InvalidOperationException("Dangling omitted Geometry accepted.");}catch(InvalidDataException){checks++;}
-            Console.WriteLine($"Reborn: projectiles: PASS ({checks} original/default/edit native/metadata and leaf checks; falling and straight-line movement, timing, angles, damping, velocity/acceleration, option bits, state/movement pairing, inherited ship-death phases, omitted Geometry and corrupt-native/class rejection; no game launch).");
+            Console.WriteLine($"Reborn: projectiles: PASS ({checks} original/default/edit native/metadata and leaf checks; falling, straight-line and balloon movement, timing, angles, damping, velocity/acceleration, option bits, state/movement pairing, inherited ship-death phases, omitted Geometry and corrupt-native/class rejection; no game launch).");
         }finally{Settings.Current=saved;System.Environment.SetEnvironmentVariable(SdkBuildTests.EnvironmentKey,savedDeveloper);}
     }
 }

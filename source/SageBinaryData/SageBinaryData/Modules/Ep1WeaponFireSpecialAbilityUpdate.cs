@@ -21,3 +21,12 @@ public struct Ep1WeaponFireSpecialAbilityUpdateModuleData
     public SageBool OffsetTargetLocationFromObject;
     public SageBool DestealthClosestObjectMatchingFilter;
 }
+
+// Reborn: the delayed ability appends a time to the complete EP1 WeaponFire specialization.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData
+{
+    public const uint WireTypeId = 0x368F2215u;
+    public Ep1WeaponFireSpecialAbilityUpdateModuleData Base;
+    public Time FireDelay;
+}

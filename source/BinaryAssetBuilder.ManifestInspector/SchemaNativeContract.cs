@@ -1,4 +1,4 @@
-﻿using BinaryAssetBuilder.Core;
+using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.Hashing;
 using BinaryAssetBuilder.Core.SageXml;
 using BinaryAssetBuilder.XmlCompiler;
@@ -207,7 +207,7 @@ internal sealed class SchemaNativeContract
         // Reborn: the concrete movement class word is independent of authored data or enclosing module identity.
         if(owner==typeof(ProjectileMoveBase)&&name=="TypeId"){
             // Reborn: the concrete class is determined independently from the validated XML movement choice.
-            uint wire=e?.LocalName switch{"MoveToGround"=>0x87767DF6u,"MoveInStraightLine"=>0x858CBFDCu,_=>throw new InvalidDataException("Unsupported projectile movement source: "+e?.LocalName)};Expect(at,BitConverter.GetBytes(wire),path);return;
+            uint wire=e?.LocalName switch{"MoveToGround"=>0x87767DF6u,"MoveInStraightLine"=>0x858CBFDCu,"BalloonMoveToGround"=>BalloonProjectileMoveToGroundData.WireTypeId,"BezierSpline"=>BezierSplineProjectileData.WireTypeId,_=>throw new InvalidDataException("Unsupported projectile movement source: "+e?.LocalName)};Expect(at,BitConverter.GetBytes(wire),path);return;
         }
         if(owner==typeof(ProjectileUpdateModuleData)&&name=="Flags"){Flags(e,name,at,4,path);return;}
         if(owner==typeof(ModuleData))
@@ -262,7 +262,7 @@ internal sealed class SchemaNativeContract
             if(owner==typeof(ProjectileUpdateModuleData)&&name=="Movement"){
                 var wrapper=Child(e,name)??throw new InvalidDataException("Projectile Movement is required.");var child=wrapper.ChildNodes.OfType<XmlElement>().Single();
                 // Reborn: prove the complete concrete movement allocation, including the shorter straight-line record.
-                Type concrete=child.LocalName switch{"MoveToGround"=>typeof(ProjectileMoveToGroundData),"MoveInStraightLine"=>typeof(ProjectileMoveInStraightLineData),_=>throw new InvalidDataException("Projectile movement processor is not implemented: "+child.LocalName)};consumed.Add(child);
+                Type concrete=child.LocalName switch{"MoveToGround"=>typeof(ProjectileMoveToGroundData),"MoveInStraightLine"=>typeof(ProjectileMoveInStraightLineData),"BalloonMoveToGround"=>typeof(BalloonProjectileMoveToGroundData),"BezierSpline"=>typeof(BezierSplineProjectileData),_=>throw new InvalidDataException("Projectile movement processor is not implemented: "+child.LocalName)};consumed.Add(child);
                 uint target=Word(at);Link(at,target,Size(concrete),path);Struct(concrete,child,(int)target,path+"*",depth+1);return;
             }
             Pointer(type.GetElementType()!,e,name,at,path,depth);return;

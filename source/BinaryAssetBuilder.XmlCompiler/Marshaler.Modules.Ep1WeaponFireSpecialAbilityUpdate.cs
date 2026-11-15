@@ -23,4 +23,18 @@ public static partial class Marshaler
         Marshal(node.GetAttributeValue(nameof(Ep1WeaponFireSpecialAbilityUpdateModuleData.ModelConditionsOnUnpack),"INVALID"),&objT->ModelConditionsOnUnpack,state);
         Marshal(node,(SpecialAbilityUpdateModuleData*)objT,state);
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: emit the delayed weapon class with the retail WeaponFire parent and seconds at +0x11c. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalEp1DelayedWeaponFire(Node node, BehaviorModuleData** destination, Tracker state)
+    {
+        using var context = state.Push((void**)destination, (uint)sizeof(Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData), 1u);
+        var result = (Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData*)*destination;
+        Marshal(node, &result->Base, state);
+        Marshal(node.GetAttributeValue("FireDelay", "0s"), &result->FireDelay, state);
+        uint wire = Ep1DelayedWeaponFireSpecialAbilityUpdateModuleData.WireTypeId;
+        state.InplaceEndianToPlatform(&wire);
+        *(uint*)result = wire;
+    }
 }

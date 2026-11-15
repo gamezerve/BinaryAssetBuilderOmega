@@ -584,7 +584,9 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 4) == 0x400, "Surfaces=CRUSHABLE_WALL", 0x400, ReadUInt32(instance, 4));
         Expect(ReadUInt32(instance, 96) == 11, "BehaviorZ=DO_NOT_MODIFY_HEIGHT", 11, ReadUInt32(instance, 96));
         Expect(ReadUInt32(instance, 364) == 396, "JetLocomotorData relocation", 396, ReadUInt32(instance, 364));
-        Expect(instance[393] == 1, "IgnoreLowSpeedAngleMultiplier", 1, instance[393]);
+        // Reborn: verify that enabling the low-speed flag does not set the adjacent easing flag.
+        Expect(instance[392] == 1, "IgnoreLowSpeedAngleMultiplier", 1, instance[392]);
+        Expect(instance[393] == 0, "EasingTakeOffAndLanding", 0, instance[393]);
         Expect(ReadUInt32(instance, 396) == 1, "JetLocomotorData.Options", 1, ReadUInt32(instance, 396));
         Expect(chunk.RelocationBuffer.Length == 8, "Locomotor relocation bytes", 8, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 0, "Locomotor imports bytes", 0, chunk.ImportsBuffer.Length);
@@ -1234,15 +1236,16 @@ internal static class CompilerSmokeTest
         Expect(ReadUInt32(instance, 8) == 1, "UIComponentMovieArchive general count", 1, ReadUInt32(instance, 8));
         Expect(ReadUInt32(instance, 16) == 1, "UIComponentMovieArchive scenario count", 1, ReadUInt32(instance, 16));
         Expect(ReadUInt32(instance, 24) == 1, "UIComponentMovieArchive campaign count", 1, ReadUInt32(instance, 24));
+        // Reborn: the retail row begins with a zero base word before the Movie string.
         uint generalOffset = ReadUInt32(instance, 12);
         uint scenarioOffset = ReadUInt32(instance, 20);
         uint campaignOffset = ReadUInt32(instance, 28);
-        Expect(ReadUInt32(instance, checked((int)generalOffset + 8)) == 12, "GeneralArchiveMovie preview import", 12, ReadUInt32(instance, checked((int)generalOffset + 8))); // Reborn: final BIN imports are one-biased.
-        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 8)) == 13, "ScenarioArchiveMovie preview import", 13, ReadUInt32(instance, checked((int)scenarioOffset + 8))); // Reborn: final BIN imports are one-biased.
-        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 36)) == 1, "ScenarioArchiveMovie unlock", 1, ReadUInt32(instance, checked((int)scenarioOffset + 36)));
-        Expect(ReadUInt32(instance, checked((int)campaignOffset + 8)) == 14, "CampaignArchiveMovie preview import", 14, ReadUInt32(instance, checked((int)campaignOffset + 8))); // Reborn: final BIN imports are one-biased.
-        Expect(ReadUInt32(instance, checked((int)campaignOffset + 36)) == 3, "CampaignArchiveMovie faction", 3, ReadUInt32(instance, checked((int)campaignOffset + 36)));
-        Expect(ReadUInt32(instance, checked((int)campaignOffset + 40)) == 3, "CampaignArchiveMovie progress lock", 3, ReadUInt32(instance, checked((int)campaignOffset + 40)));
+        Expect(ReadUInt32(instance, checked((int)generalOffset + 12)) == 12, "GeneralArchiveMovie preview import", 12, ReadUInt32(instance, checked((int)generalOffset + 12))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 12)) == 13, "ScenarioArchiveMovie preview import", 13, ReadUInt32(instance, checked((int)scenarioOffset + 12))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)scenarioOffset + 40)) == 1, "ScenarioArchiveMovie unlock", 1, ReadUInt32(instance, checked((int)scenarioOffset + 40)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 12)) == 14, "CampaignArchiveMovie preview import", 14, ReadUInt32(instance, checked((int)campaignOffset + 12))); // Reborn: final BIN imports are one-biased.
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 40)) == 3, "CampaignArchiveMovie faction", 3, ReadUInt32(instance, checked((int)campaignOffset + 40)));
+        Expect(ReadUInt32(instance, checked((int)campaignOffset + 44)) == 3, "CampaignArchiveMovie progress lock", 3, ReadUInt32(instance, checked((int)campaignOffset + 44)));
         Expect(chunk.RelocationBuffer.Length == 64, "UIComponentMovieArchive relocation bytes", 64, chunk.RelocationBuffer.Length);
         Expect(chunk.ImportsBuffer.Length == 16, "UIComponentMovieArchive imports bytes", 16, chunk.ImportsBuffer.Length);
         Console.WriteLine($"  MovieArchive bin={chunk.InstanceBuffer.Length}, relo={chunk.RelocationBuffer.Length}, imp={chunk.ImportsBuffer.Length}");

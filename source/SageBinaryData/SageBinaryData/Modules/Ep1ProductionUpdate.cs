@@ -5,7 +5,7 @@ namespace SageBinaryData;
 
 // Reborn: Type reuses the existing stock-qualified Ep1ProductionQueueType (GameObject/Ep1RootEnums.cs).
 
-// Reborn: EP1 ProductionModifier has no Hero flags; this item layout is declared for type completeness only and populated lists remain refused.
+// Reborn: EP1 modifier rows embed the 120-byte ObjectFilter and omit legacy Hero flags.
 [StructLayout(LayoutKind.Sequential)]
 public struct Ep1ProductionModifier
 {

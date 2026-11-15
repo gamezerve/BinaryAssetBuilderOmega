@@ -12,8 +12,8 @@
 			<xs:enumeration value="ONCE" /> <!-- Play animation once to the end -->
 			<xs:enumeration value="LOOP_BACKWARDS" /> <!-- Play animation backwards to start and repeat from the end -->
 			<xs:enumeration value="ONCE_BACKWARDS" /> <!-- Play animation once backwards to start -->
-			<xs:enumeration value="LOOP_PINGPONG" /> <!-- Play to a given frame from the current frame -->
-			<xs:enumeration value="PLAY_TO_FRAME" /> <!-- Play forwards to the end and reverse to the start -->
+			<xs:enumeration value="LOOP_PINGPONG" /> <!-- Reborn: loop between the first and last frames, reversing at each boundary. -->
+			<xs:enumeration value="PLAY_TO_FRAME" /> <!-- Reborn: play from the current frame to the requested frame. -->
 			<xs:enumeration value="MATCH_UNPACKING" /> <!-- Frames are specifically set based on a buildings % of completion -->
 		</xs:restriction>
 	</xs:simpleType>

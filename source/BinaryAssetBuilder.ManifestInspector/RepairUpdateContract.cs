@@ -7,7 +7,7 @@ using Chunk=Relo.Chunk;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: EP1 repair record checked against stock SovietRefinery ABI/metadata; inline percent records are authored, self-repair audio stays empty.
+// Reborn: EP1 repair record checked against stock SovietRefinery ABI/metadata; inline percentages and optional strong self-repair audio references are source-proved.
 internal static class RepairUpdateContract
 {
     internal const int NativeSize=44;
@@ -21,12 +21,12 @@ internal static class RepairUpdateContract
     private static XmlElement Child(XmlElement owner,string name)=>owner.ChildNodes.OfType<XmlElement>().SingleOrDefault(e=>e.LocalName==name)??throw SdkXmlDiagnostics.At(new InvalidDataException("RepairUpdate requires "+name),owner);
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: percent values must be representable; populated self-repair audio needs its own import contract and is refused. */
+    /** Reborn: percent values must be representable and both inline records must be present. */
     //-------------------------------------------------------------------------------------------------
     internal static void Validate(XmlElement owner)
     {
         var percent=Child(owner,"PercentOfBuildCostToRebuildInfo");for(int i=0;i<Percents.Length;i++)_=ConscriptModuleScalarContract.Bytes(percent,PercentBinding(i));
-        var audio=Child(owner,"SelfAudio");foreach(string name in Audio){var value=audio.GetAttributeNode(name);if(value!=null&&value.Value.Trim().Length!=0)throw SdkXmlDiagnostics.At(new InvalidDataException("RepairUpdate SelfAudio."+name+" is not implemented yet; leave it empty."),value);}
+        _=Child(owner,"SelfAudio");
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -54,27 +54,33 @@ internal static class RepairUpdateContract
         for(int at=8;at<MetadataSize;at+=12){uint target=Word(actual,at);if(target!=0)BinaryPrimitives.WriteUInt32LittleEndian(actual.AsSpan(at,4),target>=module.Native?target-(uint)module.Native+MetadataSize:target-(uint)module.Wrapper);}
         if(!actual.SequenceEqual(Metadata()))throw new InvalidDataException("EP1 repair literal metadata/native field anchors differ from stock.");
         var sample=new XmlDocument();sample.LoadXml("<RepairUpdate id='ModuleTag_RepairUpdate'><PercentOfBuildCostToRebuildInfo/><SelfAudio/></RepairUpdate>");
-        CheckValues(sample.DocumentElement!,b.AsSpan(module.Native,NativeSize).ToArray());return true;
+        var native=b.AsSpan(module.Native,NativeSize).ToArray();
+        if(Word(native,32)!=0||Word(native,36)!=0)throw new InvalidDataException("Stock refinery repair audio must be absent.");
+        CheckValues(sample.DocumentElement!,native);return true;
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: all 44 native and 312 metadata bytes are owned; the admitted form has no imports or allocations. */
+    /** Reborn: pin the stock layout and metadata and verify each authored sound against its resolved identity and import slot. */
     //-------------------------------------------------------------------------------------------------
-    internal static void Verify(XmlElement owner,Chunk native,Chunk metadata)
+    internal static void Verify(XmlElement owner,Chunk native,Chunk metadata,AssetId[] references)
     {
-        Validate(owner);var b=native.InstanceBuffer;
-        if(b.Length!=NativeSize||Word(b,0)!=TypeId||Word(b,4)!=FastHash.GetHashCode(owner.GetAttribute("id").ToLowerInvariant())||native.RelocationBuffer.Length!=0||native.ImportsBuffer.Length!=0)throw new InvalidDataException("EP1 repair identity/native allocation/auxiliary framing differs.");
-        CheckValues(owner,b);if(metadata.InstanceBuffer.Length-b.Length!=MetadataSize||!metadata.InstanceBuffer.AsSpan(0,MetadataSize).SequenceEqual(Metadata()))throw new InvalidDataException("EP1 repair generated/literal metadata differ.");
+        Validate(owner);
+        var b=native.InstanceBuffer;
+        if(b.Length!=NativeSize||native.RelocationBuffer.Length!=0)
+            throw new InvalidDataException("EP1 repair native extent or unexpected relocation differs.");
+        _=SchemaNativeContract.Verify(owner,typeof(Ep1RepairUpdateModuleData),TypeId,native,references);
+        if(metadata.InstanceBuffer.Length-b.Length!=MetadataSize||!metadata.InstanceBuffer.AsSpan(0,MetadataSize).SequenceEqual(Metadata()))
+            throw new InvalidDataException("EP1 repair generated/literal metadata differ.");
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: own scalars use the shared module codecs, inline percents their own bindings, and audio/padding must stay zero. */
+    /** Reborn: independently check the original refinery's scalars, inline percentages and padding. */
     //-------------------------------------------------------------------------------------------------
     private static void CheckValues(XmlElement owner,byte[] b)
     {
         foreach(var binding in ConscriptModuleScalarContract.Bindings(typeof(Ep1RepairUpdateModuleData)))if(!b.AsSpan(binding.Offset,binding.Width).SequenceEqual(ConscriptModuleScalarContract.Bytes(owner,binding)))throw new InvalidDataException("EP1 repair scalar differs: "+binding.Name);
         var percent=Child(owner,"PercentOfBuildCostToRebuildInfo");for(int i=0;i<Percents.Length;i++){var binding=PercentBinding(i);if(!b.AsSpan(binding.Offset,4).SequenceEqual(ConscriptModuleScalarContract.Bytes(percent,binding)))throw new InvalidDataException("EP1 repair percent differs: "+binding.Name);}
-        if(Word(b,32)!=0||Word(b,36)!=0||b[42]!=0||b[43]!=0)throw new InvalidDataException("EP1 repair audio/padding storage is populated.");
+        if(b[42]!=0||b[43]!=0)throw new InvalidDataException("EP1 repair padding is populated.");
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -5,5 +5,6 @@ namespace SageBinaryData;
 [StructLayout(LayoutKind.Sequential)]
 public struct StealUnitUpdateModuleData
 {
-    public AttachUpdateModuleData Base;
+    // Reborn: retain the retail EP1 bone, filter and modifier offsets.
+    public Ep1AttachUpdateModuleData Base;
 }

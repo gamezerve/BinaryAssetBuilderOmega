@@ -18,6 +18,26 @@ public static partial class Marshaler
         state.InplaceEndianToPlatform(&type);*(uint*)*objT=type;
     }
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: allocate the verified 0x6c-byte ShieldBody and keep the detached optional armor import. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalEp1ShieldBody(Node node,BodyModuleData** destination,Tracker state)
+    {
+        using var allocation=state.Push((void**)destination,(uint)sizeof(Ep1ShieldBodyModuleData),1u);
+        var result=(Ep1ShieldBodyModuleData*)*destination;
+        Marshal(node,&result->Base,state);
+        Marshal(node.GetAttributeValue("ShieldEnabledFX",null),&result->ShieldEnabledFX,state);
+        Marshal(node.GetAttributeValue("ShieldDepleteFX",null),&result->ShieldDepleteFX,state);
+        Marshal(node.GetAttributeValue("ShieldRechargeEndFX",null),&result->ShieldRechargeEndFX,state);
+        Marshal(node.GetAttributeValue("ShieldTakeDamageFX",null),&result->ShieldTakeDamageFX,state);
+        Marshal(node.GetAttributeValue("ShieldAmount",null),&result->ShieldAmount,state);
+        Marshal(node.GetAttributeValue("ShieldArmor",null),&result->ShieldArmor,state);
+        Marshal(node.GetAttributeValue("ShieldRechargeIdleTime","0s"),&result->ShieldRechargeIdleTime,state);
+        Marshal(node.GetAttributeValue("ShieldActiveModelCondition","INVALID"),&result->ShieldActiveModelCondition,state);
+        uint wire=Ep1ShieldBodyModuleData.Wire;
+        state.InplaceEndianToPlatform(&wire);
+        *(uint*)result=wire;
+    }
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve ordered EP1 damage-range percentages and the already-normalized modifier occurrence index. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1ActiveBodyDamageRangeModifier* objT,Tracker state)

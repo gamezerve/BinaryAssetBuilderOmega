@@ -36,12 +36,17 @@ public static partial class Marshaler
         objT->TypeId=0;
     }
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: EP1 root compiles hardpoints/turrets and rejects unsupported hierarchical/contained slots rather than silently leaving them empty. */
+    /** Reborn: a contained slot reuses the hardpoint writer and keeps its own metadata identity. */
+    //-------------------------------------------------------------------------------------------------
+    public static unsafe void Marshal(Node node,Ep1WeaponSlotContained* objT,Tracker state)
+        => Marshal(node,&objT->Base,state);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: write all four source-sized EP1 weapon slot lists. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(Node node,Ep1WeaponSetUpdateModuleData* objT,Tracker state)
     {
         if(node is null)return;
-        foreach(string name in new[]{"WeaponSlotContained"})if(node.GetChildNodes(name)?.GetCount()>0)throw new BinaryAssetBuilderException(ErrorCode.InternalError,"EP1 diagnostic weapon slot {0} is not admitted.",name);
         // Reborn: source-sized hardpoint arrays reuse the implemented ABI without the former eight-hardpoint trial quota.
         var slots=node.GetChildNodes("WeaponSlotHardpoint");
         Marshal(node.GetAttributeValue("ActiveWhenDisabledBy","HELD"),&objT->ActiveWhenDisabledBy,state);
@@ -49,6 +54,8 @@ public static partial class Marshaler
         // Reborn: turret records have their own source-sized list and nested EP1 allocations.
         // Reborn: hierarchical records use their own 136-byte stride and source-sized inherited graphs.
         Marshal(node.GetChildNodes("WeaponSlotTurret"),&objT->WeaponSlotTurret,state);
-        Marshal(node.GetChildNodes("WeaponSlotHierarchicalTurret"),&objT->WeaponSlotHierarchicalTurret,state);Marshal(node,(UpdateModuleData*)objT,state);
+        Marshal(node.GetChildNodes("WeaponSlotHierarchicalTurret"),&objT->WeaponSlotHierarchicalTurret,state);
+        Marshal(node.GetChildNodes("WeaponSlotContained"),&objT->WeaponSlotContained,state);
+        Marshal(node,(UpdateModuleData*)objT,state);
     }
 }

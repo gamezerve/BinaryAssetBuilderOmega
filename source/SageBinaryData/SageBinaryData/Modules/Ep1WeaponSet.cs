@@ -29,7 +29,14 @@ public struct Ep1WeaponSlotHardpoint
     public SageBool AutoChooseWeapon;
 }
 
-// Reborn: 44-byte EP1 root includes disabled flags and four list headers; typed turret arrays retain their own EP1 stride; hierarchical slots add their ParentID, while contained slots remain explicitly refused.
+// Reborn: the EA contained slot emits a base-only metadata table over the 28-byte hardpoint.
+[StructLayout(LayoutKind.Sequential)]
+public struct Ep1WeaponSlotContained
+{
+    public Ep1WeaponSlotHardpoint Base;
+}
+
+// Reborn: 44-byte EP1 root has four statically typed slot arrays.
 [StructLayout(LayoutKind.Sequential)]
 public struct Ep1WeaponSetUpdateModuleData
 {
@@ -38,7 +45,7 @@ public struct Ep1WeaponSetUpdateModuleData
     public List<Ep1WeaponSlotHardpoint> WeaponSlotHardpoint;
     public List<Ep1WeaponSlotTurret> WeaponSlotTurret;
     public List<Ep1WeaponSlotHierarchicalTurret> WeaponSlotHierarchicalTurret;
-    public List<Ep1WeaponSlotHardpoint> WeaponSlotContained;
+    public List<Ep1WeaponSlotContained> WeaponSlotContained;
 }
 
 // Reborn: EP1 turret AI is 100 bytes, including status flags, idle-rate control, jiggle and its optional 44-byte chooser.

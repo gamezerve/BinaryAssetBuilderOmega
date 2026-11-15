@@ -11,8 +11,42 @@ public static partial class Marshaler
     public static unsafe void MarshalEp1AIUpdate(Node node,UpdateModuleData** objT,Tracker state)
     {
         if(node is null || node.GetAttributeValue("TypeId",null)?.GetText()!="148619278")throw new BinaryAssetBuilderException(ErrorCode.InternalError,"Explicit EP1 AIUpdate class ID required.");
+        // Reborn: the stock generic AI factory returns null for this selector and its caller dereferences it.
+        if(node.GetAttributeValue("StateMachine",null)?.GetText().Trim()==nameof(Ep1AIStateMachineType.OreRefineryStateMachine))
+            throw new BinaryAssetBuilderException(ErrorCode.InternalError,
+                "OreRefineryStateMachine does not construct a state machine for the Uprising AIUpdate module.");
         using(var context=state.Push((void**)objT,(uint)sizeof(Ep1AIUpdateModuleData),1u))Marshal(node,(Ep1AIUpdateModuleData*)*objT,state);
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: build the Transport identity over the unchanged 76-byte EP1 AI record. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalEp1TransportAIUpdate(Node node,UpdateModuleData** destination,Tracker state)
+    {
+        using var context = state.Push((void**)destination, (uint)sizeof(Ep1TransportAIUpdateModuleData), 1u);
+        var result = (Ep1TransportAIUpdateModuleData*)*destination;
+        Marshal(node, &result->Base, state);
+        uint wire = Ep1TransportAIUpdateModuleData.Wire;
+        state.InplaceEndianToPlatform(&wire);
+        *(uint*)result = wire;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: compile Wander's mask, unsigned distance and byte flags after the EP1 AI header. */
+    //-------------------------------------------------------------------------------------------------
+    private static unsafe void MarshalEp1WanderAIUpdate(Node node,UpdateModuleData** destination,Tracker state)
+    {
+        using var context = state.Push((void**)destination, (uint)sizeof(Ep1WanderAIUpdateModuleData), 1u);
+        var result = (Ep1WanderAIUpdateModuleData*)*destination;
+        Marshal(node, &result->Base, state);
+        Marshal(node.GetAttributeValue("EntryCondition", null), &result->EntryCondition, state);
+        Ep1AIUnsigned(node.GetAttributeValue("WanderDistance", "0"), &result->WanderDistance, state);
+        Ep1AIBool(node.GetAttributeValue("AttackAll", "false"), &result->AttackAll);
+        Ep1AIBool(node.GetAttributeValue("Selectable", "false"), &result->Selectable);
+        uint wire = Ep1WanderAIUpdateModuleData.Wire;
+        state.InplaceEndianToPlatform(&wire);
+        *(uint*)result = wire;
+    }
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: preserve official AI source/default semantics in the reviewed 76-byte record; removed KW fields cannot shift EP1 state/chooser words. */
     //-------------------------------------------------------------------------------------------------

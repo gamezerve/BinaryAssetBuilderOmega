@@ -48,7 +48,7 @@ public static class Ep1GameObjectDestructionProjection
         }
         var body = layout.Body == 0 ? null : Extract(layout.Body,layout.Geometry==0?b.Length:layout.Geometry);
         // Reborn: complete body composition selects its real class and resulting metadata extent.
-        var bodyFragment = body == null ? null : Word(body.InstanceBuffer,0)==0xFF88404Bu&&behaviorSchemas!=null?Ep1BehaviorMetadataTokenizer.TokenizePropBody(body,behaviorSchemas):Ep1ActiveBodyTokenizer.Tokenize(body);
+        var bodyFragment = body == null ? null : Word(body.InstanceBuffer,0) is (0xFF88404Bu or 0x29234E6Eu)&&behaviorSchemas!=null?Ep1BehaviorMetadataTokenizer.TokenizeIdentityBody(body,behaviorSchemas):Ep1ActiveBodyTokenizer.Tokenize(body);
         // Reborn: geometry is a non-polymorphic final owner with a separately validated generated prefix.
         var geometry=layout.Geometry==0?null:Extract(layout.Geometry,b.Length);
         var geometryFragment=geometry==null?null:Ep1GeometryTokenizer.Tokenize(geometry);

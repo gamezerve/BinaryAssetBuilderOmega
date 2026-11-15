@@ -6,7 +6,7 @@ using BinaryAssetBuilder.Core.SageXml;
 using SageBinaryData;
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: falling and straight-line projectile processors retain separate concrete source/native layouts.
+// Reborn: each projectile processor retains its separate concrete source/native layout.
 internal static class DyingProjectileContract
 {
     internal static readonly (string Source,string Wire,Type Type)[] Families={
@@ -23,9 +23,9 @@ internal static class DyingProjectileContract
         var children=movement?.ChildNodes.OfType<XmlElement>().ToArray()??Array.Empty<XmlElement>();
         // Reborn: straight-line and falling state machines have different concrete movement records and must never be interchanged.
         string machine=source.HasAttribute("StateMachine")?source.GetAttribute("StateMachine"):"BombProjectile";
-        string? expected=machine switch{"BombProjectile"=>"MoveToGround","StraightLineProjectile"=>"MoveInStraightLine",_=>null};
+        string? expected=machine switch{"BombProjectile"=>"MoveToGround","StraightLineProjectile"=>"MoveInStraightLine","BalloonProjectile"=>"BalloonMoveToGround","BezierSplineProjectile"=>"BezierSpline",_=>null};
         if(children.Length!=1||expected==null||children[0].LocalName!=expected)
-            throw SdkXmlDiagnostics.At(new InvalidDataException("ProjectileUpdate requires a supported matching movement: BombProjectile/MoveToGround or StraightLineProjectile/MoveInStraightLine. Requested state machine: "+machine+"."),movement??source);
+            throw SdkXmlDiagnostics.At(new InvalidDataException("ProjectileUpdate requires a supported matching movement: BombProjectile/MoveToGround, StraightLineProjectile/MoveInStraightLine, BalloonProjectile/BalloonMoveToGround, or BezierSplineProjectile/BezierSpline. Requested state machine: "+machine+"."),movement??source);
     }
     //-------------------------------------------------------------------------------------------------
     /** Reborn: retain complete slow-death grammar and independently compare original aircraft-death and straight-line projectile records. */
@@ -46,6 +46,9 @@ internal static class DyingProjectileContract
         uint projectile=FastHash.GetHashCode("ProjectileUpdateModuleData");var straightModule=GameObjectModuleReview.Inspect(manifest,shell.Asset.Name,allowNullArmorReferences:true).Containers.Single(c=>c.Name=="Behaviors").Modules.Single(m=>m.TypeId==projectile);
         if(SdkBuildTests.Enabled){var source=(XmlDocument)baseline.CloneNode(true);var behaviors=source.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();behaviors.RemoveAll();behaviors.AppendChild(source.ImportNode(GameObjectExtendedRootContract.Original("Allied/Props/AlliedAntiVehicleVehicleTech1Projectile.xml","ProjectileUpdate").Single(),true));var element=SchemaNativeContract.Resolve(source,schemas,catalog).GetElementsByTagName("ProjectileUpdate",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();SchemaNativeContract.VerifyStock(element,typeof(ProjectileUpdateModuleData),projectile,shell.Bytes,straightModule.Native,shell.Asset.References.ToArray());}
         grammar.Learn(shell.Bytes,straightModule.Wrapper,shell.Projection.NativeRoot,typeof(ProjectileUpdateModuleData));
+        // Reborn: the EA reference fixture has a four-byte balloon payload and a single Movement relocation.
+        grammar.QualifyBalloonProjectile(schemas.Schemas);
+        grammar.QualifyBezierProjectile(schemas.Schemas);
         SdkBuildTests.MetadataProgress("Dying projectiles","Reborn: projectile qualification: PASS (28-byte header, 28-byte falling and 16-byte straight-line movement, 116-byte ship death).","3 original concrete modules");return grammar;
     }
 }
