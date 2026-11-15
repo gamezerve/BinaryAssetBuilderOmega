@@ -108,6 +108,27 @@ internal static class GameObjectStockReview
     }
 
     //-------------------------------------------------------------------------------------------------
+    /** Reborn: use the embedded fixed-shape comparison record and current runtime identities in fast builds. */
+    //-------------------------------------------------------------------------------------------------
+    internal static (ManifestAsset Asset,byte[] Bytes,Projection Projection) VerificationRecord(string manifest,string name)
+    {
+        var snapshot=ReadCatalog(Path.GetFullPath(manifest));
+        if(!snapshot.Assets.TryGetValue("GameObject:"+name,out var selected))
+            throw new InvalidDataException("Original GameObject identity not found: "+name);
+        using var stream=typeof(GameObjectStockReview).Assembly.GetManifestResourceStream(name+".verification.bin")
+            ??throw new InvalidDataException("Embedded GameObject verification record missing: "+name);
+        var bytes=new byte[checked((int)stream.Length)];
+        stream.ReadExactly(bytes);
+        var asset=selected.Asset;
+        if(asset.TypeId!=0x942FFF2Du||asset.TypeHash!=0xCEB9FE36u||asset.Tokenized!=1||
+           bytes.Length!=asset.InstanceDataSize)
+            throw new InvalidDataException("Embedded GameObject verification fingerprint differs: "+name);
+        if(SdkBuildTests.Enabled && !Capture(manifest,asset.Name).Bytes.AsSpan().SequenceEqual(bytes))
+            throw new InvalidDataException("Embedded GameObject verification record differs from retail: "+name);
+        return (asset,bytes,Decode(bytes,asset.References.ToArray()));
+    }
+
+    //-------------------------------------------------------------------------------------------------
     /** Reborn: compare the existing GameObject marshaler's selected armor-list bytes/import locations to independently read stock native records. */
     //-------------------------------------------------------------------------------------------------
     private static unsafe object NativeProjection(byte[] stock, Projection projection)

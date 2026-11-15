@@ -49,8 +49,8 @@ internal static class UpgradeTemplateCompiler
     //-------------------------------------------------------------------------------------------------
     internal static void Qualify(string manifest,SchemaSet schemas,ManifestAsset[] catalog)
     {
-        string? original=null;for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent){string path=Path.Combine(folder.FullName,"alpha/SageXML/GlobalData/upgrade.xml");if(File.Exists(path)){original=path;break;}}
-        if(original==null)throw new InvalidDataException("Original EP1 upgrade source not found.");var document=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(original,1048576),original);var owners=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName=="UpgradeTemplate").ToDictionary(e=>e.GetAttribute("id"));
+        // Reborn: use the portable original source lookup for developer comparisons.
+        var owners=GameObjectExtendedRootContract.Original("GlobalData/upgrade.xml","UpgradeTemplate").ToDictionary(e=>e.GetAttribute("id"));
         foreach(string id in new[]{"Upgrade_AlliesFaction","InfantryCaptureBuilding","Upgrade_Pack","Upgrade_JapanWarFactoryTech3"}){
             var source=Xml(Resolve(id).OuterXml);var proof=ProofSource(source,schemas,catalog);var stock=Stock(manifest,"UpgradeTemplate:"+id);
             SchemaNativeContract.VerifyStock(proof.DocumentElement!,typeof(Ep1UpgradeTemplate),0,stock.Bytes,0,stock.Asset.References.ToArray());

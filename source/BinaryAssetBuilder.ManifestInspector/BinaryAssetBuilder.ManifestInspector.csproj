@@ -17,6 +17,13 @@
     <ProjectReference Include="..\BinaryAssetBuilder.W3XCompiler\BinaryAssetBuilder.W3XCompiler.csproj" Aliases="W3x" />
   </ItemGroup>
 
+  <!-- Reborn: embed the reviewed metadata row layouts used by normal builds. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Ep1MetadataRules.json" LogicalName="Ep1MetadataRules.json" />
+    <!-- Reborn: bounded reference records for legacy fixed-shape GameObject verification. -->
+    <EmbeddedResource Include="*.verification.bin" LogicalName="%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Reborn: deploy the existing native PC audio encoder with the same synchronized compiler generation. -->
   <ItemGroup><None Include="..\BinaryAssetBuilder.AudioCompiler\audio.dll" Link="audio.dll" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
   <!-- Reborn: ship the pinned Microsoft DirectXTex may2026 x64 tool and MIT license beside the compiler. -->

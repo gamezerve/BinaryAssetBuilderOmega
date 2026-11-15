@@ -28,7 +28,8 @@ internal static class WorldBuilderAssetResolverSmokeTest
         string fixture=Path.Combine(output,"fixture");Directory.CreateDirectory(fixture);var a=owner with{TypeId=11,InstanceId=12,Name="Fixture:A",References=new[]{new AssetId(11,13)}};var b=a with{InstanceId=13,Name="Fixture:B",References=new[]{new AssetId(11,12)}};var cyclic=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(a,new byte[4],Array.Empty<byte>(),Array.Empty<byte>()),new WorldBuilderAssetResolver.Native(b,new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);foreach(var file in cyclic)File.WriteAllBytes(Path.Combine(fixture,file.Key.Replace("diagnostic","worldbuilder")),file.Value);var seed=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner with{References=new[]{new AssetId(11,12)}},new byte[4],Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);Require(WorldBuilderAssetResolver.Resolve(seed,Path.Combine(fixture,"worldbuilder.manifest"),Array.Empty<ManifestAsset>(),Array.Empty<AssetId>()).Imported.Length==2,"Cyclic stock closure failed.");byte[] corrupt=cyclic["diagnostic.bin"].ToArray();corrupt[0]^=1;File.WriteAllBytes(Path.Combine(fixture,"worldbuilder.bin"),corrupt);Refuse(()=>WorldBuilderAssetResolver.Resolve(seed,Path.Combine(fixture,"worldbuilder.manifest"),Array.Empty<ManifestAsset>(),Array.Empty<AssetId>()));
         // Reborn: the final archive check must suppress a successfully copied target and report only the deliberately unresolved use site.
         var pending=targets.Select(a=>new SdkMissingDependencyAudit.Finding("WORLDBUILDERASSET","Info",a.Name,"Fixture:Owner",prepared,7,3,"Model","pending")).Append(new("WORLDBUILDERASSET","Info","W3DContainer:MissingAfterResolve","Fixture:Owner",prepared,9,5,"Model","pending")).ToArray();string pendingReport=Path.Combine(output,"pending-dependencies.json");File.WriteAllText(pendingReport,System.Text.Json.JsonSerializer.Serialize(new SdkMissingDependencyAudit.Report(pending,1,0,3,0,true)));var previous=Console.Out;using var warningText=new StringWriter();try{Console.SetOut(warningText);WorldBuilderAssetResolver.CheckPending(package,pendingReport,catalogs);}finally{Console.SetOut(previous);}string warnings=warningText.ToString();Require(warnings.Split(Environment.NewLine,StringSplitOptions.RemoveEmptyEntries).Length==1&&warnings.StartsWith("Warning: WORLDBUILDERASSET ' W3DContainer:MissingAfterResolve '",StringComparison.Ordinal)&&warnings.Contains(prepared+"(9,5)")&&!warnings.Contains(targets[0].Name)&&!warnings.Contains(targets[1].Name),"Final package warning audit lost source evidence or warned about resolved assets.");
-        MapBaseReferences(output,stock,metadata,owner,targets,loaded,providers);
+        MapBaseReferences(output,world,stock,metadata,owner,targets,loaded,providers);
+        MapSpawnDependencies(world,stock,metadata,owner,loaded,providers);
         MapPatchOrdering(output,stock,metadata,owner);
         CustomResources(output,stock,metadata,owner);
         PackRegression(output);
@@ -44,12 +45,11 @@ internal static class WorldBuilderAssetResolverSmokeTest
     //-------------------------------------------------------------------------------------------------
     /** Reborn: map streams borrow retail native/CDATA through the shipped patch base while preserving authored overrides. */
     //-------------------------------------------------------------------------------------------------
-    private static void MapBaseReferences(string output,ManifestDocument stock,byte[] metadata,ManifestAsset owner,ManifestAsset[] targets,ManifestAsset[] loaded,Dictionary<AssetId,string> providers)
+    private static void MapBaseReferences(string output,string world,ManifestDocument stock,byte[] metadata,ManifestAsset owner,ManifestAsset[] targets,ManifestAsset[] loaded,Dictionary<AssetId,string> providers)
     {
         string folder=Path.Combine(output,"map-base");Directory.CreateDirectory(folder);
-        string world=Path.Combine(folder,"worldbuilder.manifest");File.WriteAllBytes(world,metadata);
         var initial=WorldBuilderAssetResolver.Serialize(new[]{new WorldBuilderAssetResolver.Native(owner,new byte[]{1,2,3,4},Array.Empty<byte>(),Array.Empty<byte>())},stock,metadata);
-        // Reborn: this fixture intentionally has no WorldBuilder BIN/RELO/IMP/CDATA files: map references must never read them.
+        // Reborn: borrowed records may inspect spawn fields but must never copy retail BIN/RELO/IMP/CDATA into the map.
         var result=WorldBuilderAssetResolver.Resolve(initial,world,loaded,Array.Empty<AssetId>(),providers,referenceWorldBuilder:true);
         var document=ManifestReader.Read(result.Streams["diagnostic.manifest"]);
         WorldBuilderAssetResolver.ValidateMapBaseOrder(document,stock);
@@ -85,6 +85,28 @@ internal static class WorldBuilderAssetResolverSmokeTest
         Require(artChunk.Bin.SequenceEqual(new byte[]{4,3,2,1}) && artChunk.Asset.InstanceHash==artAsset.InstanceHash,"Map-local payload/fingerprint changed.");
         File.WriteAllText(Path.Combine(folder,"result.json"),System.Text.Json.JsonSerializer.Serialize(new{Referenced=result.ReferencedWorldBuilder,WorldBuilderBytesCopied=result.BytesRead,AuthoredNativePreserved=true,MissingStrongReferenceRejected=true},new System.Text.Json.JsonSerializerOptions{WriteIndented=true}));
         Console.WriteLine("Reborn: map WorldBuilder base: PASS (no retail payload/CDATA, exact fingerprints, local precedence, idempotence and missing strong-reference rejection).");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: an existing borrowed retail building can bring in both its OCL collapse and direct debris object. */
+    //-------------------------------------------------------------------------------------------------
+    private static void MapSpawnDependencies(string world, ManifestDocument stock, byte[] metadata, ManifestAsset owner,
+        ManifestAsset[] loaded, Dictionary<AssetId, string> providers)
+    {
+        var building = stock.Assets.Single(asset => asset.Name == "GameObject:MJ_Structure_01");
+        var collapse = stock.Assets.Single(asset => asset.Name == "GameObject:MJ_Structure_01_Collapse");
+        var debris = stock.Assets.Single(asset => asset.Name == "GameObject:YU_HotelDebris");
+        var supplied = loaded.Where(asset => WorldBuilderAssetResolver.Id(asset) != WorldBuilderAssetResolver.Id(debris)).ToArray();
+        var mapOwner = owner with { References = new[] { WorldBuilderAssetResolver.Id(building) }, AssetReferenceCount = 1 };
+        var seed = WorldBuilderAssetResolver.Serialize(new[] { new WorldBuilderAssetResolver.Native(mapOwner, new byte[4], Array.Empty<byte>(), Array.Empty<byte>()) }, stock, metadata);
+        var result = WorldBuilderAssetResolver.Resolve(seed, world, supplied, Array.Empty<AssetId>(), providers, referenceWorldBuilder: true);
+        var map = ManifestReader.Read(result.Streams["diagnostic.manifest"]);
+        foreach (var dependency in new[] { collapse.Name, debris.Name, "W3DContainer:MJ_STRUCTURE_01_COL" })
+            Require(map.Assets.Any(asset => asset.Name == dependency && asset.InstanceDataSize == 0), "Missing borrowed spawn dependency: " + dependency);
+        Require(result.BytesRead == 0, "Spawn discovery copied retail native payload into the map.");
+        var repeated = WorldBuilderAssetResolver.Resolve(result.Streams, world, supplied, Array.Empty<AssetId>(), providers, referenceWorldBuilder: true);
+        Require(result.Streams.All(pair => repeated.Streams[pair.Key].SequenceEqual(pair.Value)), "Spawn-aware resolution changed an already linked map.");
+        Console.WriteLine("Reborn: map WorldBuilder spawns: PASS (retail OCL collapse, direct destruction debris, model closure and idempotence).");
     }
 
     //-------------------------------------------------------------------------------------------------

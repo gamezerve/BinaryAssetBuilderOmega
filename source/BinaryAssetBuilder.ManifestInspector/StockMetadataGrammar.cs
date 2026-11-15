@@ -17,6 +17,40 @@ internal sealed class StockMetadataGrammar
     private readonly Dictionary<Type,Rows> grammar=new();
     internal int Witnesses{get;private set;}
 
+    internal sealed record Rule(string Type,uint? Class,RuleField[] Fields);
+    internal sealed record RuleField(uint Name,uint Tag,int Kinds);
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: persist row identities and permitted target kinds without retaining any original asset payload. */
+    //-------------------------------------------------------------------------------------------------
+    internal Rule[] Export() => grammar.Select(entry=>new Rule(entry.Key.FullName!,entry.Value.Class,
+        entry.Value.Fields.Select((field,index)=>new RuleField(field.Name,field.Tag,
+            entry.Value.Kinds[index].Aggregate(0,(mask,kind)=>mask|(1<<(int)kind)))).ToArray()))
+        .OrderBy(rule=>rule.Type,StringComparer.Ordinal).ToArray();
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: construct an isolated verifier from the embedded grammar for this behavior or weapon family. */
+    //-------------------------------------------------------------------------------------------------
+    internal static StockMetadataGrammar Import(IEnumerable<Rule> rules)
+    {
+        var result=new StockMetadataGrammar();
+        foreach(var rule in rules)
+        {
+            var type=typeof(StockMetadataGrammar).Assembly.GetType(rule.Type)??typeof(SageBinaryData.GameObject).Assembly.GetType(rule.Type)
+                ??throw new InvalidDataException("Unknown embedded metadata type: "+rule.Type);
+            result.grammar.Add(type,new Rows
+            {
+                Class=rule.Class,
+                Fields=rule.Fields.Select(field=>(field.Name,field.Tag)).ToArray(),
+                Kinds=rule.Fields.Select(field=>Enum.GetValues<Kind>().Where(kind=>(field.Kinds&(1<<(int)kind))!=0).ToHashSet()).ToArray()
+            });
+        }
+        return result;
+    }
+
+    // Reborn: variants can extend a base grammar without changing that base verifier.
+    internal StockMetadataGrammar Copy()=>Import(Export());
+
     //-------------------------------------------------------------------------------------------------
     /** Reborn: learn from one stock leaf; targets below the stock native root are metadata tables, others are native fields. */
     //-------------------------------------------------------------------------------------------------

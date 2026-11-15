@@ -363,6 +363,12 @@ internal static class Program
             // Reborn: resolve retail WorldBuilder references in a private package before Studio publishes it.
             if(args.Length is >=6 and <=8 && args[0]=="sdk-resolve-worldbuilder")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolver.Run(args[1],args[2],args[3],args[4],args[5],args.ElementAtOrDefault(6),args.ElementAtOrDefault(7));return 0;}
+            // Reborn: identify completed campaign maps with missing retail collapse or debris dependencies.
+            if (args.Length >= 4 && args[0] == "sdk-audit-map-spawns")
+            {
+                WorldBuilderSpawnAudit.Run(args[1], args[2], args.Skip(3));
+                return 0;
+            }
             // Reborn: exercise native extraction and package repair without rebuilding the user's mod or starting the game.
             if(args.Length==3&&args[0]=="sdk-worldbuilder-resolver-self-test")
             {CompilerSmokeTest.InitializeHashProvider();WorldBuilderAssetResolverSmokeTest.Run(args[1],args[2]);return 0;}
@@ -815,11 +821,27 @@ internal static class Program
             // Reborn: qualify EP1 production commands independently before exposing the bounded new-identity recruitment trial.
             if(args.Length==2 && args[0]=="conscript-recruitment-command-self-test")
             {CompilerSmokeTest.InitializeHashProvider();ConscriptRecruitmentSmokeTest.Run(args[1]);return 0;}
+            // Reborn: regenerate the reviewed grammar resource from original retail metadata in developer tooling.
+            if(args.Length==5&&args[0]=="metadata-rules-capture")
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                MetadataRules.Capture(args[1],args[2],args[3],args[4]);
+                return 0;
+            }
             // Reborn: expose complete Conscript scalar/source builds, retaining native/metadata/reference qualification before publication.
             // Reborn: map mode supplies the same-build mod static BIG as a reference-only dependency.
             if(args.Length is >=6 and <=9 && args[0]=="conscript-alpha-build" &&
                 (args.Length<8 || args.Length==8 && args[7]=="global" || args.Length==9 && args[7]=="map"))
-            {CompilerSmokeTest.InitializeHashProvider();if(!ConscriptMultiAssetBuild.TryRun(args[4],args[2],args[3],args[5],args.ElementAtOrDefault(6),args.Length==8,mapStaticPackage:args.ElementAtOrDefault(8))){var single=ConscriptCompileLog.ForPrepared(args[4]);var root=new System.Xml.XmlDocument{XmlResolver=null};root.Load(args[4]);var progress=single.Begin(root.DocumentElement!.LocalName,root.DocumentElement.GetAttribute("id"));if(!ConscriptVariableBehaviorBuild.TryRun(args[4],args[2],args[3],args[5]))Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeOriginalRoot:true,alphaSource:args[4],alphaOutput:args[5]);single.End(progress);single.Statistics();}return 0;}
+            {
+                CompilerSmokeTest.InitializeHashProvider();
+                CompileConscript(args[1], args[2], args[3], args[4], args[5], args.ElementAtOrDefault(6), args.Length == 8, args.ElementAtOrDefault(8));
+                return 0;
+            }
+
+            // Reborn: keep authored XML locked across source preparation and native compilation in one process.
+            if (args.FirstOrDefault() == "sdk-compile-xml-stream" &&
+                (args.Length is 9 or 10 || args.Length == 11 && args[10] == "global" || args.Length == 12 && args[10] == "map"))
+                return CompileXmlStream(args);
 
             if(args.Length==4 && args[0]=="gameobject-root-fields-self-test")
             {CompilerSmokeTest.InitializeHashProvider();Ep1ScriptedDrawNativeSmokeTest.Run(args[1],args[2],args[3],includeRoot:true,includeAllModules:true,includeRootOwners:true,includeEmptyRoots:true);return 0;}
@@ -1977,6 +1999,66 @@ internal static class Program
             if(located!=null){Console.Error.WriteLine("ERROR: "+located);Console.Error.WriteLine(exception);}else Console.Error.WriteLine($"ERROR: {exception}");
             return 1;
         }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: qualify a source stream and replay XML alias selection before releasing its inputs. */
+    //-------------------------------------------------------------------------------------------------
+    private static int CompileXmlStream(string[] args)
+    {
+        CompilerSmokeTest.InitializeHashProvider();
+        using var inputs = new SdkXmlInputScope();
+        string prepared = args[2];
+        inputs.Prepare(args[1], prepared, args[3], args[4]);
+
+        using var receipt = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(prepared, "source-input.json")));
+        var source = receipt.RootElement;
+        int assetCount = source.GetProperty("AssetCount").GetInt32();
+        string title = source.GetProperty("PrimaryType").GetString()!;
+        if (title == "GameObject")
+        {
+            Console.WriteLine("Warning: ALPHA005 Partial GameObject support. Fixed graph: reviewed root/module fields, local IDs, optional root imports, existing typed reference retargeting, six dynamic root strings and existing nested numeric owners.");
+            Console.WriteLine("Warning: ALPHA006 Partial native layout support: variable Behaviors, root text, ArmorSet lists, hardpoint/Weapon lists with optional imports, fixed fields, compatible targets and source-sized upgrade lists/animation are supported together. Turret/contained weapon slots, other unimplemented native layouts and resource compilation still require implementation.");
+        }
+        else
+            Console.WriteLine($"Building explicit {title} support assets; no GameObject is required or generated.");
+        Console.WriteLine($"Validation completed: {source.GetProperty("Sources").GetArrayLength()} source file(s), {assetCount} asset(s) admitted.");
+        Console.WriteLine($"Compilation started: {assetCount} asset(s).");
+        CompileConscript(args[5], args[6], args[7], source.GetProperty("GamePath").GetString()!, args[8],
+            args.ElementAtOrDefault(9), args.Length == 11, args.ElementAtOrDefault(11));
+        // Reborn: XML is already protected by the stream handles; keep the original change check for other inputs such as W3X and headers.
+        foreach (var input in source.GetProperty("Sources").Deserialize<ConscriptSourceInput.SourceFile[]>()!)
+        {
+            if (Path.GetExtension(input.Path).Equals(".xml", StringComparison.OrdinalIgnoreCase) || SdkXmlInputScope.IsMutableMedia(input.Path))
+                continue;
+            using var stream = File.Open(input.Path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream)) != input.Sha256)
+                throw new InvalidDataException("Authored source changed during compilation: " + input.Path);
+        }
+        var searches = source.GetProperty("Searches").Deserialize<SdkSourceSearch.Selection[]>()!;
+        SdkSourceSearch.Verify(searches.Where(s => !SdkXmlInputScope.IsMutableMedia(s.PhysicalPath)));
+        return 0;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: share the native compiler routes between standalone diagnostics and the stream build. */
+    //-------------------------------------------------------------------------------------------------
+    private static void CompileConscript(string uprising, string staticManifest, string globalManifest, string prepared,
+        string output, string? context, bool earlyGlobal, string? mapStaticPackage)
+    {
+        if (ConscriptMultiAssetBuild.TryRun(prepared, staticManifest, globalManifest, output, context, earlyGlobal,
+            mapStaticPackage: mapStaticPackage))
+            return;
+
+        var single = ConscriptCompileLog.ForPrepared(prepared);
+        var root = new System.Xml.XmlDocument { XmlResolver = null };
+        root.Load(prepared);
+        var progress = single.Begin(root.DocumentElement!.LocalName, root.DocumentElement.GetAttribute("id"));
+        if (!ConscriptVariableBehaviorBuild.TryRun(prepared, staticManifest, globalManifest, output))
+            Ep1ScriptedDrawNativeSmokeTest.Run(uprising, staticManifest, globalManifest, includeRoot: true,
+                includeAllModules: true, includeOriginalRoot: true, alphaSource: prepared, alphaOutput: output);
+        single.End(progress);
+        single.Statistics();
     }
 
     private static int CompareSchemas(string[] args)

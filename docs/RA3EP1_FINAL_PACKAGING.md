@@ -44,7 +44,7 @@ are checked before publication.
 
 ## Publication and retention
 
-The target directory keeps a `.reborn-publish.lock` coordination file and a
+The target directory keeps a `mod-publish.lock` coordination file and a
 per-version `.<name>_<version>.package.json` ownership/hash receipt. A matching
 same-version rebuild replaces only its verified two or three files and receipt.
 Earlier three-file receipts, including the old empty Misc BIG, are accepted for

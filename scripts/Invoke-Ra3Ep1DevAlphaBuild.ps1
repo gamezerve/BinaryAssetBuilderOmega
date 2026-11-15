@@ -11,11 +11,16 @@ function Test-AptUIReferences {
         [string]$XmlPath,
         [string]$SourceRoot,
         [System.Collections.Generic.HashSet[string]]$Visited,
-        [ref]$ReferenceCount
+        [ref]$ReferenceCount,
+        [Collections.Generic.List[IO.FileStream]]$XmlLocks
     )
 
     $XmlPath=[IO.Path]::GetFullPath($XmlPath)
     if(-not $Visited.Add($XmlPath)){return}
+    # Reborn: keep the XML read-only until this page's compiler exits.
+    if([IO.Path]::GetExtension($XmlPath) -ieq '.xml'){
+        $XmlLocks.Add([IO.File]::Open($XmlPath,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read))
+    }
 
     $settings=[Xml.XmlReaderSettings]::new()
     $settings.DtdProcessing=[Xml.DtdProcessing]::Prohibit
@@ -50,7 +55,7 @@ function Test-AptUIReferences {
             $ReferenceCount.Value++
 
             if($node.LocalName -eq 'Include'){
-                Test-AptUIReferences -XmlPath $target -SourceRoot $root -Visited $Visited -ReferenceCount $ReferenceCount
+                Test-AptUIReferences -XmlPath $target -SourceRoot $root -Visited $Visited -ReferenceCount $ReferenceCount -XmlLocks $XmlLocks
             }
         }
     }
@@ -164,57 +169,31 @@ try{
 			if($aptuiFiles.Count -eq 0){
 				Stop-SdkBuildPhase 'Skipped: no AptUI XML files found.'
 			}else{
-				foreach($aptuiFile in $aptuiFiles){
-					Write-SdkBuildLine ('AptUI XML: '+$aptuiFile.Name)
-					
-					$xmlSettings=[System.Xml.XmlReaderSettings]::new()
-					$xmlSettings.DtdProcessing=[System.Xml.DtdProcessing]::Prohibit
-					$xmlSettings.XmlResolver=$null
-
-					$reader=[System.Xml.XmlReader]::Create($aptuiFile.FullName,$xmlSettings)
-					try{
-						while($reader.Read()){}
-					}finally{
-						$reader.Dispose()
-					}
-
-					Write-SdkBuildLine ('AptUI XML validation passed: '+$aptuiFile.Name)
-										
-					$visited=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-					$referenceCount=0
-
-					Test-AptUIReferences -XmlPath $aptuiFile.FullName -SourceRoot $aptuiSource -Visited $visited -ReferenceCount ([ref]$referenceCount)
-
-					Write-SdkBuildLine ('AptUI references validated: '+$referenceCount)
-					Write-SdkBuildLine ('AptUI XML files checked: '+$visited.Count)
-
-					$elementDirectory=Join-Path $aptuiSource $aptuiFile.BaseName
-
-					if(Test-Path -LiteralPath $elementDirectory -PathType Container){
-						$elements=@(Get-ChildItem -LiteralPath $elementDirectory -File -Recurse)
-						Write-SdkBuildLine ('AptUI element directory: '+$elementDirectory)
-						Write-SdkBuildLine ('AptUI element files: '+$elements.Count)
-					}else{
-						Write-SdkBuildLine ('AptUI element directory not found: '+$elementDirectory)
-					}
-				}
-
-								
-				$aptuiOutput = Join-Path $run 'aptui-streams'
-				$aptuiSchema = Join-Path $sdk 'Schemas\CnC3Types.xsd'
-
-				if (-not (Test-Path -LiteralPath $aptuiSchema -PathType Leaf)) {
-					throw "AptUI schema not found: $aptuiSchema"
-				}
-
+				$aptuiOutput=Join-Path $run 'aptui-streams'
+				$aptuiSchema=Join-Path $sdk 'Schemas/CnC3Types.xsd'
+				if(-not (Test-Path -LiteralPath $aptuiSchema -PathType Leaf)){throw "AptUI schema not found: $aptuiSchema"}
 				New-Item -ItemType Directory -Force -Path $aptuiOutput | Out-Null
 
-				foreach ($aptuiFile in $aptuiFiles) {
-					& (Join-Path $expectedCompiler 'BinaryAssetBuilder.ManifestInspector.exe') sdk-compile-aptui $aptuiFile.FullName $aptuiSchema $aptuiOutput 2>&1 |
-						ForEach-Object { Write-SdkCompilerLine ([string]$_) $detail }
-
-					if ($LASTEXITCODE -ne 0) {
-						throw ('AptUI compilation failed: ' + $aptuiFile.Name)
+				foreach($aptuiFile in $aptuiFiles){
+					Write-SdkBuildLine ('AptUI XML: '+$aptuiFile.Name)
+					$visited=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+					$xmlLocks=[Collections.Generic.List[IO.FileStream]]::new()
+					$referenceCount=0
+					try{
+						Test-AptUIReferences -XmlPath $aptuiFile.FullName -SourceRoot $aptuiSource -Visited $visited -ReferenceCount ([ref]$referenceCount) -XmlLocks $xmlLocks
+						# Reborn: the AptUI compiler also reads this conventional page document even if the wrapper omits it.
+						$pageXml=Join-Path $aptuiSource ($aptuiFile.BaseName+'/'+$aptuiFile.Name)
+						if([IO.File]::Exists($pageXml)){
+							Test-AptUIReferences -XmlPath $pageXml -SourceRoot $aptuiSource -Visited $visited -ReferenceCount ([ref]$referenceCount) -XmlLocks $xmlLocks
+						}
+						Write-SdkBuildLine ('AptUI XML validation passed: '+$aptuiFile.Name)
+						Write-SdkBuildLine ('AptUI references validated: '+$referenceCount)
+						Write-SdkBuildLine ('AptUI XML files checked: '+$visited.Count)
+						& $compiler sdk-compile-aptui $aptuiFile.FullName $aptuiSchema $aptuiOutput 2>&1 |
+							ForEach-Object { Write-SdkCompilerLine ([string]$_) $detail }
+						if($LASTEXITCODE -ne 0){throw ('AptUI compilation failed: '+$aptuiFile.Name)}
+					}finally{
+						foreach($xmlLock in $xmlLocks){$xmlLock.Dispose()}
 					}
 				}
 
@@ -292,7 +271,9 @@ try{
             $package=[IO.Path]::GetFullPath($package)
             if(-not $package.StartsWith($run+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Backend package escaped its private work generation.'}
             if(!$ValidateOnly){
-                $staticStage=New-RebornBuildStage $run 'Static' ([pscustomobject]@{Legacy=$false;Backend=$receipt;Core=$core;Source=$ModXml;SourceSha256=(Get-FileHash -LiteralPath $ModXml).Hash})
+                # Reborn: retain the actual compiled XML identity instead of reading a now-editable entry again.
+                $sourceHash=if($isConscript){($receipt.AuthoredSources | Where-Object Path -ieq $ModXml | Select-Object -First 1).Sha256}else{$receipt.SelectedModXmlSha256}
+                $staticStage=New-RebornBuildStage $run 'Static' ([pscustomobject]@{Legacy=$false;Backend=$receipt;Core=$core;Source=$ModXml;SourceSha256=$sourceHash})
                 & $compiler sdk-export-build-stage $package $staticStage.Payload Static
                 if($LASTEXITCODE){throw 'Could not stage the qualified static output.'}
                 Save-RebornStageDiagnostics $staticStage @((Join-Path $run 'conscript')) $dependencyReport
@@ -336,7 +317,7 @@ try{
                 else{Write-SdkBuildLine 'Map check uses stock and selected global streams. No previous local mod static catalog was found.'}
             }
         }
-        # Reborn: validate fresh and saved maps against the same build-local witnesses before exposing them to packaging.
+        # Reborn: check saved map witnesses at lookup; newly compiled maps bring their captured inputs.
         $roots=@($sdk,$settings.SdkDataRoot,$settings.UprisingXmlRoot)
         $witness=New-RebornMapWitness $roots
         if(!$ValidateOnly){
@@ -345,9 +326,11 @@ try{
         }
         Build-RebornMaps (Split-Path -Parent $ModXml) $sdk $settings $StaticManifest $GlobalManifest $expectedCompiler $run $detail $globalBuild.MapContext ([ref]$mapBuild) $mapStaticPackage -OfficialMapDirectory $OfficialMapDirectory -OfficialMapDirectories $officialMapDirectories -CacheRoot $cacheRoot -CacheKey $cacheKey -Witness $witness -ForceRebuild:($ForceRebuildMaps -or $ValidateOnly)
         if($mapBuild.Count){
-            if($cacheRoot -and (Get-RebornMapCacheKey $sdk $settings $expectedCompiler $StaticManifest $GlobalManifest $globalBuild.MapContext $mapStaticPackage $run)-cne $cacheKey){throw 'Shared map providers changed during the build.'}
-            $finalWitness=New-RebornMapWitness $roots
-            foreach($plan in $mapBuild){Assert-RebornMapWitness $plan $finalWitness}
+            # Reborn: changed shared providers invalidate new cache entries, not the compiled generation.
+            if($cacheRoot -and (Get-RebornMapCacheKey $sdk $settings $expectedCompiler $StaticManifest $GlobalManifest $globalBuild.MapContext $mapStaticPackage $run)-cne $cacheKey){
+                Write-SdkBuildLine 'Map cache not saved: shared providers changed during the build.'
+                $cacheRoot=$null
+            }
             if($publishPackage){Publish-RebornMapOutputs $mapBuild (Join-Path (Split-Path -Parent (Split-Path -Parent $ModXml)) 'Misc') -Witnessed}
             $rebuilt=@($mapBuild | Where-Object Fresh).Count
             Stop-SdkBuildPhase ('Maps compiled: '+$rebuilt+'; reused: '+($mapBuild.Count-$rebuilt))
@@ -359,7 +342,6 @@ try{
         if(!$ValidateOnly){
             # Reborn: Studio cancellation cannot interrupt the single index update committing all successful stage outputs.
             if($publishMutex){try{$publishHeld=$publishMutex.WaitOne()}catch [Threading.AbandonedMutexException]{$publishHeld=$true};if($cancelEvent.WaitOne(0)){throw 'Studio build cancelled before saving outputs.'}}
-            if($newGlobalBuild){Assert-RebornGlobalSources $newGlobalBuild}
             Save-RebornBuildStages $stages $expectedOutput $ModName
             if($cacheRoot){Save-RebornMapCache $cacheRoot $cacheKey $mapBuild}
         }
@@ -374,9 +356,7 @@ try{
     if(!$stages.ContainsKey('Static') -or !(Test-Path -LiteralPath (Join-Path $stages['Static'].Payload 'data/mod.manifest'))){
         throw 'No successful Static output is available. Enable Build Static Data once before packaging.'
     }
-    # Reborn: source replay applies only to fresh compiles; unselected families intentionally represent their last successful sources.
-    if($BuildStaticData){Assert-RebornSourceSearch $receipt.PathSearches}
-    if($newGlobalBuild){Assert-RebornGlobalSources $newGlobalBuild}
+    # Reborn: assemble the qualified output generations after their source locks are released.
     $package=Join-Path $run 'selected-streams.big'
     New-RebornStagePackage $stages $package $compiler $sdk $run
     Restore-RebornStageDiagnostics $stages $run

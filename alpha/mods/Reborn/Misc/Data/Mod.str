@@ -1920,6 +1920,14 @@ End
 		"> Ability Cooldown = 80 sec \n> Movement Speed = 195 \n> Rush Damage (Infantry/Other) = 50/500 \n> Weapon Range = 300 \nCharges the enemy head-on, smashing into or simply crushing any foes along the way."
 	End
 
+	NAME:JAPANEMPERORMECHA_S07
+		"Emperor Yoshiro\n"
+	End
+
+	DESC:JAPANEMPERORMECHA_S07
+		"The original King Oni was too costly to mass-produce and was given to the Emperor himself."
+	End
+
 // Imperial Wave-Force Artillery
 
 	TYPE:JAPANANTISTRUCTUREVEHICLE

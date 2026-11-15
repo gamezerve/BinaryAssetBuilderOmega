@@ -1,0 +1,11 @@
+	TYPE:SOVIETANTIINFANTRYINFANTRY
+		"TESTTESTTEST \nAnti-Infantry / Anti-Garrison \n> Health = 100 \n> Shroud Clearing Range = 500 \n> Movement Speed = 50 \n> ADK-47 Weapon DPS = 21.5 \n> ADK-47 Weapon Range = 150 \n> Molotof Coctail Weapon DPS = 28.5 \n> Molotof Coctail Weapon Range = 200"
+	End
+
+NAME:JAPANEMPERORMECHA
+	"Emperor Yoshiro\n"
+End
+
+DESC:JAPANEMPERORMECHA
+	"The original King Oni was too costly to mass-produce and was given to the Emperor himself."
+End

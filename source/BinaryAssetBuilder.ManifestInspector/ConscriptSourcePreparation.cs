@@ -84,7 +84,7 @@ internal static class ConscriptSourcePreparation
             if(resource!=null){var matches=source.SelectNodes("//@* | //*[not(*)]")!.Cast<XmlNode>().Where(n=>(n is XmlAttribute?n.Value:n.InnerText)==resource.LogicalPath).ToArray();if(matches.Length==1)SdkXmlDiagnostics.At(failure,matches[0]);}
             new SdkXmlDiagnostics.SourceMap(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value))).Enrich(failure,owner,source);throw failure;
         }
-        var resources=accepted.Select(r=>{var bytes=SdkEnvironmentPreflight.Read(r.PhysicalPath,64*1048576);if(bytes.Length!=r.Bytes)throw new InvalidDataException("Resource changed during graph capture: "+r.PhysicalPath);return new ConscriptSourceInput.ResourceFile(r.Document,r.Field,r.LogicalPath,r.PhysicalPath,Hash(bytes),bytes);}).ToArray();
+        var resources=accepted.Select(r=>{var bytes=SdkEnvironmentPreflight.Read(r.PhysicalPath,64*1048576);if(!SdkXmlInputScope.IsMutableMedia(r.PhysicalPath)&&bytes.Length!=r.Bytes)throw new InvalidDataException("Resource changed during graph capture: "+r.PhysicalPath);return new ConscriptSourceInput.ResourceFile(r.Document,r.Field,r.LogicalPath,r.PhysicalPath,Hash(bytes),bytes);}).ToArray();
         // Reborn: path inventory is not language admission; reject ignored metadata throughout the graph before emitting anything.
         foreach(var snapshot in snapshots){var source=Parse(snapshot.Value,snapshot.Key);try{ValidateEnvelope(source.DocumentElement!);}catch(InvalidDataException error){new SdkXmlDiagnostics.SourceMap(new[]{new SdkXmlDiagnostics.Snapshot(snapshot.Key,snapshot.Value)}).Enrich(error,snapshot.Key,source);throw;}}
         // Reborn: merge schema-valid partial bases first; final source/native admission still applies to the emitted complete object only.
@@ -124,7 +124,8 @@ internal static class ConscriptSourcePreparation
         foreach(var source in paths.Sources)if(Hash(SdkEnvironmentPreflight.Read(source.PhysicalPath,SdkSourceScale.XmlLimit(4*1048576)))!=source.Sha256)throw new InvalidDataException("Source changed during inheritance/definition preparation.");
         // Reborn: XInclude fragments are real source dependencies, including hash and higher-priority mod-shadow checks before publication.
         fragments.VerifySources();
-        var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches);
+        // Reborn: captured media can be replaced after its first read; keep its path evidence for the next map build.
+        var searches=paths.Searches.Concat(fragments.Searches).ToArray();SdkSourceSearch.Verify(searches.Where(s=>!SdkXmlInputScope.IsMutableMedia(s.PhysicalPath)));
         return new(primary==null?first:Detach(primary),commands.Length==0||commands[0]==primary?null:Detach(commands[0]),paths.Sources.Select(s=>new ConscriptSourceInput.SourceFile(s.PhysicalPath,s.Sha256)).Concat(fragments.Sources).DistinctBy(s=>s.Path,StringComparer.OrdinalIgnoreCase).ToArray()){AdditionalAssets=assets.Where(a=>a!=primary&&(commands.Length==0||a!=commands[0])).Select(Detach).ToArray(),Origins=assets.Select(a=>new ConscriptSourceInput.AssetOrigin(a.LocalName,a.GetAttribute("id"),origins[a])).ToArray(),InheritanceUses=inheritanceUses.ToArray(),Searches=searches,Warnings=paths.Issues.Where(i=>i.Code=="MISSINGART").ToArray(),Locations=new(snapshots.Select(s=>new SdkXmlDiagnostics.Snapshot(s.Key,s.Value)).Concat(fragments.Snapshots)),Resources=resources};
 
         //-------------------------------------------------------------------------------------------------

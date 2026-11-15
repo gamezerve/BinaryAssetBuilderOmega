@@ -23,7 +23,7 @@ function Set-TestFixture([string]$Name){Remove-TestData;Copy-Item -LiteralPath (
 function Invoke-TestCase([string]$Label,[bool]$ExpectedSuccess){
     # Reborn: final Documents-style output must also remain unchanged when a later fixture is rejected.
     $finalDirectory=Join-Path $sdk '.work/test-final-mods/RebornTest';$priorFinal=@{}
-    if(-not $ExpectedSuccess -and (Test-Path -LiteralPath $finalDirectory)){foreach($file in Get-ChildItem -LiteralPath $finalDirectory -File -Force | Where-Object Name -NE '.reborn-publish.lock'){$priorFinal[$file.FullName]=(Get-FileHash -LiteralPath $file.FullName).Hash}}
+    if(-not $ExpectedSuccess -and (Test-Path -LiteralPath $finalDirectory)){foreach($file in Get-ChildItem -LiteralPath $finalDirectory -File -Force | Where-Object Name -NE 'mod-publish.lock'){$priorFinal[$file.FullName]=(Get-FileHash -LiteralPath $file.FullName).Hash}}
     # Reborn: automated fixtures publish only to isolated SDK work space, never the user's Documents mod library.
     $log=Join-Path $sdk ('.work/test-'+$Label+'.log');& $runtime -NoProfile -File $driver -ModName RebornTest -FinalModsRoot (Join-Path $sdk '.work/test-final-mods') *> $log
     if(($LASTEXITCODE-eq 0)-ne $ExpectedSuccess){throw ('Unexpected test result: '+$log)}

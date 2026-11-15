@@ -77,9 +77,15 @@ function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[s
                 continue
             }
         }
-        # Reborn: bind loose file bytes before the compiler runs, alongside its XML and resource witnesses.
+        # Reborn: stage loose map and preview bytes once while leaving the originals editable during compilation.
         $warnings=[Collections.Generic.List[string]]::new()
-        $looseEvidence=@($loose | Sort-Object Name | ForEach-Object {[pscustomobject]@{Name=$_.Name;Sha256=[Reborn.PackageFile]::Hash($_.FullName)}})
+        $looseSnapshot=Join-Path $target 'loose-inputs'
+        $null=New-Item -ItemType Directory -Path $looseSnapshot
+        $looseEvidence=@(foreach($file in ($loose | Sort-Object Name)){
+            $captured=Join-Path $looseSnapshot $file.Name
+            Copy-Item -LiteralPath $file.FullName -Destination $captured
+            [pscustomobject]@{Name=$file.Name;Sha256=[Reborn.PackageFile]::Hash($captured)}
+        })
         # Reborn: missing terrain sources warn and skip only this map; no placeholder atlas or partial map is published.
         & (Join-Path $Compiler 'BinaryAssetBuilder.ManifestInspector.exe') map-resource-preflight $entry $Sdk (Join-Path $target 'terrain-audit') 2>&1 | ForEach-Object {
             $line=[string]$_
@@ -107,9 +113,7 @@ function Build-RebornMaps([string]$DataRoot,[string]$Sdk,[hashtable]$Settings,[s
         }
         if($LASTEXITCODE-ne 0){throw ('Map stream staging failed: '+$entry)}
         foreach($file in $looseEvidence){
-            $input=Join-Path $folder.FullName $file.Name;$destination=Join-Path $stage $file.Name
-            Copy-Item -LiteralPath $input -Destination $destination
-            if([Reborn.PackageFile]::Hash($destination)-cne $file.Sha256){throw ('Map source changed while copying: '+$input)}
+            [IO.File]::Move((Join-Path $looseSnapshot $file.Name),(Join-Path $stage $file.Name))
         }
         $plans.Add([pscustomobject]@{Name=$folder.Name;Entry=$entry;Stage=$stage;Sources=$receipt.AuthoredSources;Searches=$receipt.PathSearches;Loose=$looseEvidence;Warnings=$warnings.ToArray();Fresh=$true;Target=$target;Files=@(Get-ChildItem -LiteralPath $stage -File -Recurse | ForEach-Object {[pscustomobject]@{Relative=[IO.Path]::GetRelativePath($stage,$_.FullName);Sha256=[Reborn.PackageFile]::Hash($_.FullName)}})})
     }

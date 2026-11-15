@@ -46,8 +46,11 @@ internal static class GameObjectModuleReview
     internal static Proof Inspect(string path, string name,bool allowNullArmorReferences=false)
     {
         var c = GameObjectStockReview.Capture(path, name,allowNullArmorReferences);
-        return Decode(name, c.Bytes, c.Projection.NativeRoot, SchemaNames());
+        return Inspect(name,c.Bytes,c.Projection.NativeRoot);
     }
+
+    // Reborn: inspect an already bounded comparison record without reopening the retail stream.
+    internal static Proof Inspect(string name,byte[] bytes,int nativeRoot)=>Decode(name,bytes,nativeRoot,SchemaNames());
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: verify count markers, native item pointers, concrete IDs and bounded base-class table chains without interpreting module field values. */

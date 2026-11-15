@@ -10,13 +10,21 @@
     <!-- Reborn: restore original RA3 building armor for this mission. -->
     <Include type="all" source="DATA:Includes/CampaignOverrides/RA3BuildingArmorOverrides.xml" />
     <Include type="all" source="DATA:Includes/CampaignOverrides/CampaignOverrides.xml"/><!-- Campaign Specific Overrides -->
-    <Include type="all" source="DATA:Japan/Units_SinglePlayerCampaign/JapanEmperorMecha.xml"/>
+    <Include type="instance" source="DATA:Japan/Units_SinglePlayerCampaign/JapanEmperorMecha.xml"/>
     <Include type="instance" source="DATA:Neutral/Structures/OreNode.xml" />
 		<Include type="instance" source="DATA:PathMusic/StandardPathMusicGameDynamicState.xml" />
 		<Include type="instance" source="DATA:Includes/SpecialPowerObjectFilters.xml" />
 		<Include type="instance" source="DATA:Civilian/Tokyo_Harbor_TH/Buildings/TH_JapanVIPBunkerSubStructure.xml" />
 		<Include type="instance" source="DATA:Civilian/Mount_Fuji_MJ/Optimized_Props/MJ_GuardHouse01.xml" />
   </Includes>
+  
+  	<GameObject
+		id="JapanEmperorMecha"
+		inheritFrom="JapanEmperorMecha"
+		Description="Desc:JAPANEMPERORMECHA_S07">
+		<DisplayName
+			xai:joinAction="Replace" xmlns:xai="uri:ea.com:eala:asset:instance">Name:JAPANEMPERORMECHA_S07</DisplayName>
+	</GameObject>
   
  	<GameObject
 		id="OreNode"

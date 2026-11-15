@@ -75,7 +75,7 @@ if((Get-Content -LiteralPath $first.SkuDefPath -Raw) -cne 'Reborn: user edited t
 [IO.File]::WriteAllText((Join-Path $first.Directory 'RebornTest_3.00_Streams.big'),'Reborn: unmanaged file.')
 Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 3.00 $streams $misc $mods} 'UnmanagedCollision'
 # Reborn: hold the destination lock to prove another publisher cannot interleave replacement operations.
-$held=[IO.File]::Open((Join-Path $first.Directory '.reborn-publish.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+$held=[IO.File]::Open((Join-Path $first.Directory 'mod-publish.lock'),[IO.FileMode]::Open,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
 try{Expect-PackageFailure {Publish-RebornFinalPackage RebornTest 4.00 $streams $misc $mods} 'ConcurrentPublication'}finally{$held.Dispose()}
 # Reborn: exercise split naming, SKU order, migration from one archive, and stale part removal without multi-gigabyte fixtures.
 $single=Publish-RebornFinalPackage RebornTest 5.00 $streams $misc $mods

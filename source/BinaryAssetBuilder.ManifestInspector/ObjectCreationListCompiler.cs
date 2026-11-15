@@ -10,16 +10,70 @@ using SageBinaryData;
 
 namespace BinaryAssetBuilder.ManifestInspector;
 
-// Reborn: EP1 ObjectCreationList authoring. The native layout is the official marshaler's (see Ep1ObjectCreationList), the stream is
-// untokenized like stock, and every build first re-qualifies the derivation against original EP1 OCLs: a fixed static witness set for
-// the root/CreateObject family, plus one global stock witness for every nugget family or nugget field the authored lists use that the
-// fixed set does not exhibit. Campaign FireSpecialPowerTemplate is qualified by the bundled WorldBuilder paradrops.
-// A family or field with no selected stock witness remains refused instead of being emitted on trust.
+// Reborn: compile reviewed EP1 OCL layouts and validate authored bytes independently of developer stock comparisons.
 internal static class ObjectCreationListCompiler
 {
     internal const uint TypeId=0xE86E4D61u;
-    private const uint TypeHash=0x1477F2E1u;
+    internal const uint TypeHash=0x1477F2E1u;
     internal sealed record Capture(ManifestAsset Asset,byte[] Bytes);
+
+    // Reborn: retain the field coverage of the reviewed static, WorldBuilder and linked global witnesses.
+    private static readonly HashSet<string> ReviewedFeatures = new(StringComparer.Ordinal)
+    {
+        "@Flags",
+        "CreateObject",
+        "CreateObject/@Count",
+        "CreateObject/@DisabledWhileBusy",
+        "CreateObject/@Disposition",
+        "CreateObject/@DispositionAngle",
+        "CreateObject/@DispositionIntensity",
+        "CreateObject/@FireSpecialPowerTemplate",
+        "CreateObject/@MaxForceMagnitude",
+        "CreateObject/@MaxForcePitch",
+        "CreateObject/@MaxHealth",
+        "CreateObject/@MaxLifetime",
+        "CreateObject/@MinForceMagnitude",
+        "CreateObject/@MinForcePitch",
+        "CreateObject/@MinHealth",
+        "CreateObject/@MinLifetime",
+        "CreateObject/@Options",
+        "CreateObject/@StartingBusyTime",
+        "CreateObject/@StatusToCopyFromParent",
+        "CreateObject/@TempModelCondition",
+        "CreateObject/@TempModelConditionTime",
+        "CreateObject/@VelocityScale",
+        "CreateObject/CreateObject",
+        "CreateObject/Offset",
+        "FlingObject",
+        "FlingObject/@Count",
+        "FlingObject/@CreateObject",
+        "FlingObject/@Height",
+        "FlingObject/@InitialDelay",
+        "FlingObject/@Speed",
+        "FlingObject/@UsePrimaryObjectForOffsets",
+        "FlingObject/AngleAroundTarget",
+        "FlingObject/DistanceAtTarget",
+        "FlingObject/DistanceFromTarget",
+        "FlingObject/Offset",
+        "ParabolicCurve",
+        "ParabolicCurve/@ApproachTime",
+        "ParabolicCurve/@AttackHeight",
+        "ParabolicCurve/@CreateObject",
+        "ParabolicCurve/@CruiseHeight",
+        "ParabolicCurve/@EndDistanceFromTarget",
+        "ParabolicCurve/@InitialDelay",
+        "ParabolicCurve/@LeaveRoll",
+        "ParabolicCurve/@Options",
+        "ParabolicCurve/@StartDistanceFromTarget",
+        "ParabolicCurve/Offset",
+        "StrafeAreaSquad",
+        "StrafeAreaSquad/@Count",
+        "StrafeAreaSquad/@CreateObject",
+        "StrafeAreaSquad/@DistanceFromTarget",
+        "StrafeAreaSquad/@Height",
+        "StrafeAreaSquad/InterOffset",
+        "StrafeAreaSquad/IntraOffset",
+    };
 
     // Reborn: original EP1 static-stream OCLs (DATA:EP1 sources) covering flags in both option words, dispositions, forces, angles,
     // lifetimes, velocity, an enum pointee (StatusToCopyFromParent) and weak object lists.
@@ -72,16 +126,23 @@ internal static class ObjectCreationListCompiler
     //-------------------------------------------------------------------------------------------------
     internal static void Qualify(string manifest,string global,SchemaSet schemas,ManifestAsset[] catalog,IEnumerable<XmlDocument> authored)
     {
-        ReviewAbi();string sage=SageXml();var covered=new HashSet<string>(StringComparer.Ordinal);int globals=0,worlds=0;var documents=authored.ToArray();
+        ReviewAbi();
+        var documents=authored.ToArray();
+        foreach(var document in documents)
+            foreach(string feature in Features(document.DocumentElement!).OrderBy(f=>f,StringComparer.Ordinal))
+                if(!ReviewedFeatures.Contains(feature))
+                    throw SdkXmlDiagnostics.At(new InvalidDataException("ObjectCreationList "+feature+" has no original EP1 stock witness; this nugget family/field is not enabled."),Node(document.DocumentElement!,feature)??document.DocumentElement!);
+        if(!SdkBuildTests.Enabled)return;
+
+        string sage=SageXml();var covered=new HashSet<string>(StringComparer.Ordinal);int globals=0,worlds=0;
         var cache=new Dictionary<string,XmlDocument>(StringComparer.OrdinalIgnoreCase);
-        // Reborn: keep source feature admission in both modes; stock binary comparisons are optional developer tests.
-        foreach(var (file,id) in StaticWitnesses){var source=Owner(Load(Path.Combine(sage,file)),id,file);if(SdkBuildTests.Enabled)Verify(source,manifest,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));}
+        foreach(var (file,id) in StaticWitnesses){var source=Owner(Load(Path.Combine(sage,file)),id,file);Verify(source,manifest,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));}
         // Reborn: campaign paradrop OCLs live in WorldBuilder, not global; their real +208 imports qualify FireSpecialPowerTemplate without copying retail payloads.
         if(documents.Any(d=>Features(d.DocumentElement!).Contains("CreateObject/@FireSpecialPowerTemplate"))){
             string world=WorldBuilderAssetResolver.CatalogPath();
             foreach(string id in new[]{"OCL_CAMPAlliedBomberDrop1","OCL_CAMPAlliedBomberDrop2"}){
                 var source=Owner(Load(Path.Combine(sage,"Allied/Units_Campaign/CAMP_AlliedBomberAircraft_Infantry_1.xml")),id,"campaign paradrop source");
-                if(SdkBuildTests.Enabled)Verify(source,world,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));worlds++;
+                Verify(source,world,schemas,catalog);covered.UnionWith(Features(source.DocumentElement!));worlds++;
             }
         }
         // Reborn: expression-bearing original lists become valid witnesses only after the real captured define/include preparation path.
@@ -94,18 +155,19 @@ internal static class ObjectCreationListCompiler
                 var witness=(pool??=StockOriginalUiConfig.Load("GlobalData/ObjectCreationLists.xml","ObjectCreationList")
                     .Where(e=>Eligible(e)&&globalWitnessIds.Contains("ObjectCreationList:"+e.GetAttribute("id"))).ToArray()).FirstOrDefault(e=>Features(e).Contains(feature))
                     ??throw SdkXmlDiagnostics.At(new InvalidDataException("ObjectCreationList "+feature+" has no original EP1 stock witness; this nugget family/field is not enabled."),Node(document.DocumentElement!,feature)??document.DocumentElement!);
-                // Reborn: newly selected field/family admission requires the independent original native comparison even in fast mode.
-                var source=Xml(witness.OuterXml);Verify(source,global,schemas,catalog,required:true);covered.UnionWith(Features(source.DocumentElement!));globals++;
+                var source=Xml(witness.OuterXml);
+                Verify(source,global,schemas,catalog);
+                covered.UnionWith(Features(source.DocumentElement!));globals++;
             }
-        Console.WriteLine(SdkBuildTests.Enabled?"Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global + "+worlds+" WorldBuilder witness(es); untokenized native).":"Reborn: ObjectCreationList source admission completed; developer stock comparisons skipped.");
+        Console.WriteLine("Reborn: EP1 ObjectCreationList stock qualification: PASS ("+StaticWitnesses.Length+" static + "+globals+" global + "+worlds+" WorldBuilder witness(es); untokenized native).");
 
         XmlDocument Load(string path){if(!cache.TryGetValue(path,out var xml))cache[path]=xml=SdkXmlDiagnostics.Parse(SdkEnvironmentPreflight.Read(path,4*1048576),path);return xml;}
     }
 
-    private static void Verify(XmlDocument source,string manifest,SchemaSet schemas,ManifestAsset[] catalog,bool required=false)
+    private static void Verify(XmlDocument source,string manifest,SchemaSet schemas,ManifestAsset[] catalog)
     {
         string id=source.DocumentElement!.GetAttribute("id");var stock=Stock(manifest,"ObjectCreationList:"+id);
-        try{SchemaNativeContract.VerifyStock(ProofSource(source,schemas,catalog).DocumentElement!,typeof(Ep1ObjectCreationList),0,stock.Bytes,0,stock.Asset.References.ToArray(),required:required);}
+        try{SchemaNativeContract.VerifyStock(ProofSource(source,schemas,catalog).DocumentElement!,typeof(Ep1ObjectCreationList),0,stock.Bytes,0,stock.Asset.References.ToArray());}
         catch(InvalidDataException error){throw new InvalidDataException("EP1 ObjectCreationList stock qualification failed for "+id+": "+error.Message,error);}
     }
 
@@ -142,7 +204,13 @@ internal static class ObjectCreationListCompiler
 
     private static string SageXml()
     {
-        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent){string path=Path.Combine(folder.FullName,"alpha","SageXML");if(File.Exists(Path.Combine(path,"GlobalData","ObjectCreationLists.xml")))return path;}
+        // Reborn: find both portable SDK and repository layouts beside the bundled fixtures.
+        for(var folder=new DirectoryInfo(Path.GetDirectoryName(ReferencePipelineSmokeTest.FindFixture())!);folder!=null;folder=folder.Parent)
+            foreach(string relative in new[]{"SageXML","alpha/SageXML"})
+            {
+                string path=Path.Combine(folder.FullName,relative);
+                if(File.Exists(Path.Combine(path,"GlobalData","ObjectCreationLists.xml")))return path;
+            }
         throw new InvalidDataException("Original EP1 SageXML source root not found for ObjectCreationList qualification.");
     }
 

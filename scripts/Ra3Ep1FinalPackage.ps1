@@ -187,7 +187,7 @@ function Publish-RebornFinalPackage([string]$ModName,[string]$Version,[string]$S
     $output=Join-Path $ModsRoot $ModName;Assert-RebornPackagePath $output
     $null=New-Item -ItemType Directory -Path $output -Force
     # Reborn: serialize all publishers targeting this directory, including a second SDK checkout.
-    $lockPath=Join-Path $output '.reborn-publish.lock';Assert-RebornPackagePath $lockPath
+    $lockPath=Join-Path $output 'mod-publish.lock';Assert-RebornPackagePath $lockPath
     $publicationLock=[IO.File]::Open($lockPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
     $stem=$ModName+'_'+$Version;$streamsName=$stem+'_Streams.big';$miscName=$stem+'_Misc.big';$skuName=$stem+'.skudef';$receiptName='.'+$stem+'.package.json'
     $stage=Join-Path $output ('.reborn-stage-'+[guid]::NewGuid().ToString('N'));$cleanup=$true;$stageOwned=$false

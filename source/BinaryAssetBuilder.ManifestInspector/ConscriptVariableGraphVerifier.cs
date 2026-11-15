@@ -15,7 +15,7 @@ internal sealed class ConscriptVariableGraphVerifier
 {
     private static readonly int[] Detached={44,48,452,456,412,416,420,424,428,432,468,472,476,480,484,488,492,496,500,532,536,540,552,560,564,568,572};
     private readonly XmlSchemaSet official;
-    private readonly (byte[] Metadata,ManifestDocument Document,ManifestAsset Asset,long Offset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
+    private readonly (ManifestAsset Asset,byte[] Bytes,GameObjectStockReview.Projection Projection) stock;
     private readonly GameObjectModuleReview.Proof topology;
     private readonly Dictionary<string,GameObjectModuleReview.Module> templates;
     // Reborn: sell modules use their actual building stock witness, independent of Conscript's original module list.
@@ -121,7 +121,7 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> strafeAreaUpdate;
     private readonly Lazy<StockMetadataGrammar> strafeAreaTargetChooser;
     // Reborn: bridge metadata is learned lazily from the original WorldBuilder stream.
-    private readonly Lazy<StockMetadataGrammar> bridgeBuilder = new(BridgeBuilderContract.Qualify);
+    private readonly Lazy<StockMetadataGrammar> bridgeBuilder = MetadataRules.Deferred(nameof(bridgeBuilder),BridgeBuilderContract.Qualify);
     private readonly Lazy<StockMetadataGrammar> suckUpObjects;
     private readonly Lazy<StockMetadataGrammar> attackAssistResponse;
     // Reborn: garrisons use the retail-qualified inline roster and OpenContain metadata chain.
@@ -180,13 +180,13 @@ internal sealed class ConscriptVariableGraphVerifier
     private readonly Lazy<StockMetadataGrammar> moneyGainAttachUpdate;
     private readonly Lazy<StockMetadataGrammar> minerBehaviors;
     // Reborn: qualify collision damage metadata once per compilation.
-    private readonly Lazy<StockMetadataGrammar> damageDynamicsCollide = new(DamageDynamicsCollideContract.Qualify);
+    private readonly Lazy<StockMetadataGrammar> damageDynamicsCollide = MetadataRules.Deferred(nameof(damageDynamicsCollide),DamageDynamicsCollideContract.Qualify);
     // Reborn: use the stock impact audio grammar only for objects that own the module.
-    private readonly Lazy<StockMetadataGrammar> audioDynamicsCollide = new(AudioDynamicsCollideContract.Qualify);
+    private readonly Lazy<StockMetadataGrammar> audioDynamicsCollide = MetadataRules.Deferred(nameof(audioDynamicsCollide),AudioDynamicsCollideContract.Qualify);
     // Reborn: qualify the collision weight only for builds that use the module.
-    private readonly Lazy<StockMetadataGrammar> enableDynamicsCollide = new(EnableDynamicsCollideContract.Qualify);
+    private readonly Lazy<StockMetadataGrammar> enableDynamicsCollide = MetadataRules.Deferred(nameof(enableDynamicsCollide),EnableDynamicsCollideContract.Qualify);
     // Reborn: cache retail toppling metadata only when a compiled prop needs it.
-    private readonly Lazy<StockMetadataGrammar> toppleUpdate = new(ToppleUpdateContract.Qualify);
+    private readonly Lazy<StockMetadataGrammar> toppleUpdate = MetadataRules.Deferred(nameof(toppleUpdate),ToppleUpdateContract.Qualify);
     private readonly Lazy<StockMetadataGrammar> dynamicsUpdate;
     private readonly Lazy<StockMetadataGrammar> streamState;
     // Reborn: assisted-placement info is qualified from the original retail ore node.
@@ -253,54 +253,56 @@ internal sealed class ConscriptVariableGraphVerifier
     //-------------------------------------------------------------------------------------------------
     internal ConscriptVariableGraphVerifier(XmlSchemaSet schemas,string manifest,XmlDocument baseline,SchemaSet referenceSchemas,ManifestAsset[] catalog)
     {
-        official=schemas;stock=GameObjectStockReview.Capture(manifest,"GameObject:SovietAntiInfantryInfantry");topology=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name);
-        // Reborn: bool-only stock witnesses run in developer mode; source verification and metadata-producing grammar loads remain active in both modes.
+        official=schemas;
+        stock=GameObjectStockReview.VerificationRecord(manifest,"SovietAntiInfantryInfantry");
+        topology=GameObjectModuleReview.Inspect(stock.Asset.Name,stock.Bytes,stock.Projection.NativeRoot);
+        // Reborn: fast verification uses embedded behavior rules; developer builds also compare their retail witnesses.
         queueDock=new(()=>!SdkBuildTests.Enabled||QueueDockContract.QualifyStock(manifest));
         queueExit=new(()=>!SdkBuildTests.Enabled||QueueProductionExitContract.QualifyStock(manifest));
         spawn=new(()=>!SdkBuildTests.Enabled||SpawnBehaviorContract.QualifyStock(manifest,official,catalog));
         unpack=new(()=>!SdkBuildTests.Enabled||StructureUnpackContract.QualifyStock(manifest,official,catalog));
-        production=new(()=>ProductionUpdateContract.QualifyGraph(manifest,baseline,referenceSchemas,catalog));
+        production=MetadataRules.Deferred(nameof(production),()=>ProductionUpdateContract.QualifyGraph(manifest,baseline,referenceSchemas,catalog));
         repair=new(()=>!SdkBuildTests.Enabled||RepairUpdateContract.QualifyStock(manifest));
         engineer=new(()=>!SdkBuildTests.Enabled||EngineerContainContract.QualifyStock(manifest,official,catalog));
         placement=new(()=>!SdkBuildTests.Enabled||AssistedPlacementContract.QualifyStock(manifest,official));
         infiltrator=new(()=>!SdkBuildTests.Enabled||InfiltratorContainContract.QualifyStock(manifest,official,catalog));
         structurePlacement=new(()=>!SdkBuildTests.Enabled||StructurePlacementContract.QualifyStock(manifest,official));
         luaEventList=new(()=>!SdkBuildTests.Enabled||LUAEventListContract.QualifyStock(manifest,official));
-        buildingBehavior=new(()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        specialPower=new(()=>SpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        assignSlaves=new(()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        weaponTurret=new(()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        hierarchicalTurrets=new(()=>{var grammar=weaponTurret.Value;WeaponTurretContract.QualifyHierarchical(grammar,manifest,baseline,referenceSchemas,catalog);return grammar;});
-        weaponFireAbility=new(()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        visionInfo=new(()=>VisionInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        propBody=new(()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        storeTemplate=new(()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        playerUpgrade=new(()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        oclPower=new(()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        teleportUpdate=new(()=>TeleportStoredUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        teleportStored=new(()=>TeleportStoredObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        storeObjects=new(()=>StoreObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        addObjectsToLure=new(()=>StoreObjectsContract.QualifyLure(manifest));
+        buildingBehavior=MetadataRules.Deferred(nameof(buildingBehavior),()=>BuildingBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        specialPower=MetadataRules.Deferred(nameof(specialPower),()=>SpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        assignSlaves=MetadataRules.Deferred(nameof(assignSlaves),()=>AssignSlavesSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        weaponTurret=MetadataRules.Deferred(nameof(weaponTurret),()=>WeaponTurretContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        hierarchicalTurrets=MetadataRules.Deferred(nameof(hierarchicalTurrets),()=>{var grammar=weaponTurret.Value.Copy();WeaponTurretContract.QualifyHierarchical(grammar,manifest,baseline,referenceSchemas,catalog);return grammar;});
+        weaponFireAbility=MetadataRules.Deferred(nameof(weaponFireAbility),()=>WeaponFireAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        visionInfo=MetadataRules.Deferred(nameof(visionInfo),()=>VisionInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        propBody=MetadataRules.Deferred(nameof(propBody),()=>PropBodyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        storeTemplate=MetadataRules.Deferred(nameof(storeTemplate),()=>StoreTemplateIDContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        playerUpgrade=MetadataRules.Deferred(nameof(playerUpgrade),()=>PlayerUpgradePowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        oclPower=MetadataRules.Deferred(nameof(oclPower),()=>OclSpecialPowerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        teleportUpdate=MetadataRules.Deferred(nameof(teleportUpdate),()=>TeleportStoredUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        teleportStored=MetadataRules.Deferred(nameof(teleportStored),()=>TeleportStoredObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        storeObjects=MetadataRules.Deferred(nameof(storeObjects),()=>StoreObjectsContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        addObjectsToLure=MetadataRules.Deferred(nameof(addObjectsToLure),()=>StoreObjectsContract.QualifyLure(manifest));
         // Reborn: select the lift activation grammar from the stock static stream.
-        addObjectsToLift=new(()=>StoreObjectsContract.QualifyLift(manifest));
+        addObjectsToLift=MetadataRules.Deferred(nameof(addObjectsToLift),()=>StoreObjectsContract.QualifyLift(manifest));
         // Reborn: learn throw metadata from the retail Psychic Slam module.
-        flingStoredObjects=new(()=>StoreObjectsContract.QualifyFling(manifest));
-        lureObjectsUpdate=new(()=>LureObjectsUpdateContract.Qualify(manifest));
+        flingStoredObjects=MetadataRules.Deferred(nameof(flingStoredObjects),()=>StoreObjectsContract.QualifyFling(manifest));
+        lureObjectsUpdate=MetadataRules.Deferred(nameof(lureObjectsUpdate),()=>LureObjectsUpdateContract.Qualify(manifest));
         // Reborn: derive the shield grammar from the three original Yuriko records.
-        yurikoShieldSphere=new(()=>YurikoShieldSphereContract.Qualify(manifest));
+        yurikoShieldSphere=MetadataRules.Deferred(nameof(yurikoShieldSphere),()=>YurikoShieldSphereContract.Qualify(manifest));
         // Reborn: learn reaction FX metadata from the original Yuriko damage and healing triggers.
-        reactionFXOnDamage=new(()=>ReactionFXOnDamageContract.Qualify(manifest));
-        productionBonus=new(()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        playerPowerManager=new(()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        radar=new(()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        subObjectsUpgrade=new(()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        fireWeaponUpdate=new(()=>FireWeaponUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        passiveAreaEffect=new(()=>PassiveAreaEffectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        captureAbility=new(()=>CaptureAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        emotionTracker=new(()=>EmotionTrackerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        assembleStructure=new(()=>AssembleStructureContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        toggleStatus=new(()=>ToggleStatusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        fireWeaponCollide=new(()=>FireWeaponCollideContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        reactionFXOnDamage=MetadataRules.Deferred(nameof(reactionFXOnDamage),()=>ReactionFXOnDamageContract.Qualify(manifest));
+        productionBonus=MetadataRules.Deferred(nameof(productionBonus),()=>ProductionBonusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        playerPowerManager=MetadataRules.Deferred(nameof(playerPowerManager),()=>PlayerPowerManagerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        radar=MetadataRules.Deferred(nameof(radar),()=>RadarBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        subObjectsUpgrade=MetadataRules.Deferred(nameof(subObjectsUpgrade),()=>SubObjectsUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        fireWeaponUpdate=MetadataRules.Deferred(nameof(fireWeaponUpdate),()=>FireWeaponUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        passiveAreaEffect=MetadataRules.Deferred(nameof(passiveAreaEffect),()=>PassiveAreaEffectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        captureAbility=MetadataRules.Deferred(nameof(captureAbility),()=>CaptureAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        emotionTracker=MetadataRules.Deferred(nameof(emotionTracker),()=>EmotionTrackerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        assembleStructure=MetadataRules.Deferred(nameof(assembleStructure),()=>AssembleStructureContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        toggleStatus=MetadataRules.Deferred(nameof(toggleStatus),()=>ToggleStatusContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        fireWeaponCollide=MetadataRules.Deferred(nameof(fireWeaponCollide),()=>FireWeaponCollideContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: qualify the existing StreamState writer before composing authored stream IDs.
         // Reborn: dynamics source/native grammar is independent of the Conscript baseline.
         // Reborn: one stock grammar qualifies the three complete miner-specific modules.
@@ -314,86 +316,188 @@ internal sealed class ConscriptVariableGraphVerifier
         // Reborn: qualify the original transmitter inheritance and optional-radius/filter metadata.
         // Reborn: qualify the command-set swap against original Outpost/Construction Yard payloads.
         // Reborn: retain the original dying-Kirov movement and slow-death class graph.
-        dyingProjectile=new(()=>DyingProjectileContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        commandSetUpgrade=new(()=>CommandSetUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        techUpgrade=new(()=>TechUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        liftObject=new(()=>LiftObjectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        techUpgradeReceiver=new(()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        aircraftUpdates=new(()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        navalUpdates=new(()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        japanModules=new(()=>JapanModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        alliedUnitModules=new(()=>AlliedUnitModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        vehicleBatchAbilities=new(()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        hammerBehaviors=new(()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        foreach(var family in AdditionalStockBehaviorContract.Families)additionalStockBehaviors.Add(family.Type,new(()=>AdditionalStockBehaviorContract.Qualify(family,manifest,baseline,referenceSchemas,catalog)));
-        slavedUpdate=new(()=>SlavedUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        scoutBehaviors=new(()=>ScoutVehicleBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dyingProjectile=MetadataRules.Deferred(nameof(dyingProjectile),()=>DyingProjectileContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        commandSetUpgrade=MetadataRules.Deferred(nameof(commandSetUpgrade),()=>CommandSetUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        techUpgrade=MetadataRules.Deferred(nameof(techUpgrade),()=>TechUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        liftObject=MetadataRules.Deferred(nameof(liftObject),()=>LiftObjectContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        techUpgradeReceiver=MetadataRules.Deferred(nameof(techUpgradeReceiver),()=>TechUpgradeReceiverContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        aircraftUpdates=MetadataRules.Deferred(nameof(aircraftUpdates),()=>AircraftUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        navalUpdates=MetadataRules.Deferred(nameof(navalUpdates),()=>NavalUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        japanModules=MetadataRules.Deferred(nameof(japanModules),()=>JapanModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        alliedUnitModules=MetadataRules.Deferred(nameof(alliedUnitModules),()=>AlliedUnitModuleContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        vehicleBatchAbilities=MetadataRules.Deferred(nameof(vehicleBatchAbilities),()=>VehicleBatchAbilityContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        hammerBehaviors=MetadataRules.Deferred(nameof(hammerBehaviors),()=>HammerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        foreach(var family in AdditionalStockBehaviorContract.Families)additionalStockBehaviors.Add(family.Type,MetadataRules.Deferred(nameof(additionalStockBehaviors)+"."+family.Type.FullName!,()=>AdditionalStockBehaviorContract.Qualify(family,manifest,baseline,referenceSchemas,catalog)));
+        slavedUpdate=MetadataRules.Deferred(nameof(slavedUpdate),()=>SlavedUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        scoutBehaviors=MetadataRules.Deferred(nameof(scoutBehaviors),()=>ScoutVehicleBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: reuse the retail attachment/filter metadata and qualify the kickback extension on first use.
-        moneyGainAttachUpdate=new(()=>ScoutVehicleBehaviorContract.QualifyMoneyGain(manifest,scoutBehaviors.Value));
-        minerBehaviors=new(()=>MinerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        dynamicsUpdate=new(()=>DynamicsUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        streamState=new(()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        assistedPlacementInfo=new(()=>AssistedPlacementInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        oreNode=new(()=>OreNodeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        dieOnProducerDeath=new(()=>DieOnProducerDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        slaveWatcher=new(()=>SlaveWatcherContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        laserState=new(()=>LaserStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        oclMonitor=new(()=>OCLMonitorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        aimWeapon=new(()=>AimWeaponContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        slowDeath=new(()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        stealthDetector=new(()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        attributeModifierAura=new(()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        invisibilityBehavior=new(()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        garrisonContain=new(()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        moneyGainAttachUpdate=MetadataRules.Deferred(nameof(moneyGainAttachUpdate),()=>ScoutVehicleBehaviorContract.QualifyMoneyGain(manifest,scoutBehaviors.Value.Copy()));
+        minerBehaviors=MetadataRules.Deferred(nameof(minerBehaviors),()=>MinerBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dynamicsUpdate=MetadataRules.Deferred(nameof(dynamicsUpdate),()=>DynamicsUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        streamState=MetadataRules.Deferred(nameof(streamState),()=>StreamStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        assistedPlacementInfo=MetadataRules.Deferred(nameof(assistedPlacementInfo),()=>AssistedPlacementInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        oreNode=MetadataRules.Deferred(nameof(oreNode),()=>OreNodeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dieOnProducerDeath=MetadataRules.Deferred(nameof(dieOnProducerDeath),()=>DieOnProducerDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slaveWatcher=MetadataRules.Deferred(nameof(slaveWatcher),()=>SlaveWatcherContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        laserState=MetadataRules.Deferred(nameof(laserState),()=>LaserStateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        oclMonitor=MetadataRules.Deferred(nameof(oclMonitor),()=>OCLMonitorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        aimWeapon=MetadataRules.Deferred(nameof(aimWeapon),()=>AimWeaponContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slowDeath=MetadataRules.Deferred(nameof(slowDeath),()=>SlowDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        stealthDetector=MetadataRules.Deferred(nameof(stealthDetector),()=>StealthDetectorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        attributeModifierAura=MetadataRules.Deferred(nameof(attributeModifierAura),()=>AttributeModifierAuraContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        invisibilityBehavior=MetadataRules.Deferred(nameof(invisibilityBehavior),()=>InvisibilityBehaviorContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        garrisonContain=MetadataRules.Deferred(nameof(garrisonContain),()=>GarrisonContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: extend the inherited garrison grammar only if the contestable variant is emitted.
-        contestableGarrisonContain=new(()=>GarrisonContainContract.QualifyContestable(garrisonContain.Value));
-        strafeAreaUpdate = new(() => StrafeAreaUpdateContract.Qualify(manifest));
-        strafeAreaTargetChooser = new(() => StrafeAreaTargetChooserContract.Qualify(manifest));
-        suckUpObjects=new(()=>SuckUpObjectsUpdateContract.Qualify(manifest));
-        attackAssistResponse=new(()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        runOffMap=new(()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        ejectPassengers=new(()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        unpauseSpecialPowerUpgrade=new(()=>UnpauseSpecialPowerUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        attributeModifierUpgrade=new(()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        transportContain=new(()=>TransportContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        notifyWhenAttacking=new(()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        monitorSpecialPowerTimer=new(()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        wallBuilder=new(()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        replaceSelf=new(()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        contestableGarrisonContain=MetadataRules.Deferred(nameof(contestableGarrisonContain),()=>GarrisonContainContract.QualifyContestable(garrisonContain.Value.Copy()));
+        strafeAreaUpdate = MetadataRules.Deferred(nameof(strafeAreaUpdate),() => StrafeAreaUpdateContract.Qualify(manifest));
+        strafeAreaTargetChooser = MetadataRules.Deferred(nameof(strafeAreaTargetChooser),() => StrafeAreaTargetChooserContract.Qualify(manifest));
+        suckUpObjects=MetadataRules.Deferred(nameof(suckUpObjects),()=>SuckUpObjectsUpdateContract.Qualify(manifest));
+        attackAssistResponse=MetadataRules.Deferred(nameof(attackAssistResponse),()=>AttackAssistResponseContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        runOffMap=MetadataRules.Deferred(nameof(runOffMap),()=>RunOffMapContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        ejectPassengers=MetadataRules.Deferred(nameof(ejectPassengers),()=>EjectPassengersContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        unpauseSpecialPowerUpgrade=MetadataRules.Deferred(nameof(unpauseSpecialPowerUpgrade),()=>UnpauseSpecialPowerUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        attributeModifierUpgrade=MetadataRules.Deferred(nameof(attributeModifierUpgrade),()=>AttributeModifierUpgradeContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        transportContain=MetadataRules.Deferred(nameof(transportContain),()=>TransportContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        notifyWhenAttacking=MetadataRules.Deferred(nameof(notifyWhenAttacking),()=>NotifyWhenAttackingContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        monitorSpecialPowerTimer=MetadataRules.Deferred(nameof(monitorSpecialPowerTimer),()=>MonitorSpecialPowerTimerContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        wallBuilder=MetadataRules.Deferred(nameof(wallBuilder),()=>WallBuilderContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        replaceSelf=MetadataRules.Deferred(nameof(replaceSelf),()=>ReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: qualify the Reaper extension only when the source graph authors this module.
-        projectileReplaceSelf=new(()=>ProjectileReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        productionInfo=new(()=>ProductionUpdateInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        slaughter=new(()=>SlaughterContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        autoDeposit=new(()=>AutoDepositContract.Qualify(WorldBuilderAssetResolver.CatalogPath(),baseline,referenceSchemas,catalog));
-        fireWeaponDeath=new(()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        projectileReplaceSelf=MetadataRules.Deferred(nameof(projectileReplaceSelf),()=>ProjectileReplaceSelfContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        productionInfo=MetadataRules.Deferred(nameof(productionInfo),()=>ProductionUpdateInfoContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        slaughter=MetadataRules.Deferred(nameof(slaughter),()=>SlaughterContainContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        autoDeposit=MetadataRules.Deferred(nameof(autoDeposit),()=>AutoDepositContract.Qualify(WorldBuilderAssetResolver.CatalogPath(),baseline,referenceSchemas,catalog));
+        fireWeaponDeath=MetadataRules.Deferred(nameof(fireWeaponDeath),()=>FireWeaponDeathContract.Qualify(manifest,baseline,referenceSchemas,catalog));
         // Reborn: both source families use their own native layout, independently witnessed on retail airfields.
-        foreach(var type in new[]{typeof(Ep1RecallUnitsSpecialPowerModuleData),typeof(Ep1ParkingPlaceBehaviorModuleData)})airfield.Add(type,new(()=>AirfieldBehaviorContract.Qualify(type,manifest,baseline,referenceSchemas,catalog)));
-        foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,new(()=>QualifySchemaFamily(manifest,family)));
+        foreach(var type in new[]{typeof(Ep1RecallUnitsSpecialPowerModuleData),typeof(Ep1ParkingPlaceBehaviorModuleData)})airfield.Add(type,MetadataRules.Deferred(nameof(airfield)+"."+type.FullName!,()=>AirfieldBehaviorContract.Qualify(type,manifest,baseline,referenceSchemas,catalog)));
+        foreach(var family in SchemaNativeContract.Families)schemaFamilies.Add(family.Type,MetadataRules.Deferred(nameof(schemaFamilies)+"."+family.Type.FullName!,()=>QualifySchemaFamily(manifest,family)));
         // Reborn: independently qualify omitted Geometry only when an authored object actually omits it.
-        geometryAbsent=new(()=>GameObjectGeometryContract.QualifyAbsent(manifest));
-        geometryGrammar=new(()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        dependencyGrammar=new(()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        jetAiGrammar=new(()=>JetAIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        aiGrammar=new(()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
-        animalAiGrammar=new(()=>AnimalAIUpdateContract.Qualify(baseline,referenceSchemas,catalog));
-        foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,new(()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
+        geometryAbsent=new(()=>!SdkBuildTests.Enabled||GameObjectGeometryContract.QualifyAbsent(manifest));
+        geometryGrammar=MetadataRules.Deferred(nameof(geometryGrammar),()=>GameObjectGeometryContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        dependencyGrammar=MetadataRules.Deferred(nameof(dependencyGrammar),()=>GameObjectDependencyContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        jetAiGrammar=MetadataRules.Deferred(nameof(jetAiGrammar),()=>JetAIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        aiGrammar=MetadataRules.Deferred(nameof(aiGrammar),()=>AIUpdateContract.Qualify(manifest,baseline,referenceSchemas,catalog));
+        animalAiGrammar=MetadataRules.Deferred(nameof(animalAiGrammar),()=>AnimalAIUpdateContract.Qualify(baseline,referenceSchemas,catalog));
+        foreach(string name in GameObjectExtendedRootContract.Names)extendedRoots.Add(name,MetadataRules.Deferred(nameof(extendedRoots)+"."+name,()=>GameObjectExtendedRootContract.Qualify(name,manifest,baseline,referenceSchemas,catalog)));
         powerUpgrade=new(()=>PowerUpgradeContract.Create(stock.Bytes,topology.Containers.Single(c=>c.Name=="Behaviors").Modules,GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode("AI")].Offset));
         fxList=new(()=>!SdkBuildTests.Enabled||FXListBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         secondaryDamage=new(()=>!SdkBuildTests.Enabled||SecondaryDamageTrackerContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         // Reborn: a weak equivalence list has an actual populated retail item-table witness.
-        equivalentWitness=new(()=>GameObjectEquivalentToContract.Qualify(manifest));
+        equivalentWitness=new(()=>!SdkBuildTests.Enabled||GameObjectEquivalentToContract.Qualify(manifest));
         browserWitness=new(()=>!SdkBuildTests.Enabled||GameObjectBrowserContract.Qualify(manifest));
         aiAbsentWitness=new(()=>!SdkBuildTests.Enabled||AIAbsenceContract.Qualify(manifest));
         deathBehaviors=new(()=>!SdkBuildTests.Enabled||DeathBehaviorContract.QualifyStock(manifest,official,referenceSchemas,baseline,catalog));
         templates=ConscriptModuleScalarContract.Owners(baseline).ToDictionary(o=>o.Element.GetAttribute("id"),o=>topology.Containers.Single(c=>c.Name==o.Container).Modules[o.Index],StringComparer.Ordinal);
         sell=new(()=>{
-            var captured=GameObjectStockReview.Capture(manifest,"GameObject:AlliedConstructionYard");var modules=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules;
+            var captured=GameObjectStockReview.VerificationRecord(manifest,"AlliedConstructionYard");var modules=GameObjectModuleReview.Inspect(captured.Asset.Name,captured.Bytes,captured.Projection.NativeRoot).Containers.Single(c=>c.Name=="Behaviors").Modules;
             var module=modules.Single(m=>m.Type=="StructureSellUpdateModuleData");int index=Array.IndexOf(modules,module);
             int end=index+1<modules.Length?modules[index+1].Wrapper:GameObjectStockReview.Tokens(captured.Bytes,0)[FastHash.GetHashCode("AI")].Offset;
             return(captured.Bytes,module,end);
         });
         this.referenceSchemas=referenceSchemas;this.catalog=catalog;this.baseline=CopySource(baseline);
         if(!ConscriptReferenceTargets.Read(this.baseline,referenceSchemas,catalog).SequenceEqual(stock.Asset.References))throw new InvalidDataException("Reference source traversal differs from captured stock occurrence slots.");
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: regenerate every registered grammar from its retail witnesses, including unreferenced behavior families. */
+    //-------------------------------------------------------------------------------------------------
+    internal void CaptureMetadataRules()
+    {
+        foreach(var pending in new Lazy<StockMetadataGrammar>[]
+        {
+            production,
+            buildingBehavior,
+            assignSlaves,
+            specialPower,
+            fireWeaponDeath,
+            autoDeposit,
+            slaughter,
+            productionInfo,
+            replaceSelf,
+            projectileReplaceSelf,
+            weaponFireAbility,
+            visionInfo,
+            propBody,
+            storeTemplate,
+            playerUpgrade,
+            oclPower,
+            teleportUpdate,
+            teleportStored,
+            storeObjects,
+            addObjectsToLure,
+            addObjectsToLift,
+            flingStoredObjects,
+            lureObjectsUpdate,
+            yurikoShieldSphere,
+            reactionFXOnDamage,
+            productionBonus,
+            playerPowerManager,
+            radar,
+            monitorSpecialPowerTimer,
+            notifyWhenAttacking,
+            transportContain,
+            unpauseSpecialPowerUpgrade,
+            attributeModifierUpgrade,
+            ejectPassengers,
+            runOffMap,
+            strafeAreaUpdate,
+            strafeAreaTargetChooser,
+            bridgeBuilder,
+            suckUpObjects,
+            attackAssistResponse,
+            garrisonContain,
+            contestableGarrisonContain,
+            fireWeaponUpdate,
+            passiveAreaEffect,
+            captureAbility,
+            emotionTracker,
+            assembleStructure,
+            toggleStatus,
+            fireWeaponCollide,
+            liftObject,
+            techUpgrade,
+            commandSetUpgrade,
+            dyingProjectile,
+            techUpgradeReceiver,
+            aircraftUpdates,
+            navalUpdates,
+            alliedUnitModules,
+            japanModules,
+            vehicleBatchAbilities,
+            hammerBehaviors,
+            scoutBehaviors,
+            slavedUpdate,
+            moneyGainAttachUpdate,
+            minerBehaviors,
+            damageDynamicsCollide,
+            audioDynamicsCollide,
+            enableDynamicsCollide,
+            toppleUpdate,
+            dynamicsUpdate,
+            streamState,
+            assistedPlacementInfo,
+            oreNode,
+            dieOnProducerDeath,
+            slaveWatcher,
+            laserState,
+            oclMonitor,
+            aimWeapon,
+            slowDeath,
+            stealthDetector,
+            attributeModifierAura,
+            invisibilityBehavior,
+            subObjectsUpgrade,
+            wallBuilder,
+            weaponTurret,
+            hierarchicalTurrets,
+            geometryGrammar,
+            dependencyGrammar,
+            aiGrammar,
+            animalAiGrammar,
+            jetAiGrammar,
+        }.Concat(airfield.Values).Concat(additionalStockBehaviors.Values).Concat(schemaFamilies.Values).Concat(extendedRoots.Values))
+            try { _=pending.Value; }
+            catch(InvalidDataException error) { MetadataRules.RecordCaptureError(error); }
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -1302,18 +1406,22 @@ internal sealed class ConscriptVariableGraphVerifier
             {
             var lamp=GameObjectStockReview.Capture(editor,identity,allowNullArmorReferences:true);
             var lampModule=GameObjectModuleReview.Inspect(editor,identity,allowNullArmorReferences:true).Containers.Single(c=>c.Name=="Draws").Modules.Single(m=>m.TypeId==family.TypeId);
-            var lampSource=(XmlDocument)baseline.CloneNode(true);
-            var lampDraws=lampSource.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();lampDraws.RemoveAll();
-            var lampDraw=(XmlElement)lampSource.ImportNode(GameObjectExtendedRootContract.Original(witnessSource,"DynamicsDraw").Single(),true);
-            ConscriptVariableBehaviorSource.DropLeafFormatting(lampDraw);lampDraws.AppendChild(lampDraw);
-            // Reborn: editor-only textures/models belong to this original witness proof; they never augment emitted runtime dependencies.
-            var editorCatalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(editor,64*1048576));
-            TypeRegistryAudit.ValidateTarget(editorCatalog.Header.Version,editorCatalog.Header.AllTypesHash);
-            if(!editorCatalog.Header.IsLinked||editorCatalog.Validate().Count!=0)throw new InvalidDataException("Invalid original DynamicsDraw editor witness catalog.");
-            var lampKnown=catalog.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
-            var lampCatalog=catalog.Concat(editorCatalog.Assets.Where(a=>!lampKnown.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
-            var lampResolved=SchemaNativeContract.Resolve(lampSource,referenceSchemas,lampCatalog).GetElementsByTagName("DynamicsDraw",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();
-            SchemaNativeContract.VerifyStock(lampResolved,family.Type,family.TypeId,lamp.Bytes,lampModule.Native,lamp.Asset.References.ToArray(),required:true);
+            // Reborn: check original source values only in developer builds; keep stock metadata validation in fast builds.
+            if(SdkBuildTests.Enabled)
+            {
+                var lampSource=(XmlDocument)baseline.CloneNode(true);
+                var lampDraws=lampSource.GetElementsByTagName("Draws",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();lampDraws.RemoveAll();
+                var lampDraw=(XmlElement)lampSource.ImportNode(GameObjectExtendedRootContract.Original(witnessSource,"DynamicsDraw").Single(),true);
+                ConscriptVariableBehaviorSource.DropLeafFormatting(lampDraw);lampDraws.AppendChild(lampDraw);
+                // Reborn: editor-only textures/models belong to this original witness proof; they never augment emitted runtime dependencies.
+                var editorCatalog=ManifestReader.Read(SdkEnvironmentPreflight.Read(editor,64*1048576));
+                TypeRegistryAudit.ValidateTarget(editorCatalog.Header.Version,editorCatalog.Header.AllTypesHash);
+                if(!editorCatalog.Header.IsLinked||editorCatalog.Validate().Count!=0)throw new InvalidDataException("Invalid original DynamicsDraw editor witness catalog.");
+                var lampKnown=catalog.Select(a=>new AssetId(a.TypeId,a.InstanceId)).ToHashSet();
+                var lampCatalog=catalog.Concat(editorCatalog.Assets.Where(a=>!lampKnown.Contains(new(a.TypeId,a.InstanceId)))).ToArray();
+                var lampResolved=SchemaNativeContract.Resolve(lampSource,referenceSchemas,lampCatalog).GetElementsByTagName("DynamicsDraw",SchemaSet.XmlNamespace).OfType<XmlElement>().Single();
+                SchemaNativeContract.VerifyStock(lampResolved,family.Type,family.TypeId,lamp.Bytes,lampModule.Native,lamp.Asset.References.ToArray(),required:true);
+            }
             dynamicsGrammar.Learn(lamp.Bytes,lampModule.Wrapper,lamp.Projection.NativeRoot,family.Type);
             }
 

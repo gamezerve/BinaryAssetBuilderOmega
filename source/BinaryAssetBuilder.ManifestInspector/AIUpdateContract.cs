@@ -72,13 +72,19 @@ internal static class AIUpdateContract
         if(Marshal.SizeOf<Native>()!=76||Marshal.SizeOf<Chooser>()!=40||Marshal.SizeOf<BaseChooser>()!=36)throw new InvalidDataException("AIUpdate proof/native ABI size differs.");
         var grammar=new StockMetadataGrammar();
         foreach(string name in new[]{"SovietAntiInfantryInfantry","SovietRefinery","SovietAntiVehicleInfantry"}){
-            var captured=GameObjectStockReview.Capture(manifest,"GameObject:"+name);var module=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="AI").Modules.Single();var document=(XmlDocument)baseline.CloneNode(true);
-            if(name!="SovietAntiInfantryInfantry"){var original=(XmlElement)document.ImportNode(GameObjectExtendedRootContract.Original(name=="SovietRefinery"?"Soviet/Structures/SovietRefinery.xml":"Soviet/Units/SovietAntiVehicleInfantry.xml","AI").Single(),true);
-                // Reborn: the vision witness (one ObjectVisionRange item) uses a GlobalDefines idle-scan delay; resolve it from the original defines.
-                foreach(var attribute in original.SelectNodes(".//@*")!.OfType<XmlAttribute>().Where(a=>a.Value.StartsWith("=$",StringComparison.Ordinal)).ToArray())attribute.Value=GameObjectExtendedRootContract.Original("GlobalData/GlobalDefines.xml","Define").Single(e=>e.GetAttribute("name")==attribute.Value[2..]).GetAttribute("value");
-                var previous=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="AI");previous.ParentNode!.ReplaceChild(original,previous);}
-            var resolved=SchemaNativeContract.Resolve(document,schemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI").Element;
-            SchemaNativeContract.VerifyStock(element,typeof(Native),0x08DBC00Eu,captured.Bytes,module.Native,captured.Asset.References.ToArray());grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,typeof(Native));
+            var captured=GameObjectStockReview.Capture(manifest,"GameObject:"+name);var module=GameObjectModuleReview.Inspect(manifest,captured.Asset.Name).Containers.Single(c=>c.Name=="AI").Modules.Single();
+            // Reborn: the original AI XML is a developer witness; fast builds learn row kinds from native records.
+            if(SdkBuildTests.Enabled)
+            {
+                var document=(XmlDocument)baseline.CloneNode(true);
+                if(name!="SovietAntiInfantryInfantry"){var original=(XmlElement)document.ImportNode(GameObjectExtendedRootContract.Original(name=="SovietRefinery"?"Soviet/Structures/SovietRefinery.xml":"Soviet/Units/SovietAntiVehicleInfantry.xml","AI").Single(),true);
+                    // Reborn: the vision witness (one ObjectVisionRange item) uses a GlobalDefines idle-scan delay; resolve it from the original defines.
+                    foreach(var attribute in original.SelectNodes(".//@*")!.OfType<XmlAttribute>().Where(a=>a.Value.StartsWith("=$",StringComparison.Ordinal)).ToArray())attribute.Value=GameObjectExtendedRootContract.Original("GlobalData/GlobalDefines.xml","Define").Single(e=>e.GetAttribute("name")==attribute.Value[2..]).GetAttribute("value");
+                    var previous=document.DocumentElement!.ChildNodes.OfType<XmlElement>().Single(e=>e.LocalName=="AI");previous.ParentNode!.ReplaceChild(original,previous);}
+                var resolved=SchemaNativeContract.Resolve(document,schemas,catalog);var element=ConscriptModuleScalarContract.Owners(resolved).Single(o=>o.Container=="AI").Element;
+                SchemaNativeContract.VerifyStock(element,typeof(Native),0x08DBC00Eu,captured.Bytes,module.Native,captured.Asset.References.ToArray());
+            }
+            grammar.Learn(captured.Bytes,module.Wrapper,captured.Projection.NativeRoot,typeof(Native));
         }
         return grammar;
     }

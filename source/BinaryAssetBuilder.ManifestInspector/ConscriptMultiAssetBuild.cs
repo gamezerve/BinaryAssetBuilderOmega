@@ -121,6 +121,13 @@ internal static class ConscriptMultiAssetBuild
             var plans=sources.Where(s=>s.DocumentElement!.LocalName=="GameObject").ToDictionary(s=>s,s=>ConscriptVariableBehaviorSource.Admit(s,baseline,official));
             // Reborn: immutable stock grammar and source-keyed reference tables belong to this build/catalog generation; every object still owns its own source plan and native verification.
             var graphVerifier=plans.Count==0?null:new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available);
+            // Reborn: explicit developer regeneration covers every behavior grammar without building an asset stream.
+            if(MetadataRules.Capturing)
+            {
+                (graphVerifier??new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,available)).CaptureMetadataRules();
+                MetadataRules.Get("WeaponTemplate",()=>WeaponTemplateCompiler.Qualify(manifest,schemas,stock));
+                return true;
+            }
             // Reborn: developer mode compares original Uprising multisound records; fast builds retain authored native verification.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Multisound"))Ep1MultisoundCompiler.Qualify(global,schemas,stock);
             // Reborn: optional developer mode compares original FX payloads; current-source native ownership remains mandatory in both modes.
@@ -159,11 +166,14 @@ internal static class ConscriptMultiAssetBuild
             // Reborn: developer camera qualification uses the original global record; fast mode keeps authored schema/native validation.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="CameraSettings"))CameraSettingsCompiler.Qualify(global);
             // Reborn: qualify UnitAISettings against the native EP1 global singleton.
-            // Reborn: new UI root processors require independent original native qualification even in fast builds.
-            foreach(var family in StockAssetRootCompiler.Families.Where(f=>sources.Any(s=>s.DocumentElement!.LocalName==f.Name)))
-                StockAssetRootCompiler.Qualify(family,manifest,global,schemas,available);
-            // Reborn: every authored AI heuristic class also needs its independent original source/native witness.
-            if(sources.Any(s=>s.DocumentElement!.LocalName is "AIBudgetStateDefinition" or "AIBuildStateDefinition" or "AIStrategicStateDefinition" or "AIPersonalityDefinition"))AIStateHeuristicContract.Qualify(sources,global,schemas,available);
+            // Reborn: stock root and heuristic comparisons exercise the reviewed layouts in developer mode.
+            if(SdkBuildTests.Enabled)
+            {
+                foreach(var family in StockAssetRootCompiler.Families.Where(f=>sources.Any(s=>s.DocumentElement!.LocalName==f.Name)))
+                    StockAssetRootCompiler.Qualify(family,manifest,global,schemas,available);
+                if(sources.Any(s=>s.DocumentElement!.LocalName is "AIBudgetStateDefinition" or "AIBuildStateDefinition" or "AIStrategicStateDefinition" or "AIPersonalityDefinition"))
+                    AIStateHeuristicContract.Qualify(sources,global,schemas,available);
+            }
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="UnitAISettings"))UnitAISettingsCompiler.Qualify(global,schemas,stock);
             // Reborn: developer credits qualification covers the full original EP1 global graph without slowing fast builds.
             if(SdkBuildTests.Enabled&&sources.Any(s=>s.DocumentElement!.LocalName=="Credits"))CreditsCompiler.Qualify(global,schemas,stock);
@@ -214,7 +224,7 @@ internal static class ConscriptMultiAssetBuild
                     instance=Normalize(xml);var plugin=new Ra3Ep1ArmorPlugin();plugin.Initialize(TargetPlatform.Win32);buffer=plugin.ProcessInstance(instance);
                 }else if(type=="WeaponTemplate"){
                     // Reborn: general weapon route: reviewed nugget classes, schema-derived metadata, source/native proof and stock-learned metadata grammar.
-                    WeaponTemplateCompiler.Admit(xml);instance=Normalize(xml);weaponGrammar??=WeaponTemplateCompiler.Qualify(manifest,schemas,stock);
+                    WeaponTemplateCompiler.Admit(xml);instance=Normalize(xml);weaponGrammar??=MetadataRules.Get("WeaponTemplate",()=>WeaponTemplateCompiler.Qualify(manifest,schemas,stock));
                     var proofSource=SchemaNativeContract.Resolve(Xml(xml.DocumentElement!.OuterXml),schemas,available);proofSource.DocumentElement!.RemoveAttribute("id");
                     try{buffer=Buffer(WeaponTemplateCompiler.Build(proofSource,instance,official,weaponGrammar));}catch(Exception error)when(error is InvalidDataException or FormatException or OverflowException){compileLog.NativeError(error,xml);throw;}
                 }else if(type=="PurchasePlayerTechButtonTemplate"){

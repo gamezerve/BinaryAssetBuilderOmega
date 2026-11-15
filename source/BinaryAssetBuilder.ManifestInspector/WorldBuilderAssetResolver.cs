@@ -104,8 +104,13 @@ internal static class WorldBuilderAssetResolver
                 byId[Id(asset)] = (asset,mapArt);
         var selected = new List<(ManifestAsset Asset,string Path)>();
         var visited = new HashSet<AssetId>();
+        using var spawnDependencies = referenceWorldBuilder ? new WorldBuilderSpawnDependencies(worldBuilder, catalogs[worldBuilder]) : null;
         foreach (var seed in mod.Assets.SelectMany(a => a.References).Concat(weakSeeds))
             Visit(seed);
+        // Reborn: an already borrowed record still owns runtime spawn targets outside its strong reference table.
+        if (spawnDependencies != null)
+            foreach (var asset in mod.Assets.Where(a => a.InstanceDataSize == 0))
+                VisitSpawns(Id(asset));
         // Reborn: linked patch loaders scan the base forwards; reject an already malformed patch even when no dependencies are added.
         if (referenceWorldBuilder && mod.ReferencedManifests.Any(r=>r.IsPatch))
             ValidateMapBaseOrder(mod,catalogs[worldBuilder]);
@@ -200,7 +205,26 @@ internal static class WorldBuilderAssetResolver
         // Reborn: original stock cycles remain intact; all acyclic local/imported edges are emitted dependency-first.
         void Order(AssetId id){if(!candidates.TryGetValue(id,out var item)||!ordering.Add(id))return;foreach(var reference in item.Asset.References)Order(reference);sorted.Add(item);}
         // Reborn: a visited set also permits stock cycles; local or already loaded identities always stop retail traversal.
-        void Visit(AssetId id){if(present.Contains(id)||!visited.Add(id))return;if(!byId.TryGetValue(id,out var item))throw new InvalidDataException("Retail dependency has no mod, loaded or extractable provider: "+id);foreach(var reference in item.Asset.References)Visit(reference);selected.Add(item);}
+        void Visit(AssetId id)
+        {
+            if (present.Contains(id) || !visited.Add(id)) return;
+            if (!byId.TryGetValue(id, out var item))
+                throw new InvalidDataException("Retail dependency has no mod, loaded or extractable provider: " + id);
+            foreach (var reference in item.Asset.References)
+                Visit(reference);
+            if (item.Path.Equals(worldBuilder, StringComparison.OrdinalIgnoreCase))
+                VisitSpawns(id);
+            selected.Add(item);
+        }
+
+        // Reborn: follow available typed spawn targets without making optional weak IDs into strong imports.
+        void VisitSpawns(AssetId owner)
+        {
+            if (spawnDependencies == null) return;
+            foreach (var target in spawnDependencies.Read(owner))
+                if (byId.ContainsKey(target))
+                    Visit(target);
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

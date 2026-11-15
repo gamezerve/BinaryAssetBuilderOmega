@@ -4,7 +4,6 @@
 <# Reborn: atomically keep the last successful AdditionalMaps manifests for compile-only map dependency checks. #>
 #-------------------------------------------------------------------------------------------------
 function Save-RebornMapGlobalCatalogs($GlobalBuild,[string]$Cache,[string]$Work) {
-    Assert-RebornGlobalSources $GlobalBuild
     Assert-RebornPackagePath $Cache
     $folder=Join-Path $Work 'global-catalog-cache'
     $null=New-Item -ItemType Directory -Path $folder
@@ -77,10 +76,9 @@ function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Setti
         # Reborn: count the complete all-Include emission graph; empty wrappers, definitions and instance-only bases produce no stream.
         $audit=Get-Content -LiteralPath (Join-Path $target 'dependencies.json') -Raw | ConvertFrom-Json
         if($audit.SourceGraphComplete -and $audit.HasEmittedContent-eq $false){Write-SdkBuildLine ('Skipped: [No input] No assets to compile in global source or its includes: '+$entry.FullName);continue}
-        & $exe conscript-source-prepare $entry.FullName (Join-Path $target 'source') $Sdk $stockData 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global source preparation failed: '+$entry.FullName)}
+        # Reborn: early-global mode holds this stream's XML through qualification, then hands off only its compiled output.
+        & $exe sdk-compile-xml-stream $entry.FullName (Join-Path $target 'source') $Sdk $stockData $Settings.UprisingXmlRoot $StaticManifest $GlobalManifest (Join-Path $target 'compiled') $context global 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global stream compilation failed: '+$entry.FullName)}
         $inputReceipt=Get-Content -LiteralPath (Join-Path $target 'source/source-input.json') -Raw | ConvertFrom-Json
-        # Reborn: the early-global mode emits only actual runtime dependency manifests, never an automatic static-stream dependency.
-        & $exe conscript-alpha-build $Settings.UprisingXmlRoot $StaticManifest $GlobalManifest $inputReceipt.GamePath (Join-Path $target 'compiled') $context global 2>&1 | ForEach-Object {Write-SdkCompilerLine ([string]$_) $Detail};if($LASTEXITCODE-ne 0){throw ('Global stream compilation failed: '+$entry.FullName)}
         $manifest=Join-Path $target 'compiled/stream-readback/diagnostic.manifest'
         $streams+= [pscustomobject]@{Manifest=$manifest;Runtime=('data\additionalmaps\'+$entry.BaseName+'.manifest');Sha256=(Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash}
         # Reborn: the Official map catalog is rebuilt by Build Maps and stays out of the reusable global cache.
@@ -98,7 +96,7 @@ function Build-RebornGlobalData([string]$DataRoot,[string]$Sdk,[hashtable]$Setti
 }
 
 #-------------------------------------------------------------------------------------------------
-<# Reborn: global sources and their alias selections must still match the qualified snapshot when the static build finishes. #>
+<# Reborn: developer tests can replay the original source witnesses independently of packaging. #>
 #-------------------------------------------------------------------------------------------------
 function Assert-RebornGlobalSources($GlobalBuild) {
     foreach($entry in $GlobalBuild.Evidence){
@@ -108,7 +106,7 @@ function Assert-RebornGlobalSources($GlobalBuild) {
 }
 
 #-------------------------------------------------------------------------------------------------
-<# Reborn: replay captured alias winners or warned ART absence before publishing either static or global streams. #>
+<# Reborn: replay captured alias winners or warned ART absence in developer tests. #>
 #-------------------------------------------------------------------------------------------------
 function Assert-RebornSourceSearch([object[]]$Selections) {
     foreach($selection in $Selections){

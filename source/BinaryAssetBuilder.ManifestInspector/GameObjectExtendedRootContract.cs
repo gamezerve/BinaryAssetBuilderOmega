@@ -34,6 +34,7 @@ internal static class GameObjectExtendedRootContract
     //-------------------------------------------------------------------------------------------------
     internal static StockMetadataGrammar Qualify(string name,string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)
     {
+        if(!SdkBuildTests.Enabled)return ReadGrammar(name,manifest,baseline,schemas,catalog);
         var grammar=new StockMetadataGrammar();string stockName=name is "ShadowInfo" or "EvaEventArray" or "CrusherInfo"?"SovietAntiInfantryInfantry":name=="AudioArraySound"?"SovietPowerPlant":"SovietRefinery";
         var stock=GameObjectStockReview.Capture(manifest,"GameObject:"+stockName);var rows=GameObjectStockReview.Tokens(stock.Bytes,0);
         var probe=SdkXmlDiagnostics.Parse(System.Text.Encoding.UTF8.GetBytes(baseline.DocumentElement!.OuterXml));var field=BinaryAssetBuilder.XmlCompiler.Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.Name==name);
@@ -82,6 +83,44 @@ internal static class GameObjectExtendedRootContract
         }else{SchemaNativeContract.VerifyStock(Owners(resolved,name).Single(),field.NativeType,0,stock.Bytes,native,stock.Asset.References.ToArray());grammar.Learn(stock.Bytes,rows[FastHash.GetHashCode(name)].Offset,stock.Projection.NativeRoot,field.NativeType);}
         return grammar;
     }
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: learn root metadata from the selected native witnesses without resolving their original XML. */
+    //-------------------------------------------------------------------------------------------------
+    private static StockMetadataGrammar ReadGrammar(string name,string manifest,XmlDocument baseline,SchemaSet schemas,ManifestAsset[] catalog)
+    {
+        var field=BinaryAssetBuilder.XmlCompiler.Ep1GameObjectRootOwnersProjection.Fields.Single(f=>f.Name==name);
+        var grammar=new StockMetadataGrammar();
+        string[] witnesses=name switch
+        {
+            "AudioArraySound"=>new[]{"SovietPowerPlant"},
+            "AudioArrayVoice"=>new[]{"SovietRefinery","AlliedBomberAircraft","SovietHeavyAntiVehicleInfantry"},
+            "SkirmishAIInformation"=>new[]{"SovietRefinery","AlliedSupportAircraft","AlliedInfiltrationInfantry"},
+            "CrusherInfo"=>new[]{"SovietAntiInfantryInfantry","SovietRefinery"},
+            "ShadowInfo" or "EvaEventArray"=>new[]{"SovietAntiInfantryInfantry"},
+            _=>new[]{"SovietRefinery"},
+        };
+        foreach(string witness in witnesses)
+        {
+            var stock=GameObjectStockReview.Capture(manifest,"GameObject:"+witness);
+            int table=GameObjectStockReview.Tokens(stock.Bytes,0)[FastHash.GetHashCode(name)].Offset;
+            if(field.InlineList)
+            {
+                uint count=Word(stock.Bytes,stock.Projection.NativeRoot+field.Slot);
+                for(int i=0;i<count;i++)
+                    grammar.Learn(stock.Bytes,(int)Word(stock.Bytes,table+12+i*12+8),stock.Projection.NativeRoot,field.NativeType);
+            }
+            else
+                grammar.Learn(stock.Bytes,table,stock.Projection.NativeRoot,field.NativeType);
+            if(witness=="SovietRefinery"&&(field.InlineList||name=="SkirmishAIInformation"))
+            {
+                var engineer=GameObjectModuleReview.Inspect(manifest,stock.Asset.Name).Containers.Single(c=>c.Name=="Behaviors").Modules.Single(m=>m.Type=="EngineerContainModuleData");
+                grammar.Learn(stock.Bytes,engineer.Wrapper,stock.Projection.NativeRoot,typeof(Ep1EngineerContainModuleData));
+            }
+        }
+        if(name=="CrusherInfo")CrusherChildrenContract.Qualify(grammar,manifest,baseline,schemas,catalog);
+        return grammar;
+    }
+
     // Reborn: stock pointer/count reads remain inside the captured asset slice.
     private static uint Word(byte[] bytes,int at){if(at<0||at>bytes.Length-4)throw new InvalidDataException("Extended root stock word bounds.");return BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(at,4));}
 }

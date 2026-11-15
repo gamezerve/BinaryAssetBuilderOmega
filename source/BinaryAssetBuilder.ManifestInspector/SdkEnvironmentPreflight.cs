@@ -157,7 +157,9 @@ internal static class SdkEnvironmentPreflight
     internal static byte[] Read(string path,int limit,bool checkAncestors = true)
     {
         // Reborn: only catalog callers may reuse just-checked parent/child metadata; arbitrary source/manifest reads always inspect full ancestry.
-        if (checkAncestors) CheckPath(path); using FileStream stream = new(path,FileMode.Open,FileAccess.Read,FileShare.Read);
+        if (checkAncestors) CheckPath(path);
+        SdkXmlInputScope.HoldIfCapturing(path);
+        using FileStream stream = new(path,FileMode.Open,FileAccess.Read,FileShare.Read);
         // Reborn: identify the actual rejected input and quota rather than blaming the generated entry document.
         if (stream.Length > limit) { var error=new InvalidDataException($"SDK file '{path}' is {stream.Length} bytes; this reader permits {limit} bytes."); SdkXmlDiagnostics.Attach(error,new(path,0,0,true)); throw error; }
         byte[] bytes = new byte[(int)stream.Length]; stream.ReadExactly(bytes); if (stream.ReadByte() != -1) throw new InvalidDataException("SDK metadata grew during read."); return bytes;

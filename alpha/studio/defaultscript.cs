@@ -97,9 +97,6 @@ namespace EALABuild
                 bool buildMaps = gui.ContainsKey("buildmaps") && Convert.ToBoolean(gui["buildmaps"]);
                 string[] officialMapDirectories = buildMaps ? (string[])Lifecycle("GetSelectedMapDirectories") : null;
                 BuildHelper.CurrentBuildSteps = 1;
-                // Reborn: separate the user's Reborn workspace from developer tests, including the strictly bounded complete Conscript build.
-                // Reborn: keep the build header short; backend warnings describe the selected profile and detailed receipts stay on disk.
-                BuildHelper.DisplayLine("Uprising SDK Alpha. Unsupported requested features fail the build; previous successful output is retained on failure.");
                 // Reborn: session resources exist before EA starts the host; the suspended worker cannot escape its own job.
                 string session = (string)Lifecycle("Begin");
                 RunExecutableArguments request = new RunExecutableArguments(buildHost);

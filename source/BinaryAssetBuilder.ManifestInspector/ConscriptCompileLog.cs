@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Xml;
 using System.Text.Json;
 using BinaryAssetBuilder.Core;
@@ -107,10 +108,25 @@ internal sealed class ConscriptCompileLog
     //-------------------------------------------------------------------------------------------------
     internal void Statistics()
     {
-        foreach(var group in processed.GroupBy(e=>e.Type))
+        // Reborn: tag each line for Studio, keeping the RA3 layout and average in seconds.
+        const string prefix = "Statistics ";
+        var allTypes = TimeSpan.Zero;
+        foreach (var group in processed.GroupBy(entry => entry.Type))
         {
-            var longest=group.MaxBy(e=>e.Clock.Elapsed)!;var total=TimeSpan.FromTicks(group.Sum(e=>e.Clock.Elapsed.Ticks));
-            Console.WriteLine("Statistics "+group.Key+": Instances Processed "+group.Count()+", Total Processing Time "+total.ToString("c")+", Longest Processing Time "+longest.Clock.Elapsed.ToString("c")+" ("+longest.Name+"), Average Processing Time "+TimeSpan.FromTicks(total.Ticks/group.Count()).ToString("c"));
+            int count = group.Count();
+            var longest = group.MaxBy(entry => entry.Clock.Elapsed)!;
+            var total = TimeSpan.FromTicks(group.Sum(entry => entry.Clock.Elapsed.Ticks));
+            double averageSeconds = total.TotalSeconds / count;
+            string longestId = longest.Name[(group.Key.Length + 1)..];
+
+            Console.WriteLine(prefix + group.Key + ":");
+            Console.WriteLine(prefix + "    Instances Processed: " + count);
+            Console.WriteLine(prefix + "    Total Processing Time: " + total.ToString("c"));
+            Console.WriteLine(prefix + "    Longest Processing Time: " + longest.Clock.Elapsed.ToString("c") + " (" + longestId + ")");
+            Console.WriteLine(prefix + "    Average Processing Time: " + averageSeconds.ToString(CultureInfo.InvariantCulture) + " seconds");
+            allTypes += total;
         }
+        if (processed.Count > 0)
+            Console.WriteLine(prefix + "Total Processing Time for All Types: " + allTypes.ToString("c"));
     }
 }
