@@ -169,7 +169,8 @@
     <Video id="AFS07" Filename="AFS07" Volume="190" />
     <Video id="AFS08" Filename="AFS08" Volume="190" />
     <Video id="AFS09" Filename="AFS09" Volume="190" />
-    <Video id="AFS10" Filename="AFS10" Volume="190" />
+    <!-- Reborn: RA3 campaign finales use RA3-suffixed media IDs. -->
+    <Video id="AFS10RA3" Filename="AFS10RA3" Volume="190" />
     <Video id="AFS10_DE" Filename="AFS10_DE" Volume="190" />
     <Video id="AFS10_ES" Filename="AFS10_ES" Volume="190" />
     <Video id="AFS10_FR" Filename="AFS10_FR" Volume="190" />
@@ -367,7 +368,7 @@
     <Video id="JFS07" Filename="JFS07" Volume="190" />
     <Video id="JFS08" Filename="JFS08" Volume="190" />
     <Video id="JFS09" Filename="JFS09" Volume="190" />
-    <Video id="JFS10" Filename="JFS10" Volume="190" />
+    <Video id="JFS10RA3" Filename="JFS10RA3" Volume="190" />
     <Video id="JFS10_DE" Filename="JFS10_DE" Volume="190" />
     <Video id="JFS10_FR" Filename="JFS10_FR" Volume="190" />
     <Video id="JKEDE1" Filename="JKEDE1" Volume="190" />
@@ -562,7 +563,7 @@
     <Video id="SFS07" Filename="SFS07" Volume="190" />
     <Video id="SFS08" Filename="SFS08" Volume="190" />
     <Video id="SFS09" Filename="SFS09" Volume="190" />
-    <Video id="SFS10" Filename="SFS10" Volume="190" />
+    <Video id="SFS10RA3" Filename="SFS10RA3" Volume="190" />
     <Video id="SFS10_DE" Filename="SFS10_DE" Volume="190" />
     <Video id="SFS10_FR" Filename="SFS10_FR" Volume="190" />
     <Video id="SMB01" Filename="SMB01" Volume="190" />

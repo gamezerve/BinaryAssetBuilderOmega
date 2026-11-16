@@ -8,7 +8,8 @@ namespace BinaryAssetBuilder.ManifestInspector;
 internal static class SdkSchemaHookReview
 {
     internal const string Policy = "diagnostic-dummy-hooks-v1";
-    internal const string CandidateDigest = "3A54DC3DDC54C1AACF15C03AF6AD67ED007AD99608CEDF78CC43EAD45AA969D3";
+    // Reborn: pin the reviewed catalog including the corrected AnimationMode enum comments.
+    internal const string CandidateDigest = "AA8E0F7DE55756C6C30B02EBC780E23095993EFC7254E3590BE2654EDF40DF26";
     // Reborn: exact warning/provenance matching intentionally fails closed if runtime wording or schema snapshots change.
     private static readonly string[] ExpectedWarnings = {
         "The 'VertexData' attribute is ignored, because the value of 'prohibited' for attribute use only prevents inheritance of an identically named attribute from the base type definition. [file:///C:/Reborn-InMemorySchemas/assettypew3d.xsd:337]",

@@ -721,9 +721,10 @@
             <Movie MovieAsset="AFS09" />
         </EventList>
     </VideoEventList>
-    <VideoEventList id="AFS10">
+    <!-- Reborn: RA3 campaign finales use RA3-suffixed media IDs. -->
+    <VideoEventList id="AFS10RA3">
         <EventList>
-            <Movie MovieAsset="AFS10" />
+            <Movie MovieAsset="AFS10RA3" />
         </EventList>
     </VideoEventList>
     <VideoEventList id="AFS10_DE">
@@ -1736,9 +1737,9 @@
             <Movie MovieAsset="JFS09" />
         </EventList>
     </VideoEventList>
-    <VideoEventList id="JFS10">
+    <VideoEventList id="JFS10RA3">
         <EventList>
-            <Movie MovieAsset="JFS10" />
+            <Movie MovieAsset="JFS10RA3" />
         </EventList>
     </VideoEventList>
     <VideoEventList id="JFS10_DE">
@@ -2737,9 +2738,9 @@
             <Movie MovieAsset="SFS09" />
         </EventList>
     </VideoEventList>
-    <VideoEventList id="SFS10">
+    <VideoEventList id="SFS10RA3">
         <EventList>
-            <Movie MovieAsset="SFS10" />
+            <Movie MovieAsset="SFS10RA3" />
         </EventList>
     </VideoEventList>
     <VideoEventList id="SFS10_DE">

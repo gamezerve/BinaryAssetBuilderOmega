@@ -1551,6 +1551,13 @@
             <ImagePosition x="0" y="0"/>
             <TextureSize x="512" y="512"/>
       </RadarTerrainImage>
+
+  <!-- Reborn: replace the stock tactical Moskvin portrait only in the New York map stream. -->
+  <PackedTextureImage id="Moskvin" Texture="RebornCoopMoskvinAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
       
 
 

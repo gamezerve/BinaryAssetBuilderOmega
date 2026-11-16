@@ -11,6 +11,11 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
   - The EA EP1 schema declares only `ValueMultiplier` and `DistributedDeposit` after the base. The shared C# module and marshaler used by the ordinary GameObject switch insert `BonusScience` and `BonusScienceMultiplier` between them. The generated layout report estimates `DistributedDeposit` at `+0x28` for that model.
   - Compile named `SupplyCenterDockUpdate` modules with `ValueMultiplier="1.75"` and `DistributedDeposit` set to false and true. Compare emitted payload bytes, record size, and stream metadata with stock or EA-compiled EP1 data. Verify the ordinary named GameObject route and the association between the serialized field and the runtime byte. Keep a separate legacy-target fixture if the EP1 writer needs its own layout.
 
+- [ ] **GateProxyBehaviorModuleData — verify the direct EP1 GameObject writer.**
+  - Reborn: Retail descriptor `00d03b04` registers `GateProxyBehavior` as type `0x0d6bb67b`. Factory `006fc680` and constructor `00719fb0` create a derived gate. The added field at instance `+0x50` is a runtime target pointer populated by `00767670`.
+  - The EP1 `AssetTypeGameObject.xsd` directly exposes `GateProxyBehavior`, and its data XSD extends the base gate with an empty sequence. A concrete C# marshaler or dispatch entry for the proxy was not found in the reviewed sources. The regular compile path has not been exercised for this type.
+  - Compile a named proxy without an authored TypeId, set nondefault inherited gate attributes, and verify that the emitted module retains `0x0d6bb67b` and the inherited fields. Compare the payload, relocations and metadata with a stock or EA-compiled witness before changing the writer.
+
 ## Resolved
 
 The resolved entries record both verified compiler support and unavailable authoring routes. The closing audit checked 24 concrete class names across 21 classified items, 38 direct and inherited XML probes, and 653 linked retail BIN entries. The known StraightLine control returned 30 aligned matches.

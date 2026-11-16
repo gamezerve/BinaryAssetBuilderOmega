@@ -447,7 +447,6 @@
 
 	<LogicCommandSet
 		id="SovietConstructionYardCommandSet">
-		<Cmd>Command_ConstructSovietWall</Cmd>
 		<Cmd>Command_ConstructSovietPowerPlant</Cmd>
 		<Cmd>Command_ConstructSovietBarracks</Cmd>
 		<Cmd>Command_ConstructSovietRefinery</Cmd>
@@ -459,6 +458,7 @@
 		<Cmd>Command_ConstructSovietCommandCenter</Cmd>			
 		<Cmd>Command_ConstructSovietCrane</Cmd>	
 
+		<Cmd>Command_ConstructSovietWall</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseGround</Cmd>
 		<Cmd>Command_ConstructSovietBaseDefenseAir</Cmd>
 		<Cmd>Command_ConstructSovietKrasna45</Cmd>	
@@ -472,6 +472,27 @@
 		<Cmd>Command_UpgradeSovietRadarDish</Cmd>
 		<Cmd>Command_UpgradeSovietConstructionYardSalvageYard</Cmd>
 -->		
+	</LogicCommandSet>
+	
+	<LogicCommandSet
+		id="SovietCraneCommandSet">
+		<Cmd>Command_ConstructSovietPowerPlant</Cmd>
+		<Cmd>Command_ConstructSovietBarracks</Cmd>
+		<Cmd>Command_ConstructSovietRefinery</Cmd>
+		<Cmd>Command_ConstructSovietWarFactory</Cmd>
+		<Cmd>Command_ConstructSovietNavalYard</Cmd>
+		<Cmd>Command_ConstructSovietAirfield</Cmd>
+		<Cmd>Command_ConstructSovietPowerPlantAdvanced</Cmd>
+		<Cmd>Command_ConstructSovietTechStructure</Cmd>
+		<Cmd>Command_ConstructSovietCommandCenter</Cmd>	
+		
+		<Cmd>Command_ConstructSovietWall</Cmd>
+		<Cmd>Command_ConstructSovietBaseDefenseGround</Cmd>
+		<Cmd>Command_ConstructSovietBaseDefenseAir</Cmd>
+		<Cmd>Command_ConstructSovietKrasna45</Cmd>	
+		<Cmd>Command_ConstructSovietBaseDefenseAdvanced</Cmd>		
+		<Cmd>Command_ConstructSovietSuperWeapon</Cmd>
+		<Cmd>Command_ConstructSovietSuperWeaponAdvanced</Cmd>	
 	</LogicCommandSet>
 
 	<LogicCommandSet
