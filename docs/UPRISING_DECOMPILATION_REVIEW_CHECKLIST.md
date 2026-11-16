@@ -6,7 +6,10 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
 
 ## Open
 
-No open review items.
+- [ ] **SupplyCenterDockUpdateModuleData — verify the named EP1 XML writer.**
+  - Reborn: Retail dock action `00791d20` tests a byte at module-data `+0x20` (instruction `00791f98`). A set byte enables the credit-capacity check before payment. The retail valuation helper reads `ValueMultiplier` at `+0x1c`.
+  - The EA EP1 schema declares only `ValueMultiplier` and `DistributedDeposit` after the base. The shared C# module and marshaler used by the ordinary GameObject switch insert `BonusScience` and `BonusScienceMultiplier` between them. The generated layout report estimates `DistributedDeposit` at `+0x28` for that model.
+  - Compile named `SupplyCenterDockUpdate` modules with `ValueMultiplier="1.75"` and `DistributedDeposit` set to false and true. Compare emitted payload bytes, record size, and stream metadata with stock or EA-compiled EP1 data. Verify the ordinary named GameObject route and the association between the serialized field and the runtime byte. Keep a separate legacy-target fixture if the EP1 writer needs its own layout.
 
 ## Resolved
 
