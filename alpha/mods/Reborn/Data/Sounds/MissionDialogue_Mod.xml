@@ -812,10 +812,11 @@
     <AudioEvent id="MS09_SovietEngineer01" inheritFrom="AudioEvent:BaseMissionDialogue">
         <Sound>MS09_SovietEngineer01</Sound>
     </AudioEvent>
-    <AudioEvent id="MA01_SovietSoldier01" inheritFrom="AudioEvent:BaseMissionDialogue">
+    <!-- Reborn: Preserve RA3 player-only playback for the Brighton Beach taunts. -->
+    <AudioEvent id="MA01_SovietSoldier01" inheritFrom="AudioEvent:BaseMissionDialogue" Type="WORLD PLAYER">
         <Sound>MA01_SovietSoldier01</Sound>
     </AudioEvent>
-    <AudioEvent id="MA01_SovietSoldier02" inheritFrom="AudioEvent:BaseMissionDialogue">
+    <AudioEvent id="MA01_SovietSoldier02" inheritFrom="AudioEvent:BaseMissionDialogue" Type="WORLD PLAYER">
         <Sound>MA01_SovietSoldier02</Sound>
     </AudioEvent>
     <AudioEvent id="MA02_SovietSoldier01" inheritFrom="AudioEvent:BaseMissionDialogue">

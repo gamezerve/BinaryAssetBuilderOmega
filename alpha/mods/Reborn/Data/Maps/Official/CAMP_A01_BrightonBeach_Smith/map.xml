@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -595,7 +598,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -2673,7 +2675,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCHouse03d"
-			id="CCHOUSE03D">
+			id="CCHouse03d">
 			<Position
 				x="3338.604801"
 				y="4750.685224"
@@ -3180,7 +3182,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="223.389824"
 				y="3546.621225"
@@ -3193,7 +3195,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="217.906001"
 				y="3191.935469"
@@ -3219,7 +3221,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="239.119147"
 				y="2364.6208"
@@ -3232,7 +3234,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="329.911424"
 				y="2730.729602"
@@ -3258,7 +3260,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="533.897582"
 				y="2021.146666"
@@ -3518,7 +3520,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="1238.337863"
 				y="4526.073862"
@@ -3531,7 +3533,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCHouse03b"
-			id="CCHOUSE03B">
+			id="CCHouse03b">
 			<Position
 				x="1174.698409"
 				y="4589.712424"
@@ -3544,7 +3546,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="1405.39392"
 				y="4409.443887"
@@ -3583,7 +3585,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="1342.260581"
 				y="4338.635205"
@@ -3596,7 +3598,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="2216.244806"
 				y="4586.123882"
@@ -3609,7 +3611,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="1895.947204"
 				y="4589.712424"
@@ -3635,7 +3637,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="1943.301289"
 				y="4491.370466"
@@ -3648,7 +3650,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCHouse02d"
-			id="CCHOUSE02D">
+			id="CCHouse02d">
 			<Position
 				x="2081.012265"
 				y="4395.697282"
@@ -3661,7 +3663,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="3083.388486"
 				y="4653.213666"
@@ -3687,7 +3689,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="2433.30442"
 				y="4318.07588"
@@ -4142,7 +4144,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCHouse03d"
-			id="CCHOUSE03D">
+			id="CCHouse03d">
 			<Position
 				x="2316.296262"
 				y="4195.176422"
@@ -4168,7 +4170,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="2474.296004"
 				y="4012.330025"
@@ -4181,7 +4183,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CCGara01b"
-			id="CCGARA01B">
+			id="CCGara01b">
 			<Position
 				x="2177.299683"
 				y="4460.987881"
@@ -4207,7 +4209,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="2572.626247"
 				y="3871.944844"
@@ -4220,7 +4222,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="2371.808426"
 				y="4378.233285"
@@ -4233,7 +4235,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="CapeCod_House01b"
-			id="CAPECOD_HOUSE01B">
+			id="CapeCod_House01b">
 			<Position
 				x="2409.992262"
 				y="4067.10646"
@@ -4298,7 +4300,7 @@
 			Health="100"
 			Team="Civilian_2"
 			ThingTemplate="BB_Hotel_02"
-			id="BB_HOTEL_02">
+			id="BB_hotel_02">
 			<Position
 				x="514.89098"
 				y="2300.981288"
@@ -8796,7 +8798,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3044.900267"
 				y="4349.89046"
@@ -8809,7 +8811,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3068.743048"
 				y="4416.216005"
@@ -8874,7 +8876,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2632.277289"
 				y="4592.181228"
@@ -8913,7 +8915,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2857.394663"
 				y="4610.757662"
@@ -8926,7 +8928,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2689.278082"
 				y="4723.205662"
@@ -8965,7 +8967,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2396.155462"
 				y="4736.833606"
@@ -8978,7 +8980,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2495.775684"
 				y="4622.597221"
@@ -8991,7 +8993,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2421.338409"
 				y="4621.644069"
@@ -9082,7 +9084,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2707.614404"
 				y="4495.197224"
@@ -9121,7 +9123,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2826.516807"
 				y="4432.347206"
@@ -9147,7 +9149,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2949.159465"
 				y="4314.244488"
@@ -9173,7 +9175,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2934.434022"
 				y="4269.846402"
@@ -9212,7 +9214,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2741.213441"
 				y="4283.289868"
@@ -13229,7 +13231,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1103.021046"
 				y="3517.370442"
@@ -13242,7 +13244,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1188.008724"
 				y="3362.936869"
@@ -13255,7 +13257,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1375.838663"
 				y="3059.96682"
@@ -13268,7 +13270,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1518.245602"
 				y="3070.368427"
@@ -13281,7 +13283,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1629.83744"
 				y="2782.835626"
@@ -13294,7 +13296,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1436.675469"
 				y="2747.373226"
@@ -13307,7 +13309,7 @@
 			Health="100"
 			Team="Civilian_1"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1366.322246"
 				y="2916.802887"
@@ -52709,6 +52711,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -52736,6 +52739,9 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="TDirt_Yucatan04;TDirt_Yucatan04_nrm;TPave_Golf03;TPave_Golf03_NRM;Pavement_Gibraltar04;Pavement_Gibraltar04_NRM;Grass_Heidelberg01;Grass_Heidelberg01_nrm;Grass_Hawaii01;Grass_Hawaii01_NRM;Grass_Hawaii02;Grass_Hawaii02_NRM;Pavement_SaintPetersburg03;Pavement_SaintPetersburg03_NRM;Pavement_SaintPetersburg07;Pavement_SaintPetersburg07_NRM;TPave_NewYork03;TPave_NewYork03_NRM;Pavement_SaintPetersburg02;Pavement_SaintPetersburg02_NRM;BB_Pavement01;BB_Pavement01_NRM;Pavement_SaintPetersburg05;Pavement_SaintPetersburg05_NRM;Grass_Heidelberg02;Grass_Heidelberg02_nrm;TMisc_Asphalt05;TMisc_Asphalt05_nrm;BB_Gravel02;BB_Gravel02_NRM;Grass_Heidelberg06;Grass_Heidelberg06_nrm;TDirt_CapeCod05;TDirt_CapeCod05_nrm;TDirt_Mykonos03;TDirt_Mykonos03_NRM;Pavement_GibraltarBoardwalk;Pavement_GibraltarBoardwalk_NRM;BB_Dirt01;BB_Dirt01_NRM;BB_Gravel01;BB_Gravel01_NRM;TPave_Cannes03;TPave_Cannes03_NRM;TGravel_Yucatan01;TGravel_Yucatan01_nrm;Grass_Heidelberg10;Grass_Heidelberg10_nrm;Grass_Heidelberg11;Grass_Heidelberg11_nrm;TDirt_Yucat"/>
 		</WorldDict>
 		<PostEffect
 			Effect="LUSaturateColors_Vol"/>
@@ -55843,6 +55849,13 @@
 							Object="AlliedWarFactory"/>
 					</ParameterList>
 				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedCommandCenter"/>
+					</ParameterList>
+				</Action>
 			</Script>
 			<Script
 				id="Allied Unit Restrictions">
@@ -55963,6 +55976,34 @@
 					<ParameterList>
 						<ObjectType
 							Object="AlliedAntiInfantryVehicle_Ground"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedLegionnaireInfantry"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedUnassumingSovietTank"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedFutureTank"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedArtilleryVehicle"/>
 					</ParameterList>
 				</Action>
 			</Script>

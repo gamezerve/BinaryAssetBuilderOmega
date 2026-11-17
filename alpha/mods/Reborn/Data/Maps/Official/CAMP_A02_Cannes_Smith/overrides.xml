@@ -1714,6 +1714,13 @@
        </Nuggets>
 </WeaponTemplate>
 
+  <!-- Reborn: replace the stock tactical Warren portrait only in the Cannes map stream. -->
+  <PackedTextureImage id="Hill" Texture="RebornCoopWarrenAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
+
  
 
  

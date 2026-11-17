@@ -91,11 +91,14 @@
     <Cmd>Command_ConstructAlliedNavalYard</Cmd>
     <Cmd>Command_ConstructAlliedAirfield</Cmd>
     <Cmd>Command_ConstructAlliedTechStructure</Cmd>
+	<Cmd>Command_ConstructAlliedCommandCenter</Cmd>	
+	
     <Cmd>Command_ConstructAlliedWall</Cmd>
     <Cmd>Command_ConstructAlliedBaseDefense</Cmd>
     <Cmd>Command_ConstructAlliedBaseDefenseAdvanced</Cmd>
     <Cmd>Command_ConstructAlliedSuperWeapon</Cmd>
     <Cmd>Command_ConstructAlliedSuperWeaponAdvanced</Cmd>
+	
     <Cmd>Command_PackAlliedMCV</Cmd>
   </LogicCommandSet>
   
@@ -206,5 +209,12 @@
     <ImagePosition x="0" y="0"/>
     <TextureSize x="512" y="512"/>
   </RadarTerrainImage>
+
+  <!-- Reborn: replace the stock tactical Giles portrait only in the Brighton Beach map stream. -->
+  <PackedTextureImage id="Giles" Texture="RebornCoopGilesAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
   
 </AssetDeclaration>

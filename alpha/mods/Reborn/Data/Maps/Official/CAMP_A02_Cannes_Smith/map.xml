@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -526,7 +529,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -1795,7 +1797,7 @@
 			Health="100"
 			Team="Soviet01"
 			ThingTemplate="CA_PortStructure"
-			id="CA_PortStructure">
+			id="CA_PORTSTRUCTURE">
 			<Position
 				x="4577.672423"
 				y="3194.03008"
@@ -1834,7 +1836,7 @@
 			Health="100"
 			Team="Soviet01"
 			ThingTemplate="CA_PortStructure"
-			id="CA_PortStructure">
+			id="CA_PORTSTRUCTURE">
 			<Position
 				x="3721.034441"
 				y="1660.821447"
@@ -1860,7 +1862,7 @@
 			Health="100"
 			Team="Soviet01"
 			ThingTemplate="CA_PortStructure"
-			id="CA_PortStructure">
+			id="CA_PORTSTRUCTURE">
 			<Position
 				x="1834.549447"
 				y="990.913449"
@@ -1873,7 +1875,7 @@
 			Health="100"
 			Team="Soviet01"
 			ThingTemplate="CA_PortStructure"
-			id="CA_PortStructure">
+			id="CA_PORTSTRUCTURE">
 			<Position
 				x="1398.540586"
 				y="1555.179204"
@@ -52144,6 +52146,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -52703,6 +52706,13 @@
 						<ParameterList>
 							<ObjectType
 								Object="AlliedCommandoTech1"/>
+						</ParameterList>
+					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedLegionnaireInfantry"/>
 						</ParameterList>
 					</Action>
 				</Script>
