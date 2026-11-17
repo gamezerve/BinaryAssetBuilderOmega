@@ -159,7 +159,36 @@ internal static class ConscriptBehaviorSurvey
                 var allowed=DerivedTypes(schemas,required);
                 targets=catalog.Where(a=>a.InstanceId==id&&allowed.Contains(a.TypeId)).ToArray();
             }
-            if(targets.Length!=1)throw new InvalidDataException("Behavior strong target missing/ambiguous: "+referenceType+":"+name);
+            // Reborn: diagnose failed catalog lookups consistently for attribute and element references.
+            if(targets.Length!=1)
+            {
+                var path=new Stack<string>();
+                if(node is XmlAttribute field)path.Push("@"+field.LocalName);
+                for(var element=node is XmlAttribute attr?attr.OwnerElement:node as XmlElement;
+                    element!=null;element=element.ParentNode as XmlElement)
+                {
+                    string ownerId=element.GetAttribute("id");
+                    path.Push(ownerId.Length==0?element.LocalName:element.LocalName+":"+ownerId);
+                }
+                string context=$"{string.Join("/",path)} requires {referenceType}:{name}. ";
+                string detail;
+                if(targets.Length==0)
+                {
+                    var otherTypes=catalog.Where(asset=>asset.InstanceId==id).Select(asset=>asset.Name).Distinct().OrderBy(n=>n).ToArray();
+                    detail="No compatible asset was found in the catalogs used by this build. ";
+                    if(otherTypes.Length!=0)detail+="Other asset types with the same ID: "+string.Join(", ",otherTypes)+". ";
+                    detail+="Check the target ID, type and includes. If another stream provides the asset, verify that its current output is included.";
+                }
+                else
+                {
+                    var matches=targets.Select(asset=>string.IsNullOrEmpty(asset.SourceFile)?asset.Name:$"{asset.Name} ({asset.SourceFile})");
+                    detail=$"{targets.Length} compatible catalog entries match: {string.Join(", ",matches)}. Check the definitions and catalogs supplying these entries.";
+                }
+                var error=new InvalidDataException(context+detail);
+                // Reborn: the singleton build can retry with the full catalog independently of the displayed wording.
+                error.Data[typeof(ConscriptBehaviorSurvey)]=true;
+                throw error;
+            }
             if(node is XmlAttribute a)a.Value=targets[0].Name;else node.InnerText=targets[0].Name;
         }
         //-------------------------------------------------------------------------------------------------

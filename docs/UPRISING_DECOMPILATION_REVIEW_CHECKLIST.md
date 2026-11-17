@@ -6,6 +6,12 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
 
 ## Open
 
+- [ ] **TemporaryOwnerSpecialPowerModuleData — verify the EP1 `SlaveStatus` writer and layout.**
+  - Reborn: Retail `TemporaryOwnerSpecialPower` uses module-data `+0x1dc` as the status mask. Cleanup `00813040` passes that address to `007622e0` to clear the configured flags.
+  - The named EP1 XSD declares `SlaveStatus` as `ObjectStatusBitFlags`. The current C# module contains only the base struct, and its marshaler delegates to the base writer without reading that attribute.
+  - Compile named EP1 modules with the attribute omitted and with a nonzero mask. Compare the emitted mask words, record size, relocations and metadata against a stock or EA-compiled witness. Verify the ordinary GameObject route before changing the shared writer.
+
+
 - [ ] **SupplyCenterDockUpdateModuleData — verify the named EP1 XML writer.**
   - Reborn: Retail dock action `00791d20` tests a byte at module-data `+0x20` (instruction `00791f98`). A set byte enables the credit-capacity check before payment. The retail valuation helper reads `ValueMultiplier` at `+0x1c`.
   - The EA EP1 schema declares only `ValueMultiplier` and `DistributedDeposit` after the base. The shared C# module and marshaler used by the ordinary GameObject switch insert `BonusScience` and `BonusScienceMultiplier` between them. The generated layout report estimates `DistributedDeposit` at `+0x28` for that model.

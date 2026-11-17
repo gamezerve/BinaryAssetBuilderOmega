@@ -307,7 +307,8 @@ try{
             $savedStatic=if($stages.ContainsKey('Static')){Join-Path $stages['Static'].Payload 'data/mod.manifest'}else{$null}
             if($savedStatic -and (Test-Path -LiteralPath $savedStatic)){
                 $mapStaticPackage=$savedStatic
-                Write-SdkBuildLine 'Map build uses the selected saved static output.'
+                # Reborn: show exactly which saved manifest supplies static references to this map build.
+                Write-SdkBuildLine ("Build Static Data is unchecked. Map build uses saved static manifest: " + $savedStatic)
             }elseif(Test-Path -LiteralPath $catalogPath -PathType Leaf){
                 $mapStaticPackage=$catalogPath
                 Write-SdkBuildLine 'Map check uses the static catalog from the last successful local static compile.'

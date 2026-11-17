@@ -39,7 +39,7 @@ internal static class ConscriptVariableBehaviorBuild
             // Reborn: singleton objects use the same catalog-backed WorldBuilder render resolution as ordinary mixed builds.
             AssetId[] expected;
             try{expected=ConscriptReferenceTargets.Read(source,schemas,assets);}
-            catch(InvalidDataException error)when(error.Message.StartsWith("Behavior strong target missing/ambiguous:",StringComparison.Ordinal))
+            catch(InvalidDataException error)when(error.Data.Contains(typeof(ConscriptBehaviorSurvey)))
             {return ConscriptMultiAssetBuild.TryRun(entry,manifest,globalManifest,output,forceMixed:true);}
             var verifier=new ConscriptVariableGraphVerifier(official,manifest,baseline,schemas,assets);
             // Reborn: verify the real source once in fast mode; developer builds additionally compile it again and compare every native byte.
