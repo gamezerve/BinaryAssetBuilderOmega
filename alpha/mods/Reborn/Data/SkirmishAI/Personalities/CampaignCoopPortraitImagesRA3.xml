@@ -30,4 +30,11 @@
     <Coords x="0" y="0" />
     <TextureDimensions x="128" y="128" />
   </PackedTextureImage>
+  <!-- Reborn: the tactical co-commander HUD resolves PackedTextureImage, independently of frontend OnDemandTextureImage portraits. -->
+  <Texture id="RebornCoopLissetteAtlas" File="ART:Images/RebornCampaignLissetteAtlas.dds" OutputFormat="A8R8G8B8" GenerateMipMaps="false" AllowAutomaticResize="false" />
+  <PackedTextureImage id="RebornCoopLissettePortrait" Texture="RebornCoopLissetteAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
 </AssetDeclaration>

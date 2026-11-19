@@ -1695,4 +1695,11 @@
 		EnterEvent="S_A03HeidelbergThreat1">
   </PathMusicGameDynamicState>
 
+  <!-- Reborn: replace the stock tactical Giles portrait only in the Brighton Beach map stream. -->
+  <PackedTextureImage id="Lydia" Texture="RebornCoopLissetteAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
+  
 </AssetDeclaration>

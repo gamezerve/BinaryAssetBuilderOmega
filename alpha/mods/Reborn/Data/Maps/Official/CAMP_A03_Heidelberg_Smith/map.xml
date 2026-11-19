@@ -17,6 +17,9 @@
 			source="ART:EVDefault.xml"
 			type="instance"/>
 		<Include
+			source="ART:FXDepthLut.xml"
+			type="instance"/>
+		<Include
 			source="ART:LUSaturateColors_Vol.xml"
 			type="instance"/>
 		<Include
@@ -346,7 +349,6 @@
 		<Include
 			source="DATA:sounds/musicscript_unknownzone.xml"
 			type="instance"/>
-		<!-- Reborn: restore RA3 building armor before mission-specific overrides. -->
 		<Include
 			source="overrides.xml"
 			type="all"/>
@@ -8130,7 +8132,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Wall01"
-			id="HB_Wall01">
+			id="HB_WALL01">
 			<Position
 				x="1305.64618"
 				y="1517.779841"
@@ -8143,7 +8145,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Wall01"
-			id="HB_Wall01">
+			id="HB_WALL01">
 			<Position
 				x="1826.470401"
 				y="2058.992001"
@@ -11510,7 +11512,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="1643.415849"
 				y="181.895889"
@@ -11523,7 +11525,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1693.18464"
 				y="130.039385"
@@ -11536,7 +11538,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="617.154048"
 				y="446.200128"
@@ -11549,7 +11551,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="651.256448"
 				y="479.769527"
@@ -11562,7 +11564,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="180.191185"
 				y="1998.137228"
@@ -11575,7 +11577,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="164.289819"
 				y="2014.768425"
@@ -20493,7 +20495,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="239.278944"
 				y="779.905128"
@@ -20506,7 +20508,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="259.551088"
 				y="665.008404"
@@ -28865,7 +28867,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4613.209847"
 				y="2113.508266"
@@ -28878,7 +28880,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4600.495686"
 				y="2081.197866"
@@ -28969,7 +28971,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4864.834029"
 				y="1643.648808"
@@ -28982,7 +28984,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4977.076064"
 				y="1637.146667"
@@ -29073,7 +29075,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2144.703843"
 				y="4797.403206"
@@ -29086,7 +29088,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2131.978024"
 				y="4853.58602"
@@ -29138,7 +29140,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2019.797221"
 				y="4309.787207"
@@ -29151,7 +29153,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2038.014888"
 				y="4255.138445"
@@ -29190,7 +29192,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2368.161606"
 				y="4780.479247"
@@ -29242,7 +29244,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2179.393064"
 				y="4662.994462"
@@ -29255,7 +29257,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2197.610823"
 				y="4608.3456"
@@ -29476,7 +29478,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2906.453222"
 				y="1984.29184"
@@ -29489,7 +29491,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2946.759049"
 				y="2023.651841"
@@ -29502,7 +29504,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2973.562243"
 				y="2054.683688"
@@ -30438,7 +30440,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1150.334249"
 				y="3755.818441"
@@ -30477,7 +30479,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1525.494242"
 				y="3125.413862"
@@ -30516,7 +30518,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1583.467048"
 				y="3044.777608"
@@ -30555,7 +30557,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1691.917864"
 				y="2859.451844"
@@ -30594,7 +30596,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1838.050829"
 				y="2671.217448"
@@ -30633,7 +30635,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1873.418026"
 				y="2458.043206"
@@ -30672,7 +30674,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2120.187846"
 				y="2064.989226"
@@ -30711,7 +30713,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2340.228804"
 				y="2101.992262"
@@ -30750,7 +30752,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2560.897862"
 				y="1958.366888"
@@ -30789,7 +30791,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2803.016428"
 				y="1785.339205"
@@ -30828,7 +30830,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2902.421444"
 				y="1681.600425"
@@ -30841,7 +30843,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2957.673286"
 				y="1629.774988"
@@ -30919,7 +30921,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1264.71744"
 				y="4944.234024"
@@ -30945,7 +30947,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1418.492329"
 				y="4790.943684"
@@ -30971,7 +30973,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1625.949124"
 				y="4514.092484"
@@ -30997,7 +30999,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1669.022181"
 				y="4469.375269"
@@ -31023,7 +31025,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1881.447681"
 				y="4225.888426"
@@ -31049,7 +31051,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1852.671045"
 				y="4001.576844"
@@ -31075,7 +31077,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1894.447629"
 				y="3942.414406"
@@ -31101,7 +31103,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2001.617065"
 				y="3783.490444"
@@ -31127,7 +31129,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2198.882244"
 				y="3597.440848"
@@ -31153,7 +31155,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2462.736268"
 				y="3322.046088"
@@ -31179,7 +31181,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2418.28746"
 				y="3367.058446"
@@ -31205,7 +31207,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2618.35264"
 				y="3163.834665"
@@ -31231,7 +31233,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4962.384002"
 				y="1339.156727"
@@ -31257,7 +31259,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4838.043628"
 				y="1413.394246"
@@ -31283,7 +31285,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4712.13844"
 				y="1362.467783"
@@ -31296,7 +31298,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4641.727247"
 				y="1365.233122"
@@ -31309,7 +31311,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4539.997803"
 				y="1453.560005"
@@ -31972,7 +31974,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3377.95968"
 				y="4883.841864"
@@ -31985,7 +31987,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3435.483206"
 				y="4886.918084"
@@ -31998,7 +32000,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3561.116486"
 				y="4690.247248"
@@ -32011,7 +32013,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3635.563621"
 				y="4586.066463"
@@ -32024,7 +32026,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3420.105608"
 				y="4422.334082"
@@ -32037,7 +32039,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3521.798401"
 				y="4231.551684"
@@ -32050,7 +32052,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3676.359264"
 				y="4072.314026"
@@ -32063,7 +32065,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3776.278408"
 				y="3807.594883"
@@ -32076,7 +32078,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4916.832426"
 				y="3466.920423"
@@ -32089,7 +32091,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4773.348041"
 				y="3474.311265"
@@ -32102,7 +32104,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4554.576425"
 				y="3353.744008"
@@ -32115,7 +32117,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="4189.166823"
 				y="3578.263689"
@@ -32128,7 +32130,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3952.898461"
 				y="3734.092046"
@@ -32141,7 +32143,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="3759.576421"
 				y="3909.399266"
@@ -34598,7 +34600,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="1765.341224"
 				y="3658.12086"
@@ -34611,7 +34613,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="2339.03488"
 				y="3608.632868"
@@ -34624,7 +34626,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="3195.848428"
 				y="3019.41248"
@@ -34637,7 +34639,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="3975.221661"
 				y="2155.570403"
@@ -34650,7 +34652,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="4565.572067"
 				y="1600.954182"
@@ -34663,7 +34665,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="3785.628803"
 				y="1687.867205"
@@ -34676,7 +34678,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="3073.452262"
 				y="2098.189441"
@@ -34689,7 +34691,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="2722.762025"
 				y="2347.44202"
@@ -34702,7 +34704,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto04"
-			id="ST_Auto04">
+			id="ST_AUTO04">
 			<Position
 				x="2179.504641"
 				y="3201.569065"
@@ -34715,7 +34717,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="4645.889606"
 				y="1587.1776"
@@ -34728,7 +34730,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="4582.566401"
 				y="1617.809381"
@@ -34741,7 +34743,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1501.088808"
 				y="4349.075626"
@@ -34754,7 +34756,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="1684.363621"
 				y="3738.748486"
@@ -34767,7 +34769,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2237.915689"
 				y="3709.091208"
@@ -34780,7 +34782,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2723.565226"
 				y="2845.232008"
@@ -34793,7 +34795,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2161.513869"
 				y="3187.224004"
@@ -34806,7 +34808,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="2608.695466"
 				y="2328.950668"
@@ -34819,7 +34821,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="3098.651845"
 				y="2922.865067"
@@ -34832,7 +34834,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="3992.463687"
 				y="2140.293289"
@@ -34845,7 +34847,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="ST_Auto02"
-			id="ST_Auto02">
+			id="ST_AUTO02">
 			<Position
 				x="3802.550086"
 				y="1668.585386"
@@ -34962,7 +34964,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="720.825122"
 				y="1169.383522"
@@ -34975,7 +34977,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="571.122586"
 				y="1132.015843"
@@ -35118,7 +35120,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1606.936007"
 				y="4082.783269"
@@ -35131,7 +35133,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="1635.015208"
 				y="3943.177608"
@@ -35287,7 +35289,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2583.765289"
 				y="2504.665601"
@@ -35300,7 +35302,7 @@
 			Health="100"
 			Team="PlyrCivilian"
 			ThingTemplate="HB_Tree09"
-			id="HB_TREE09">
+			id="HB_Tree09">
 			<Position
 				x="2434.062663"
 				y="2467.297863"
@@ -47241,6 +47243,7 @@
 		</MapMetaData>
 		<EnvironmentData
 			Cloud="TSCloudMed"
+			DepthLut="FXDepthLut"
 			Environment="EVDefault"
 			Macro="TSNoiseUrb"/>
 		<WorldDict>
@@ -47256,15 +47259,15 @@
 			<IntProperty
 				Key="weather"
 				Value="0"/>
+			<IntProperty
+				Key="compression"
+				Value="1"/>
 			<StringProperty
 				Key="mapName"
 				Value=""/>
 			<StringProperty
 				Key="mapDescription"
 				Value=""/>
-			<IntProperty
-				Key="compression"
-				Value="1"/>
 			<RealProperty
 				Key="cameraGroundMinHeight"
 				Value="210"/>
@@ -47274,12 +47277,15 @@
 			<BoolProperty
 				Key="isScenarioMultiplayer"
 				Value="false"/>
+			<StringProperty
+				Key="terrainTextureStrings"
+				Value="Grass_Heidelberg01;Grass_Heidelberg01_nrm;Grass_Heidelberg02;Grass_Heidelberg02_nrm;TDirt_Yucatan04;TDirt_Yucatan04_nrm;Pavement_Heidelberg10;Pavement_Heidelberg10_nrm;TPave_Heidel01;TPave_Heidel01_nrm;TRock_Yucatan01;TRock_Yucatan01_nrm;TGrass_Yucatan04;TGrass_Yucatan04_nrm;TGravel_Yucatan01;TGravel_Yucatan01_nrm;TDirt_Gypsy02;TDirt_Gypsy02_NRM;Grass_Heidelberg07;Grass_Heidelberg07_nrm;Grass_Heidelberg06;Grass_Heidelberg06_nrm;Grass_Heidelberg09;Grass_Heidelberg09_nrm;Grass_Heidelberg10;Grass_Heidelberg10_nrm;Grass_Heidelberg05;Grass_Heidelberg05_nrm;TDirt_Iceland04;TDirt_Iceland04_NRM;Grass_Heidelberg03;Grass_Heidelberg03_nrm;Transition_Heidelberg03;Transition_Heidelberg03_nrm;TPave_Heidel02;TPave_Heidel02_nrm;TDirt_Yucatan06;TDirt_Yucatan06_nrm;TTransition_Yucatan15;TTransition_Yucatan15_nrm;Transition_Heidelberg04;Transition_Heidelberg04_nrm;Transition_Heidelberg01;Transition_Heidelberg01_nrm;Transition_Heidelberg02;Transition_Heidelberg02_nrm;TTransition_Yucatan14;TTransition_Yucatan14_nrm;Pavement_Heid"/>
 		</WorldDict>
 		<PostEffect
 			Effect="LUSaturateColors_Vol"/>
 		<MapAnalysis
 			CellsExamined="313600"
-			GarrisonableStructures="91"
+			GarrisonableStructures="105"
 			TechStructures="1"
 			WaterAreas="1"
 			WaterCells="46265">

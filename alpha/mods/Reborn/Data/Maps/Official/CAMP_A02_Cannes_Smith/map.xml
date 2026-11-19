@@ -2035,7 +2035,7 @@
 			<Position
 				x="4180.735684"
 				y="701.728986"
-				z="0"/>
+				z="-70"/>
 		</Structure>
 		<Structure
 			Angle="0.785398"
@@ -2048,7 +2048,7 @@
 			<Position
 				x="4408.64522"
 				y="466.696202"
-				z="0"/>
+				z="-70"/>
 		</Structure>
 		<Structure
 			Angle="2.356194"
@@ -2061,7 +2061,7 @@
 			<Position
 				x="4866.797648"
 				y="661.297728"
-				z="0"/>
+				z="-70"/>
 		</Structure>
 		<Structure
 			Angle="2.356194"
@@ -2074,7 +2074,7 @@
 			<Position
 				x="4681.273862"
 				y="465.815969"
-				z="0"/>
+				z="-70"/>
 		</Structure>
 		<Structure
 			Angle="-2.356194"
@@ -52715,6 +52715,34 @@
 								Object="AlliedLegionnaireInfantry"/>
 						</ParameterList>
 					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedUnassumingSovietTank"/>
+						</ParameterList>
+					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedFutureTank"/>
+						</ParameterList>
+					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedArtilleryVehicle"/>
+						</ParameterList>
+					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedGunshipAircraft"/>
+						</ParameterList>
+					</Action>
 				</Script>
 				<Script
 					id="Setup - Build Restrictions - Structures">
@@ -52819,6 +52847,13 @@
 					<Action
 						Type="ALLOW_DISALLOW_ONE_UPGRADE">
 						<ParameterList/>
+					</Action>
+					<Action
+						Type="ALLOW_DISALLOW_ONE_BUILDING">
+						<ParameterList>
+							<ObjectType
+								Object="AlliedCommandCenter"/>
+						</ParameterList>
 					</Action>
 				</Script>
 				<Script

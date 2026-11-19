@@ -6,6 +6,11 @@ This file is a review queue, not an authorization to change compiler layouts. Ea
 
 ## Open
 
+- [ ] **EP1 campaign layout index — resolve XML names to the EP1 native records.**
+  - Reborn: In the RA3 Uprising Reborn reconstruction manifest at `Analysis/Database/generated/mod_builder_layouts_ra3ep1.json`, the literal names `CampaignTemplate` and `MissionTemplate` select legacy structs from `CampaignManager.cs` even when paired with the EP1 XSD. The exact-name index has no `CampaignEnumerator` record under its XML name.
+  - `CampaignManagerCompiler.Compile` already maps these XML names to `Ep1CampaignEnumerator`, `Ep1CampaignTemplate`, and `Ep1MissionTemplate`. The stock `CampaignEnumerator:CampaignEnumerator` header has a four-entry count at +0x04 and an array relocation at +0x08. Retail `0051ca80` reads the mission count and array at campaign template +0x1c and +0x20. The retail factories at `004bee90` and `004c9e3f` allocate fixed headers of 0x60 for CampaignTemplate and 0x94 for MissionTemplate. The MissionTemplate MapName descriptor is at +0x2c, with a stock relocation at +0x30.
+  - Compare the reconstruction index against the EP1 compiler mappings and stock stream before using its offsets. Qualify the three XML aliases and array layouts in the index independently of the compiler writer.
+
 - [ ] **TemporaryOwnerSpecialPowerModuleData — verify the EP1 `SlaveStatus` writer and layout.**
   - Reborn: Retail `TemporaryOwnerSpecialPower` uses module-data `+0x1dc` as the status mask. Cleanup `00813040` passes that address to `007622e0` to clear the configured flags.
   - The named EP1 XSD declares `SlaveStatus` as `ObjectStatusBitFlags`. The current C# module contains only the base struct, and its marshaler delegates to the base writer without reading that attribute.
@@ -328,3 +333,14 @@ The resolved entries record both verified compiler support and unavailable autho
 - [x] **TransportHelicopterAIUpdateModuleData — classify the unavailable EP1 authoring route.**
   - Reborn: The official RA3 and Uprising GameObject choices expose no direct XML element for this concrete type. The attempted inherited xsi:type route is rejected during source admission. The 653-stream retail sweep found no aligned occurrence of the concrete class. Coverage is classified as unavailable for Uprising XML authoring. Reopen if an independently serialized concrete record and a usable XML binding are identified.
   - Reborn: This is the unresolved standalone type previously tracked under Supply Truck and the state-machine selector. The schema has no named GameObject route and the inspected 1.1 executable has no matching standalone class identity. The separate TransportHelicopterAIStateMachine selector is valid on a generic AIUpdate.
+
+- [ ] **GameplayConditionData — verify the EP1 compiler binding.**
+  - Reborn: Uprising CnC3Types.xsd declares GameplayConditionData as a top-level asset. GameplayAchievementTriggerData references it. No corresponding data model or marshaler was found under source/. Verify a minimal GameplayConditionData plus GameplayAchievementTriggerData pair through EP1 source admission and binary emission.
+  - Reborn: Retail reader 00489f80 initializes AllowedGameTypeBitFlags at +0x0c to SKIRMISH RANKED_ONLINE and GameDifficultyBitFlags at +0x10 to EASY NORMAL HARD BRUTAL. The difficulty field hash is d6f79a34. The verified mode indices are CAMPAIGN=0, SKIRMISH=1, ONLINE=2, and RANKED_ONLINE=3, giving a default mode mask of 0x0a. The four default difficulty bits give 0x0f. Check both defaults and explicit overrides against the retail reader.
+  - Reborn: Retail dispatch for type 89a0bda4 allocates 0x2c bytes. PrimaryObject is inline at +0x14. RequiredObjectCondition and RequiredUpgradeCondition are optional pointers at +0x24 and +0x28 to 0x10- and 0x14-byte records. Verify relocations for these optional pointers, inline object data and the UpgradeRequired list. The shared base reader defaults Count to 1 at +0x00 and Unique to false at +0x08.
+  - Reborn: The official trigger declaration is GameplayAchievementTriggerData. Retail type 14c84bb7 allocates 0x0c bytes and reader 004360e0 resolves GameplayConditionDataRef (0324186c) into +0x04. AchievementEventId (a69c798c) is a DWORD at +0x08. Check the trigger-to-condition reference and the event ID in the same fixture.
+
+
+- [ ] **AssistedPlacementBehavior - verify the NONE placement hint mask.**
+  - Reborn: Retail Uprising 1.1 reader 004925f0 passes the literal NONE at 00be5fbc to 0047ef50 before reading serialized rows. The token handler 004681d0 clears the placement mask dword at 0046826a. An omitted mask row leaves 0x00000000. An explicit serialized mask row overwrites that value at 0049267d.
+  - Reborn: Marshaler.Ep1AssistedPlacement.cs substitutes NONE for an omitted PlacementHint and sets enum ordinal zero as bit 0, producing 0x00000001. Compare omitted and explicit NONE in a compiler fixture, inspect native and metadata masks, and retain the stock FACING_TOWARDS ALLOW_SHROUDED mask 0x0000000a as the regression control. See RA3 Uprising Reborn Reconstruction/AssistedPlacementAsset/analysis.md for the read-only verifier.
