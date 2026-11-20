@@ -49318,6 +49318,13 @@
 							Object="AlliedTechStructure"/>
 					</ParameterList>
 				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedCommandCenter"/>
+					</ParameterList>
+				</Action>
 			</Script>
 			<Script
 				id="Allied Unit Restrictions">
@@ -49389,6 +49396,34 @@
 					<ParameterList>
 						<ObjectType
 							Object="AlliedSupportAircraft"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedUnassumingSovietTank"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedArtilleryVehicle"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedFutureTank"/>
+					</ParameterList>
+				</Action>
+				<Action
+					Type="ALLOW_DISALLOW_ONE_BUILDING">
+					<ParameterList>
+						<ObjectType
+							Object="AlliedLegionnaireInfantry"/>
 					</ParameterList>
 				</Action>
 			</Script>

@@ -1601,5 +1601,12 @@
 	<PathMusicGameDynamicState id="ThreatLevel1_1" inheritFrom="ThreatLevel1_1"
 		EnterEvent="S_A04Threat1_1">
 	</PathMusicGameDynamicState>
+
+  <!-- Reborn: replace the stock tactical Moskvin portrait only in the Mt. Fuji map stream. -->
+  <PackedTextureImage id="Moskvin" Texture="RebornCoopMoskvinAtlas" Rotated="false">
+    <Dimensions x="106" y="106" />
+    <Coords x="0" y="0" />
+    <TextureDimensions x="128" y="128" />
+  </PackedTextureImage>
 	
 </AssetDeclaration>
