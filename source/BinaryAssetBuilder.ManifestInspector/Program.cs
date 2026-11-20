@@ -2719,6 +2719,8 @@ internal static class Program
         Console.WriteLine("  assembly-size-diff <reference-tokenizer-assembly> [--top <count>]");
         Console.WriteLine("  current-layout <SageBinaryData-type-name>");
         Console.WriteLine("  current-layout-index <SageBinaryData-type-name> [additional-type-name ...]");
+        // Reborn: export the campaign names as accepted by the EP1 XML compiler.
+        Console.WriteLine("  current-layout-index --ep1-campaign");
         Console.WriteLine("  layout-self-test");
         Console.WriteLine("  compiler-self-test");
         // Reborn: optional manifests add bounded sound goldens without registering audio processors.

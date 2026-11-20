@@ -1222,6 +1222,19 @@ internal sealed class ConscriptVariableGraphVerifier
                 }
                 // Reborn: fixed sell values remain source-verified; only layout/metadata/padding come from the independent building witness.
                 // Reborn: a schema-proved leaf owns its exact native graph and its source-sized metadata through independent stock-qualified proofs.
+                // Reborn: check original EP1 offsets and the inherited source graph before splicing these metadata rows.
+                if (ReviewedDockAndOwnershipContract.Supports(owner.NativeType))
+                {
+                    var reviewedNative = Extract(native, start, stop);
+                    resolved ??= SchemaNativeContract.Resolve(source, referenceSchemas, catalog);
+                    var element = ConscriptModuleScalarContract.Owners(resolved)
+                        .Single(value => value.Container == owner.Container && value.Index == owner.Index).Element;
+                    var metadata = ReviewedDockAndOwnershipContract.Verify(element, owner.NativeType, reviewedNative, official,
+                        instance.ReferencedInstances.Select(reference => new AssetId(reference.TypeId, reference.InstanceId)).ToArray());
+                    Own(reviewedNative, start, stop);
+                    Splice(owner, metadata, start, metadata.InstanceBuffer.Length - reviewedNative.InstanceBuffer.Length);
+                    continue;
+                }
                 if(variableContainer&&origins[owner.Element.GetAttribute("id")]==SchemaNativeContract.Origin){
                     if(!SchemaNativeContract.Supports(owner.NativeType))throw new InvalidDataException("Schema-proved origin for an unsupported family.");
                     var family=SchemaNativeContract.For(owner.NativeType);var grammar=schemaFamilies[owner.NativeType].Value;var leafNative=Extract(native,start,stop);resolved??=SchemaNativeContract.Resolve(source,referenceSchemas,catalog);

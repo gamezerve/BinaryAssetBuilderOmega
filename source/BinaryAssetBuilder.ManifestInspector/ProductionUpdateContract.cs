@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Xml;
+using BinaryAssetBuilder.Core;
 using BinaryAssetBuilder.Core.Hashing;
 using BinaryAssetBuilder.Core.SageXml;
 using SageBinaryData;
@@ -17,19 +18,13 @@ internal static class ProductionUpdateContract
 
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: diagnose the unqualified BonusForType field at its source position. */
-    //-------------------------------------------------------------------------------------------------
-    internal static void Validate(XmlElement owner)
-    {
-        var bonus=owner.GetAttributeNode("BonusForType");if(bonus!=null && bonus.Value.Trim().Length!=0)throw SdkXmlDiagnostics.At(new InvalidDataException("ProductionUpdate BonusForType is not implemented yet on the EP1 production processor."),bonus);
-
-    }
-
-    //-------------------------------------------------------------------------------------------------
-    /** Reborn: modifier lists and upgrade translations are checked by the source/native proof. */
+    /** Reborn: the source/native proof owns the weak bonus ID, modifier lists and upgrade translations. */
     //-------------------------------------------------------------------------------------------------
     internal static void Mask(XmlElement actual,XmlElement model)
     {
+        actual.RemoveAttribute("BonusForType");
+        if (model.HasAttribute("BonusForType"))
+            actual.SetAttribute("BonusForType", model.GetAttribute("BonusForType"));
         foreach(var child in actual.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "GiveUpgradeToProduced" or "QuantityModifier" or "ProductionModifier").ToArray())actual.RemoveChild(child);
         foreach(var child in model.ChildNodes.OfType<XmlElement>().Where(e=>e.LocalName is "GiveUpgradeToProduced" or "QuantityModifier" or "ProductionModifier"))actual.AppendChild(actual.OwnerDocument!.ImportNode(child,true));
     }
@@ -82,13 +77,13 @@ internal static class ProductionUpdateContract
     //-------------------------------------------------------------------------------------------------
     internal static void Verify(XmlElement owner,Chunk native,Chunk metadata)
     {
-        Validate(owner);var b=native.InstanceBuffer;
+        var b=native.InstanceBuffer;
         if(b.Length!=NativeSize||Word(b,0)!=TypeId||Word(b,4)!=FastHash.GetHashCode(owner.GetAttribute("id").ToLowerInvariant())||native.RelocationBuffer.Length!=0||native.ImportsBuffer.Length!=0)throw new InvalidDataException("EP1 production identity/native allocation/auxiliary framing differs.");
         CheckValues(owner,b);if(metadata.InstanceBuffer.Length-b.Length!=MetadataSize||!metadata.InstanceBuffer.AsSpan(0,MetadataSize).SequenceEqual(Metadata()))throw new InvalidDataException("EP1 production generated/literal metadata differ.");
     }
 
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: schema/native codecs bind every scalar; weak bonus type and both lists plus the translation pointer must be empty storage. */
+    /** Reborn: check the weak bonus ID and scalars, with empty lists and translation storage for the fixed stock fixture. */
     //-------------------------------------------------------------------------------------------------
     private static void CheckValues(XmlElement owner,byte[] b)
     {
@@ -96,7 +91,12 @@ internal static class ProductionUpdateContract
         // Reborn: without a reviewed DisabledType flag codec the disabled-type word is not authorable and must remain empty.
         bool flags=ConscriptModuleScalarContract.Bindings(typeof(Ep1ProductionUpdateModuleData)).Any(f=>f.Name=="DisabledTypesToProcess");
         if(!flags&&(Word(b,32)!=0||owner.GetAttribute("DisabledTypesToProcess").Trim().Length!=0))throw SdkXmlDiagnostics.At(new InvalidDataException("ProductionUpdate DisabledTypesToProcess has no reviewed EP1 flag codec."),(XmlNode?)owner.GetAttributeNode("DisabledTypesToProcess")??owner);
-        foreach(int at in new[]{44,60,64,68,72,76})if(Word(b,at)!=0)throw new InvalidDataException("EP1 production unimplemented weak/list/pointer storage is populated at +"+at);
+        var bonus = owner.GetAttribute("BonusForType").Trim();
+        int colon = bonus.IndexOf(':');
+        uint expectedBonus = bonus.Length == 0 ? 0 : InstanceHandle.GetInstanceId(bonus[(colon + 1)..]);
+        if (Word(b, 44) != expectedBonus)
+            throw new InvalidDataException("EP1 production weak bonus ID differs at +0x2c.");
+        foreach(int at in new[]{60,64,68,72,76})if(Word(b,at)!=0)throw new InvalidDataException("EP1 production list/pointer storage is populated at +"+at);
     }
 
     //-------------------------------------------------------------------------------------------------

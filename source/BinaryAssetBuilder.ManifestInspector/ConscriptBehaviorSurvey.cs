@@ -240,7 +240,7 @@ internal static class ConscriptBehaviorSurvey
     /** Reborn: share the actual concrete dispatch between standalone and combined proofs while retaining separate EP1 layouts for the known KW mismatches. */
     //-------------------------------------------------------------------------------------------------
     private static unsafe void Dispatch(Node node,BehaviorModuleData** target,Tracker tracker,uint type)
-    {if(type==0x431722A9)Marshaler.MarshalEp1WeaponSet(node,target,tracker);else if(type is 0xB5EB41ED or 0x79BFEDCB or 0x59D12990 or 0x786C9458 or 0x3B68B768 or 0x90CEB49C)Marshaler.MarshalEp1InfantryBehavior(node,target,tracker,type);else Marshaler.Marshal(node,target,tracker);}
+    {if(type==0x431722A9)Marshaler.MarshalEp1WeaponSet(node,target,tracker);else if(type is 0xB5EB41ED or 0x79BFEDCB or 0x59D12990 or 0x786C9458 or 0x3B68B768 or 0x90CEB49C)Marshaler.MarshalEp1InfantryBehavior(node,target,tracker,type);else if(!Marshaler.TryMarshalEp1ReviewedBehavior(node,target,tracker,type))Marshaler.Marshal(node,target,tracker);}
     //-------------------------------------------------------------------------------------------------
     /** Reborn: all native and metadata proof routes share the same explicit reviewed EP1 model selection; wire identities remain original. */
     //-------------------------------------------------------------------------------------------------

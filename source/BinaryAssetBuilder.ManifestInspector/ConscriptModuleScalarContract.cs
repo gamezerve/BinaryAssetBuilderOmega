@@ -155,7 +155,6 @@ internal static class ConscriptModuleScalarContract
             if(owner.NativeType==typeof(QueueDockModuleData))QueueDockContract.Validate(owner.Element);
             if(owner.NativeType==typeof(Ep1QueueProductionExitUpdateModuleData))QueueProductionExitContract.Validate(owner.Element);
             if(owner.NativeType==typeof(Ep1SpawnBehaviorModuleData))SpawnBehaviorContract.Validate(owner.Element);
-            if(owner.NativeType==typeof(Ep1ProductionUpdateModuleData))ProductionUpdateContract.Validate(owner.Element);
             if(owner.NativeType==typeof(Ep1RepairUpdateModuleData))RepairUpdateContract.Validate(owner.Element);
             if(owner.NativeType==typeof(Ep1EngineerContainModuleData))EngineerContainContract.Validate(owner.Element);
             if(owner.NativeType==typeof(AssistedPlacementBehaviorModuleData))AssistedPlacementContract.Validate(owner.Element);
@@ -274,6 +273,12 @@ internal static class ConscriptModuleScalarContract
                 foreach(string token in text.Split((char[]?)null,StringSplitOptions.RemoveEmptyEntries))
                 {
                     if(token=="ALL"){Array.Fill(bytes,(byte)255);continue;}
+                    // Reborn: the retail placement hint parser clears the mask for NONE.
+                    if (type == typeof(AssistanceHintType) && token == nameof(AssistanceHintType.NONE))
+                    {
+                        Array.Clear(bytes);
+                        continue;
+                    }
                     if(token[0] is '+' or '-')throw SdkXmlDiagnostics.At(new InvalidDataException("Prefixed module flag operations require the corresponding legacy marshaler repair: "+source.LocalName+"."+binding.Name),(XmlNode?)source.GetAttributeNode(binding.Name)??source);
                     var enumValue=Enum.Parse(type,token,false);if(!Enum.IsDefined(type,enumValue))throw new FormatException();int bit=Convert.ToInt32(enumValue,CultureInfo.InvariantCulture);if(bit==-1)continue;if(bit<0||bit>=bytes.Length*8)throw new OverflowException();int at=bit/32*4;uint current=BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(at,4));BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(at,4),current|1u<<(bit%32));
                 }

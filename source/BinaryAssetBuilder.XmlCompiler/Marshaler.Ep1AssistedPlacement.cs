@@ -4,13 +4,19 @@ using SageBinaryData;
 public static partial class Marshaler
 {
     //-------------------------------------------------------------------------------------------------
-    /** Reborn: EP1 placement-hint names set their schema ordinal bits; prefixed operations are refused by the source contract. */
+    /** Reborn: EP1 placement hints use retail mask bits, with NONE clearing the mask. */
     //-------------------------------------------------------------------------------------------------
     public static unsafe void Marshal(string text,AssistanceHintBitFlags* objT,Tracker state)
     {
         foreach(string token in text.Split(WhiteSpaces,System.StringSplitOptions.RemoveEmptyEntries))
         {
             if(string.Equals(token,"ALL",System.StringComparison.Ordinal)){for(int i=0;i<AssistanceHintBitFlags.NumSpans;i++)objT->Value[i]=uint.MaxValue;continue;}
+            if (token == nameof(AssistanceHintType.NONE))
+            {
+                for (int i = 0; i < AssistanceHintBitFlags.NumSpans; i++)
+                    objT->Value[i] = 0;
+                continue;
+            }
             if(System.Enum.TryParse(token,false,out AssistanceHintType value)&&(uint)value<AssistanceHintBitFlags.Count)objT->Value[(uint)value/AssistanceHintBitFlags.BitsInSpan]|=1u<<(int)((uint)value%AssistanceHintBitFlags.BitsInSpan);
         }
         for(int i=0;i<AssistanceHintBitFlags.NumSpans;i++)state.InplaceEndianToPlatform(&objT->Value[i]);

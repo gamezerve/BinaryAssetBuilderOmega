@@ -14,6 +14,9 @@ internal static unsafe class StockAssetRootCompiler
 {
     internal sealed record Family(string Name,Type Type,int Size,string Source,bool Global,uint TypeId,uint TypeHash,bool WorldBuilder=false,bool Locale=false,bool EngineLayout=false);
     internal static readonly Family[] Families={
+        // Reborn: EA fixtures establish both root fingerprints and the original EP1 readers establish their PC storage.
+        new("GameplayConditionData", typeof(GameplayConditionData), 0x2c, "", false, 0x89A0BDA4u, 0xBD5C0D6Eu, EngineLayout:true),
+        new("GameplayAchievementTriggerData", typeof(GameplayAchievementTriggerData), 0x0c, "", false, 0x14C84BB7u, 0x1C88A92Du, EngineLayout:true),
         // Reborn: these source roots use independently observed original PC factory/field ABI, not fabricated emitted witnesses.
         new("ConquerCardDefinitionUnit",typeof(ConquerCardDefinitionUnit),32,"Multiplayer/ConquerMode.xml",false,0xD45BF3C5u,0xDA316C85u,EngineLayout:true),
         new("ConquerCardDefinitionStructure",typeof(ConquerCardDefinitionStructure),16,"Multiplayer/ConquerMode.xml",false,0xFFAF70D0u,0xCA2996F8u,EngineLayout:true),
@@ -363,6 +366,9 @@ internal static unsafe class StockAssetRootCompiler
         void* root;using var tracker=new Tracker(&root,(uint)family.Size,false);
         switch(family.Name)
         {
+            // Reborn: both roots use the same normalized reference inventory as other EP1 assets.
+            case "GameplayConditionData": Marshaler.Marshal(node, (GameplayConditionData*)root, tracker); break;
+            case "GameplayAchievementTriggerData": Marshaler.Marshal(node, (GameplayAchievementTriggerData*)root, tracker); break;
             case "PathMusicGameDynamicTransition":Marshaler.Marshal(node,(Ep1PathMusicGameDynamicTransition*)root,tracker);break;
             case "PathMusicGameDynamicStateSet":Marshaler.Marshal(node,(Ep1PathMusicGameDynamicStateSet*)root,tracker);break;
             case "MusicScriptConditionNugget_PathMusicStateLastActive":Marshaler.Marshal(node,(Ep1MusicScriptConditionNugget_PathMusicStateLastActive*)root,tracker);break;

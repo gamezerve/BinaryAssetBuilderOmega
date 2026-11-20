@@ -62,6 +62,8 @@ internal static class ConscriptModuleGraphSmokeTest
             modes=modes.Concat(new[]{"engineer-edited","engineer-defaults","engineer-multiple"}).ToArray();
             // Reborn: assisted placement proves hint masks, snapping distance and an optional source-sized filter.
             modes=modes.Concat(new[]{"placement-edited","placement-defaults","placement-multiple"}).ToArray();
+            // Reborn: exercise defaults and explicit values for the reviewed dock, ownership and gate classes together.
+            modes = modes.Append("reviewed-ep1-behaviors").ToArray();
             // Reborn: infiltrator proves edited values/references, schema-default imports and two instances.
             modes=modes.Concat(new[]{"infiltrator-edited","infiltrator-defaults","infiltrator-multiple"}).ToArray();
             // Reborn: structure placement proves every Shape field, optional strings/Offset, defaults and two instances.
@@ -143,9 +145,8 @@ internal static class ConscriptModuleGraphSmokeTest
             }
             if(caseFilter=="production")
             {
-                // Reborn: unimplemented weak/list/pointer content and invalid scalar values must be refused at their own source node.
+                // Reborn: invalid production scalars and malformed lists must be refused at their own source node.
                 foreach(var mutate in new Action<XmlDocument,XmlElement>[]{
-                    (d,m)=>m.SetAttribute("BonusForType","SovietMiner"),
                     (d,m)=>{var modifier=d.CreateElement("ProductionModifier",SchemaSet.XmlNamespace);m.AppendChild(modifier);},
                     (d,m)=>m.SetAttribute("MaxQueueEntries","4294967296"),
                     (d,m)=>m.SetAttribute("Type","SPECIALPOWERS"),
@@ -156,7 +157,7 @@ internal static class ConscriptModuleGraphSmokeTest
                     var bad=Copy(baseline);var module=bad.CreateElement("ProductionUpdate",SchemaSet.XmlNamespace);module.SetAttribute("id","RebornProductionBad");((XmlElement)bad.GetElementsByTagName("Behaviors",SchemaSet.XmlNamespace)[0]!).PrependChild(module);mutate(bad,module);
                     Refuse(()=>{ConscriptModuleScalarContract.Validate(bad);ConscriptVariableBehaviorSource.Admit(bad,baseline,official);});
                 }
-                Console.WriteLine("Production source controls: PASS (BonusForType, missing ModifierFilter, uint overflow, legacy SPECIALPOWERS and invalid Time rejected).");
+                Console.WriteLine("Production source controls: PASS (missing ModifierFilter, uint overflow, legacy SPECIALPOWERS and invalid Time rejected).");
             }
             if(caseFilter=="draws")
             {
@@ -803,6 +804,30 @@ internal static class ConscriptModuleGraphSmokeTest
                     }
                     behaviors.PrependChild(module);origins.Add(id,"RebornInfiltratorTemplate");
                 }
+                // Reborn: use named EP1 XML, with a second variant to prove omissions and independent pointers.
+                if (mode == "reviewed-ep1-behaviors")
+                {
+                    foreach (var (name, plain, authored) in new[]
+                    {
+                        ("SupplyCenterDockUpdate", "ValueMultiplier='1.25' DistributedDeposit='false'/>", "ValueMultiplier='1.25' DistributedDeposit='true'/>"),
+                        ("TemporaryOwnerSpecialPower", "SpecialPowerTemplate='SpecialPowerAlliedFreeTrade'/>", "SpecialPowerTemplate='SpecialPowerAlliedFreeTrade' SlaveStatus='UNSELECTABLE CANNOT_BE_SOLD'/>"),
+                        ("GateProxyBehavior", "/>", "OpenByDefault='true' ResetFrames='19' PercentOpenForPathing='75' ProxyUnitsName='GateProxy'><GeometriesForOpen>GateOpen</GeometriesForOpen></GateProxyBehavior>"),
+                        ("RepairDockUpdate", "/>", "FramesForFullHeal='92.5' NumberApproachPositions='3'><ForVoiceRetreatThisIsASafeHarborToObjectFilter Rule='ANY' Include='INFANTRY'/></RepairDockUpdate>"),
+                        ("RailedTransportDockUpdate", "/>", "PullInsideDurationInFrames='17' PushOutsideDurationInFrames='41'><ForVoiceRetreatThisIsASafeHarborToObjectFilter Rule='ANY' Include='STRUCTURE'/></RailedTransportDockUpdate>"),
+                        ("SupplyCenterProductionExitUpdate", "/>", "><UnitCreatePoint x='-17.5' y='2' z='3'/><NaturalRallyPoint x='75' y='4' z='5'/></SupplyCenterProductionExitUpdate>")
+                    })
+                    {
+                        for (int variant = 0; variant < 2; variant++)
+                        {
+                            string id = "RebornReview" + name + variant;
+                            string end = variant == 0 ? plain : authored;
+                            var fixture = new XmlDocument();
+                            fixture.LoadXml($"<{name} xmlns='{SchemaSet.XmlNamespace}' id='{id}' {end}");
+                            behaviors.PrependChild(source.ImportNode(fixture.DocumentElement!, true));
+                            origins.Add(id, SchemaNativeContract.Origin);
+                        }
+                    }
+                }
                 // Reborn: author placement hints/distances and a filter with include/exclude rows; nothing is copied from stock.
                 if(mode.StartsWith("placement-",StringComparison.Ordinal))for(int i=0;i<(mode=="placement-multiple"?2:1);i++){
                     var module=source.CreateElement("AssistedPlacementBehavior",SchemaSet.XmlNamespace);string id="RebornPlacement"+i;module.SetAttribute("id",id);
@@ -811,6 +836,9 @@ internal static class ConscriptModuleGraphSmokeTest
                         if(i==0){var filter=source.CreateElement("RequirementObjectFilter",SchemaSet.XmlNamespace);filter.SetAttribute("Rule","ALL");filter.SetAttribute("Relationship","NEUTRAL");filter.SetAttribute("Include","INFANTRY");filter.SetAttribute("StatusBitFlagsExclude","UNSELECTABLE");
                             foreach(var thing in new[]{("IncludeThing","SovietMiner"),("ExcludeThing","SovietEngineer"),("ExcludeThing","AlliedEngineer")}){var e=source.CreateElement(thing.Item1,SchemaSet.XmlNamespace);e.InnerText=thing.Item2;filter.AppendChild(e);}module.AppendChild(filter);}
                     }
+                    // Reborn: test explicit NONE and the stock nonzero hint independently in the same object.
+                    if (mode == "placement-multiple")
+                        module.SetAttribute("PlacementHint", i == 0 ? "NONE" : "FACING_TOWARDS ALLOW_SHROUDED");
                     behaviors.PrependChild(module);origins.Add(id,"RebornPlacementTemplate");
                 }
                 // Reborn: author every engineer field from stock-existing assets; nothing is copied from the refinery payload.
@@ -838,6 +866,9 @@ internal static class ConscriptModuleGraphSmokeTest
                 // Reborn: author every production scalar, including EP1 WATERCRAFT and NewObjectFadeInTime; nothing is copied from the stock refinery payload.
                 if(mode.StartsWith("production-",StringComparison.Ordinal))for(int i=0;i<(mode=="production-multiple"?2:1);i++){
                     var module=source.CreateElement("ProductionUpdate",SchemaSet.XmlNamespace);string id="RebornProduction"+i;module.SetAttribute("id",id);
+                    // Reborn: exercise one authored weak bonus ID while the default case omits it.
+                    if (mode == "production-edited")
+                        module.SetAttribute("BonusForType", "SovietMiner");
                     // Reborn: exercise weak-template identity, signed counts and order through complete named EP1 source.
                     if (mode == "production-quantity")
                     {
@@ -1611,6 +1642,16 @@ internal static class ConscriptModuleGraphSmokeTest
                 // Reborn: mutate every placement header byte, filter value/list word and representative metadata rows.
                 if(mode.StartsWith("placement-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="AssistedPlacementBehavior")){
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);var offsets=Enumerable.Range(0,AssistedPlacementContract.HeaderSize).ToList();
+                    // Reborn: assert retail hint words independently of the shared enum/flag codec.
+                    uint expectedHint = owner.Element.GetAttribute("PlacementHint") switch
+                    {
+                        "" or "NONE" => 0u,
+                        "FACING_TOWARDS ALLOW_SHROUDED" => 0xAu,
+                        "FACING_AWAY ALLOW_SHROUDED" => 0xCu,
+                        _ => throw new InvalidDataException("Unexpected placement fixture hint.")
+                    };
+                    if (Word(pair.Native.InstanceBuffer, at + 8) != expectedHint)
+                        throw new InvalidDataException("EP1 placement hint does not match the retail mask.");
                     uint filterAt=Word(pair.Native.InstanceBuffer,at+16);if(filterAt!=0)foreach(int o in new[]{0,4,8,12,16,56,96,100,104,112}){offsets.Add((int)filterAt-at+o);}
                     foreach(int offset in offsets.Distinct()){var bad=Clone(pair.Native);bad.InstanceBuffer[at+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
                     int list=GameObjectStockReview.Tokens(tokens.InstanceBuffer,0)[FastHash.GetHashCode("Behaviors")].Offset;int wrapper=(int)Word(tokens.InstanceBuffer,list+12+owner.Index*12+8);
@@ -1654,6 +1695,12 @@ internal static class ConscriptModuleGraphSmokeTest
                 // Reborn: corrupt the entire production header, optional list storage and every actual translation import independently.
                 if(mode.StartsWith("production-",StringComparison.Ordinal))foreach(var owner in ConscriptModuleScalarContract.Owners(source).Where(o=>o.Element.LocalName=="ProductionUpdate")){
                     int at=ConscriptModuleScalarContract.Address(pair.Native.InstanceBuffer,0,owner);for(int offset=0;offset<ProductionUpdateContract.NativeSize;offset++){var bad=Clone(pair.Native);bad.InstanceBuffer[at+offset]^=1;Refuse(()=>Verify(source,bad,pair.Instance,origins));faults++;}
+                    // Reborn: use the installed SovietMiner ID and the EA witness's inline weak-ID encoding.
+                    uint bonusSlot = checked((uint)(at + 0x2c));
+                    uint bonus = mode == "production-edited" ? 0xF6DAC2A4u : 0u;
+                    if (Word(pair.Native.InstanceBuffer, (int)bonusSlot) != bonus ||
+                        Slots(pair.Native.ImportsBuffer).Contains(bonusSlot) || Slots(pair.Native.RelocationBuffer).Contains(bonusSlot))
+                        throw new InvalidDataException("EP1 ProductionUpdate bonus ID or auxiliary slots differ from the EA witness.");
                     // Reborn: check the independent EP1 row stride, filter words, nullable defaults and exact IMP slots.
                     if (mode == "production-modifier")
                     {

@@ -16,6 +16,22 @@ internal static class StockRuntimeAbiContract
         if(name.StartsWith("ConquerCardDefinition",StringComparison.Ordinal))Check(typeof(ConquerCardDefinitionBase),12,("Base",0),("Cost",4),("Maximum",8));
         switch(name)
         {
+            // Reborn: verify independently observed PC allocation extents, optional pointer offsets and EA type hashes.
+            case "GameplayConditionData":
+                Check(type, 0x2c, ("Base", 0), ("GameplayConditionBitFlags", 4), ("TimeReq", 8),
+                    ("AllowedGameTypeBitFlags", 0x0c), ("GameDifficultyBitFlags", 0x10), ("PrimaryObject", 0x14),
+                    ("RequiredObjectCondition", 0x24), ("RequiredUpgradeCondition", 0x28));
+                Check(typeof(BaseConditionData), 0x0c, ("Count", 0), ("ObjectFilter", 4), ("Unique", 8));
+                Check(typeof(ObjectConditionData), 0x10, ("Base", 0), ("DieMuxData", 0x0c));
+                Check(typeof(UpgradeConditionData), 0x14, ("Base", 0), ("UpgradeRequired", 0x0c));
+                if (fingerprint != 0xBD5C0D6Eu)
+                    throw new InvalidDataException("Gameplay condition fingerprint differs from the EA fixture.");
+                break;
+            case "GameplayAchievementTriggerData":
+                Check(type, 0x0c, ("Base", 0), ("GameplayConditionData", 4), ("AchievementEventId", 8));
+                if (fingerprint != 0x1C88A92Du)
+                    throw new InvalidDataException("Gameplay achievement trigger fingerprint differs from the EA fixture.");
+                break;
             case "ConquerCardDefinitionUnit":
                 Check(type,32,("Base",0),("Unit",12),("Upgrade",16),("Veterancy",24));
                 Check(typeof(ConquerCardUpgrade),8,("Upgrade",0),("Cost",4));Check(typeof(ConquerCardVeterancy),8,("Veterancy",0),("Cost",4));

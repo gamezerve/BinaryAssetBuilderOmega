@@ -13,7 +13,8 @@ public static partial class Marshaler
         // Reborn: preserve the independent EA fixture's source order, weak template IDs and signed counts.
         Marshal(node.GetChildNodes("QuantityModifier"), &objT->QuantityModifier, state);
         Marshal(node.GetChildNodes("ProductionModifier"), &objT->ProductionModifier, state);
-        if(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.BonusForType),null)!=null)throw new System.IO.InvalidDataException("EP1 ProductionUpdate BonusForType is not implemented yet.");
+        // Reborn: BonusForType is a weak GameObject ID at +0x2c with no import or relocation slot.
+        Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.BonusForType), null), &objT->BonusForType, state);
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.MaxQueueEntries),"99"),&objT->MaxQueueEntries,state);
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.NumDoorAnimations),"0"),&objT->NumDoorAnimations,state);
         Marshal(node.GetAttributeValue(nameof(Ep1ProductionUpdateModuleData.DoorOpeningTime),"0s"),&objT->DoorOpeningTime,state);

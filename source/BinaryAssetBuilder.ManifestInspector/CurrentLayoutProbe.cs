@@ -32,12 +32,28 @@ internal static class CurrentLayoutProbe
     //-------------------------------------------------------------------------------------------------
     internal static string Index(IEnumerable<string> typeNames)
     {
+        var names = typeNames.ToArray();
+        if (!names.SequenceEqual(new[] { "--ep1-campaign" }))
+            return IndexRecords(names.SelectMany(Find), null);
+
+        // Reborn: the separate EP1 export preserves legacy CLR lookups and exposes the writer's XML aliases.
+        var aliases = new[] { "CampaignEnumerator", "CampaignTemplate", "MissionTemplate" }
+            .ToDictionary(CampaignManagerCompiler.LayoutFor, name => name);
+        return IndexRecords(aliases.Keys, aliases);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: use the same x86 measurements for direct CLR lookups and XML campaign aliases. */
+    //-------------------------------------------------------------------------------------------------
+    private static string IndexRecords(IEnumerable<Type> requested, IReadOnlyDictionary<Type, string>? aliases)
+    {
         if(IntPtr.Size!=4)
             throw new InvalidOperationException("The EP1 layout index requires an x86 inspector process.");
-        var types=typeNames.SelectMany(Find).Distinct().OrderBy(type=>type.FullName,StringComparer.Ordinal);
+        var types=requested.Distinct().OrderBy(type=>type.FullName,StringComparer.Ordinal);
         var records=types.Select(type=>new
         {
             name=type.FullName,
+            xmlName=aliases?.GetValueOrDefault(type),
             size=FieldSize(type),
             fields=type.GetFields(InstanceFields).Select(field=>new
             {
@@ -48,7 +64,7 @@ internal static class CurrentLayoutProbe
             }).OrderBy(field=>field.offset).ThenBy(field=>field.name,StringComparer.Ordinal).ToArray()
         }).ToArray();
         return JsonSerializer.Serialize(new { architecture="x86",pointerSize=IntPtr.Size,records },
-            new JsonSerializerOptions { WriteIndented=true });
+            new JsonSerializerOptions { WriteIndented=true, DefaultIgnoreCondition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull });
     }
 
     //-------------------------------------------------------------------------------------------------

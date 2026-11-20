@@ -164,6 +164,12 @@ internal sealed class SchemaNativeContract
         }
         // Reborn: the processed EP1 common sound base stores official control flags in a DWORD carrier.
         if(owner==typeof(Marshaler.Ep1BaseSingleSound)&&name=="Control"){Flags(e,name,at,4,path);return;}
+        // Reborn: the gameplay condition reader stores these three schema lists in DWORD mask fields.
+        if (owner == typeof(GameplayConditionData) && name is "GameplayConditionBitFlags" or "AllowedGameTypeBitFlags" or "GameDifficultyBitFlags")
+        {
+            Flags(e, name, at, 4, path);
+            return;
+        }
         // Reborn: concrete UI class identities derive independently from the validated original component schema.
         if(owner==typeof(Ep1CoverageUIComponentBase)&&name=="TypeId"){_=StockUIComponentCatalog.For(e!);Expect(at,BitConverter.GetBytes(FastHash.GetHashCode(e!.SchemaInfo.SchemaType!.QualifiedName.Name)),path);return;}
         // Reborn: original challenge scenarios store the lowercase source id as their weak runtime identity.

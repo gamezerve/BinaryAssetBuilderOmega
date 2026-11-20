@@ -32,13 +32,7 @@ internal static class CampaignManagerCompiler
         ns.AddNamespace("ea", SchemaSet.XmlNamespace);
         var node = new Node(element.CreateNavigator()!, ns);
         void* root;
-        Type layout = element.LocalName switch
-        {
-            "CampaignEnumerator" => typeof(Ep1CampaignEnumerator),
-            "CampaignTemplate" => typeof(Ep1CampaignTemplate),
-            "MissionTemplate" => typeof(Ep1MissionTemplate),
-            _ => throw new InvalidDataException("Unknown EP1 campaign record: " + element.LocalName)
-        };
+        Type layout = LayoutFor(element.LocalName);
         int size = layout == typeof(Ep1CampaignEnumerator) ? sizeof(Ep1CampaignEnumerator)
             : layout == typeof(Ep1CampaignTemplate) ? sizeof(Ep1CampaignTemplate) : sizeof(Ep1MissionTemplate);
         using var tracker = new Tracker(&root, (uint)size, false);
@@ -53,6 +47,17 @@ internal static class CampaignManagerCompiler
             throw new InvalidDataException("EP1 campaign native allocation failed.");
         return (chunk, layout);
     }
+
+    //-------------------------------------------------------------------------------------------------
+    /** Reborn: export the same XML-to-EP1 layout binding used by the campaign writer. */
+    //-------------------------------------------------------------------------------------------------
+    internal static Type LayoutFor(string xmlName) => xmlName switch
+    {
+        "CampaignEnumerator" => typeof(Ep1CampaignEnumerator),
+        "CampaignTemplate" => typeof(Ep1CampaignTemplate),
+        "MissionTemplate" => typeof(Ep1MissionTemplate),
+        _ => throw new InvalidDataException("Unknown EP1 campaign record: " + xmlName)
+    };
 
     //-------------------------------------------------------------------------------------------------
     /** Reborn: compare all original campaign graphs against the linked global stream. */
